@@ -1,0 +1,27 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThemeProvider } from "@/theme/theme-provider";
+import { TooltipProvider } from "@/components/ui/tooltip";
+
+const queryClient = new QueryClient();
+
+export default function MainProviders({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    // <Provider store={store}>
+    //   <PersistGate loading={null} persistor={persistor}>
+        <QueryClientProvider client={queryClient}>
+            <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+              <div className="flex min-h-screen flex-col">
+                <TooltipProvider>
+                  {children}
+                </TooltipProvider>
+              </div>
+            </ThemeProvider>
+        </QueryClientProvider>
+    //   </PersistGate>
+    // </Provider>
+  );
+}
