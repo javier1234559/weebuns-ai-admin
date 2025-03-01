@@ -1,5 +1,8 @@
 import { z } from "zod"
 
+
+export type Role = "admin" | "teacher";
+
 export const userProfileSchema = z.object({
   userId: z.string(),
   avatar: z.string(),

@@ -3,6 +3,7 @@
 
 import React, { lazy, Suspense, createElement } from 'react';
 import type { RouteObject } from 'react-router-dom';
+import AppFallback from '@/components/common/app-fall-back';
 
 interface RouteModule {
   default: React.ComponentType;
@@ -170,7 +171,7 @@ function applyLayouts(
     if (Layout) {
       element = createElement(
         Suspense,
-        { fallback: createElement('div', null, 'Loading layout...') },
+        { fallback: createElement(AppFallback, null) },
         createElement(Layout, null, element)
       );
     }
@@ -209,7 +210,7 @@ function addNotFoundRoutes(
     const NotFound = lazy(MODULES[route]);
     let element: any = createElement(
       Suspense,
-      { fallback: createElement('div', null, 'Loading...') },
+      { fallback: createElement(AppFallback, null) },
       createElement(NotFound, null)
     );
 
@@ -239,7 +240,7 @@ function buildGlobRoutes(MODULES: GlobModules): RouteObject[] {
     const Component = lazy(MODULES[route]);
     let element: any = createElement(
       Suspense,
-      { fallback: createElement('div', null, 'Loading...') },
+      { fallback: createElement(AppFallback, null) },
       createElement(Component, null)
     );
 

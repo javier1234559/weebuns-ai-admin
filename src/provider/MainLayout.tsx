@@ -2,7 +2,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@/theme/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 10,
+      refetchOnWindowFocus: false,
+      retryDelay: 1000,
+    },
+  },
+});
 
 export default function MainProviders({
   children,

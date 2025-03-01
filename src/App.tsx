@@ -7,6 +7,7 @@ function App() {
       if (e.key === "," && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
         // TODO: Open settings
+        console.log("Open settings")
       }
     }
     document.addEventListener("keydown", handleOpenSettings)

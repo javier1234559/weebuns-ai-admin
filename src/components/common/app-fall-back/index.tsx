@@ -1,12 +1,7 @@
-import AppIcon from "@/components/common/app-icon";
-
-export function AppFallback() {
+export default function AppFallback() {
   return (
-    <div className="flex h-screen items-center justify-center text-sm text-muted-foreground">
-      <div className="flex items-center justify-center">
-        <AppIcon icon="spinner" className="mr-2 size-4 animate-spin" />
-        <span>Loading...</span>
-      </div>
+    <div className="relative h-8 w-[100px] overflow-hidden">
+      <div className="absolute left-0 bottom-1 w-6 h-6 animate-loader bg-primary" />
     </div>
-  )
+  );
 }

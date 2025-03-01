@@ -77,11 +77,24 @@ export default {
   				to: {
   					height: '0'
   				}
+  			},
+  			loader: {
+  				'0%': {
+  					left: '0',
+  					transform: 'translateX(-100%) rotate(0deg)',
+  					borderRadius: '0',
+  				},
+  				'100%': {
+  					left: '100%',
+  					transform: 'translateX(0%) rotate(360deg)',
+  					borderRadius: '50%',
+  				}
   			}
   		},
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
-  			'accordion-up': 'accordion-up 0.2s ease-out'
+  			'accordion-up': 'accordion-up 0.2s ease-out',
+  			'loader': 'loader 2s ease-in infinite',
   		}
   	}
   },

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RouteNames } from "@/constraints/route-name";
-import { getRedirectToLoginUrl } from "@/lib/utils"
+import { getRedirectToLoginUrl } from "@/feature/user/utils"
 
 // type ApiRequestInit = Omit<RequestInit, 'body'> & {
 //   body?: Record<string, any> | string;
