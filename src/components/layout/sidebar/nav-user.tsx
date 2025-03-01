@@ -84,7 +84,7 @@ export function NavUser() {
                 className="flex items-center gap-2 px-2 py-1.5"
                 asChild
               >
-                <Link to="/settings/profile">
+                <Link to={RouteNames.AdminSettingsProfile}>
                   <BadgeCheck className="size-4" />
                   <span>Tài khoản</span>
                 </Link>
@@ -93,16 +93,16 @@ export function NavUser() {
                 className="flex items-center gap-2 px-2 py-1.5"
                 asChild
               >
-                <Link to="/account/billing">
+                <Link to={RouteNames.AdminPayment}>
                   <CreditCard className="size-4" />
-                  <span>Card</span>
+                  <span>Phương thức thanh toán</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="flex items-center gap-2 px-2 py-1.5"
                 asChild
               >
-                <Link to="/system/notifications">
+                <Link to={RouteNames.AdminHistory}>
                   <Clock className="size-4" />
                   <span>Lịch sử</span>
                 </Link>

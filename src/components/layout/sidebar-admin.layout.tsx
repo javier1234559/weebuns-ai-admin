@@ -10,66 +10,66 @@ import { NavBreadcrumb } from "@/components/layout/sidebar/nav-breadcrumb";
 import { SIDEBAR_COOKIE_NAME } from "@/constraints";
 import { ThemeSwitcher } from "@/theme/theme-switcher";
 import SidebarSearch from "@/components/layout/sidebar/side-bar-search";
-import { Bell, CreditCard, Send } from "lucide-react";
-import {
-  BookOpen,
-  Gauge,
-  GraduationCap,
-  BookCheck,
-  Headphones,
-  BookOpenCheck,
-  Settings,
-} from "lucide-react";
+import { Bell, CreditCard, FileText, Send, Users } from "lucide-react";
+import { BookOpen, Gauge, Settings } from "lucide-react";
 import { SecondaryMenu } from "@/components/layout/sidebar/nav-secondary";
 import { IMenu } from "@/components/layout/sidebar/menu";
+import { RouteNames } from "@/constraints/route-name";
 
 export const menu: IMenu[] = [
   {
-    title: "Tổng quan",
+    title: "Dashboard",
     icon: Gauge,
-    to: "/admin/overview",
+    to: RouteNames.Admin,
   },
   {
-    title: "Khóa học",
-    icon: GraduationCap,
+    title: "Người dùng",
+    icon: Users,
     to: "",
     children: [
       {
-        title: "Xem tất cả",
-        icon: BookOpen,
-        to: "/admin/course/show-all",
+        title: "Tất cả",
+        to: RouteNames.AdminUsers,
+        icon: Users,
       },
       {
-        title: "Chấm bài Writing",
-        icon: BookCheck,
-        to: "/admin/course/writing-grading",
-      },
-      {
-        title: "Chấm bài Listening",
-        icon: Headphones,
-        to: "/admin/course/listening-grading",
-      },
-      {
-        title: "Chấm bài Reading",
-        icon: BookOpenCheck,
-        to: "/admin/course/reading-grading",
+        title: "Tạo mới",
+        to: RouteNames.AdminUserCreate,
+        icon: Users,
       },
     ],
   },
   {
+    title: "Bài học",
+    icon: BookOpen,
+    to: "",
+    children: [
+      {
+        title: "Tất cả",
+        to: RouteNames.AdminLessons,
+        icon: BookOpen,
+      },
+    ],
+  },
+  {
+    title: "Bài viết",
+    icon: FileText,
+    to: RouteNames.AdminArticles,
+  },
+  {
     title: "Thông báo",
     icon: Bell,
-    to: "/admin/notifications",
+    to: RouteNames.AdminNotification,
   },
   {
     title: "Doanh thu",
     icon: CreditCard,
-    to: "/admin/revenue",
+    to: RouteNames.AdminRevenue,
   },
   {
     title: "Cài đặt",
     icon: Settings,
-    to: "/admin/settings",
+    to: RouteNames.AdminSettings,
   },
 ] as const;
 

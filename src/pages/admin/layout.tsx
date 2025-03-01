@@ -10,11 +10,7 @@ export default function AdminLayout({
   return (
     <AuthGuard>
       <AdminGuard>
-        <div className="flex flex-col h-full">
-          <div className="flex-1">
-            <SidebarAdminLayout>{children}</SidebarAdminLayout>
-          </div>
-        </div>
+        <SidebarAdminLayout>{children}</SidebarAdminLayout>
       </AdminGuard>
     </AuthGuard>
   );

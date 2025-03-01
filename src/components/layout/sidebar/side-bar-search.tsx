@@ -81,6 +81,7 @@ export default function SidebarSearch({ menus, ...props }: SidebarSearchProps) {
           <CommandGroup heading="Navigations">
             {menus?.map((menu) => (
               <CommandItem
+                key={menu.to}
                 value={menu.to}
                 onSelect={() => {
                   runCommand(() => navigate(menu.to));

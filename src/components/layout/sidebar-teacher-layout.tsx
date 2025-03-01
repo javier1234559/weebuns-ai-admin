@@ -10,31 +10,51 @@ import { NavBreadcrumb } from "@/components/layout/sidebar/nav-breadcrumb";
 import { SIDEBAR_COOKIE_NAME } from "@/constraints";
 import { ThemeSwitcher } from "@/theme/theme-switcher";
 import SidebarSearch from "@/components/layout/sidebar/side-bar-search";
-import { Bell, CreditCard, Send } from "lucide-react";
-import { Gauge, Users, BookOpen, FileText, Settings } from "lucide-react";
+import {
+  Bell,
+  BookCheck,
+  BookOpenCheck,
+  CreditCard,
+  GraduationCap,
+  Headphones,
+  Send,
+} from "lucide-react";
+import { Gauge, BookOpen, Settings } from "lucide-react";
 import { SecondaryMenu } from "@/components/layout/sidebar/nav-secondary";
 import { IMenu } from "@/components/layout/sidebar/menu";
 
 export const menu: IMenu[] = [
   {
-    title: "Dashboard",
+    title: "Tổng quan",
     icon: Gauge,
-    to: "/admin/dashboard",
+    to: "/admin",
   },
   {
-    title: "Người dùng",
-    icon: Users,
-    to: "/admin/users",
-  },
-  {
-    title: "Khóa học",
-    icon: BookOpen,
-    to: "/admin/courses",
-  },
-  {
-    title: "Bài viết",
-    icon: FileText,
-    to: "/admin/articles",
+    title: "Bài học",
+    icon: GraduationCap,
+    to: "",
+    children: [
+      {
+        title: "Xem tất cả",
+        icon: BookOpen,
+        to: "/admin/lesson/show-all",
+      },
+      {
+        title: "Chấm bài Writing",
+        icon: BookCheck,
+        to: "/admin/lesson/writing-grading",
+      },
+      {
+        title: "Chấm bài Listening",
+        icon: Headphones,
+        to: "/admin/lesson/listening-grading",
+      },
+      {
+        title: "Chấm bài Reading",
+        icon: BookOpenCheck,
+        to: "/admin/lesson/reading-grading",
+      },
+    ],
   },
   {
     title: "Thông báo",

@@ -1,5 +1,6 @@
 import AuthGuard from "@/provider/AuthProvider";
 import { SidebarTeacherLayout } from "@/components/layout/sidebar-teacher-layout";
+import TeacherGuard from "@/provider/TeacherProvider";
 
 export default function TeacherLayout({
   children,
@@ -8,7 +9,9 @@ export default function TeacherLayout({
 }) {
   return (
     <AuthGuard>
-      <SidebarTeacherLayout>{children}</SidebarTeacherLayout>
+      <TeacherGuard>
+        <SidebarTeacherLayout>{children}</SidebarTeacherLayout>
+      </TeacherGuard>
     </AuthGuard>
   );
 }
