@@ -5,32 +5,30 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import * as React from "react"
-import { Link, useLocation } from "react-router-dom"
+} from "@/components/ui/breadcrumb";
+import * as React from "react";
+import { Link, useLocation } from "react-router-dom";
 
-import { useNavMenu } from "@/hooks/query/user-menu"
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
-
-import type { LucideIcon } from "lucide-react"
-import { z } from "zod"
+import type { LucideIcon } from "lucide-react";
+import { z } from "zod";
 
 const LucideIconSchema = z.custom<LucideIcon>(
   (data) => {
-    return typeof data === "function"
+    return typeof data === "function";
   },
   {
     message: "Invalid Lucide icon",
   },
-)
+);
 
 export const ChildrenMenuItemSchema = z.object({
   title: z.string(),
   label: z.string().optional(),
   icon: LucideIconSchema,
   to: z.string().url(),
-})
+});
 
 export const MenuItemSchema = z.object({
   title: z.string(),
@@ -38,25 +36,28 @@ export const MenuItemSchema = z.object({
   icon: LucideIconSchema,
   to: z.string().url(),
   children: z.array(ChildrenMenuItemSchema).optional(),
-})
+});
 
-export type IChildrenMenuItem = z.infer<typeof ChildrenMenuItemSchema>
-export type MenuItem = z.infer<typeof MenuItemSchema>
-export type IMenu = MenuItem
+export type IChildrenMenuItem = z.infer<typeof ChildrenMenuItemSchema>;
+export type MenuItem = z.infer<typeof MenuItemSchema>;
+export type IMenu = MenuItem;
 
-export const MenuArraySchema = z.array(MenuItemSchema)
-
-
+export const MenuArraySchema = z.array(MenuItemSchema);
 
 interface Breadcrumb {
-  title: string
-  to: string
-  isLast: boolean
+  title: string;
+  to: string;
+  isLast: boolean;
 }
 
-export function NavBreadcrumb({ className }: { className?: string }) {
-  const location = useLocation()
-  const { data: menus } = useNavMenu()
+interface NavBreadcrumbProps {
+  className?: string;
+  menus?: IMenu[];
+}
+
+export function NavBreadcrumb({ className, menus }: NavBreadcrumbProps) {
+  const location = useLocation();
+
   const findMenuPath = (
     pathname: string,
     items: IMenu[],
@@ -64,44 +65,44 @@ export function NavBreadcrumb({ className }: { className?: string }) {
   ): (IMenu & { parents: IMenu[] }) | null => {
     for (const item of items) {
       if (item.to === pathname) {
-        return { ...item, parents }
+        return { ...item, parents };
       }
 
       if (item.children?.length) {
-        const found = findMenuPath(pathname, item.children, [...parents, item])
-        if (found) return found
+        const found = findMenuPath(pathname, item.children, [...parents, item]);
+        if (found) return found;
       }
     }
-    return null
-  }
-
+    return null;
+  };
   const buildBreadcrumbs = (): Breadcrumb[] => {
-    const menuPath = findMenuPath(location.pathname, menus)
-    if (!menuPath) return []
+    if (!menus) return [];
+    const menuPath = findMenuPath(location.pathname, menus);
+    if (!menuPath) return [];
 
-    const breadcrumbs: Breadcrumb[] = []
+    const breadcrumbs: Breadcrumb[] = [];
 
     menuPath.parents.forEach((parent) => {
       breadcrumbs.push({
         title: parent.title,
         to: parent.to,
         isLast: false,
-      })
-    })
+      });
+    });
 
     breadcrumbs.push({
       title: menuPath.title,
       to: menuPath.to,
       isLast: true,
-    })
+    });
 
-    return breadcrumbs
-  }
+    return breadcrumbs;
+  };
 
-  const breadcrumbs = buildBreadcrumbs()
+  const breadcrumbs = buildBreadcrumbs();
 
   if (breadcrumbs.length === 0) {
-    return null
+    return null;
   }
 
   return (
@@ -112,9 +113,7 @@ export function NavBreadcrumb({ className }: { className?: string }) {
             <BreadcrumbItem>
               {!item.isLast ? (
                 <BreadcrumbLink asChild>
-                  <Link to={item.to}>
-                      {item.title}
-                  </Link>
+                  <Link to={item.to}>{item.title}</Link>
                 </BreadcrumbLink>
               ) : (
                 <BreadcrumbPage>{item.title}</BreadcrumbPage>
@@ -125,5 +124,5 @@ export function NavBreadcrumb({ className }: { className?: string }) {
         ))}
       </BreadcrumbList>
     </Breadcrumb>
-  )
+  );
 }

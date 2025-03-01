@@ -1,19 +1,32 @@
-import type { ButtonProps } from "@/components/ui/button"
-import { Button } from "@/components/ui/button"
-import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command"
-import {  LaptopIcon, MoonIcon, SearchIcon, SunIcon } from "lucide-react"
-import * as React from "react"
-import { useNavigate } from "react-router-dom"
+import type { ButtonProps } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "@/components/ui/command";
+import { LaptopIcon, MoonIcon, SearchIcon, SunIcon } from "lucide-react";
+import * as React from "react";
+import { useNavigate } from "react-router-dom";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
-import { useTheme } from "@/theme/theme-provider"
-import { DialogProps } from "@radix-ui/react-dialog"
+import { useTheme } from "@/theme/theme-provider";
+import { DialogProps } from "@radix-ui/react-dialog";
+import { IMenu } from "@/components/layout/sidebar/menu";
 
-export function Search({ ...props }: ButtonProps & DialogProps) {
-  const navigate = useNavigate()
-  const [open, setOpen] = React.useState(false)
-  const { setTheme } = useTheme()
+interface SidebarSearchProps extends ButtonProps, DialogProps {
+  menus?: IMenu[];
+}
+
+export default function SidebarSearch({ menus, ...props }: SidebarSearchProps) {
+  const navigate = useNavigate();
+  const [open, setOpen] = React.useState(false);
+  const { setTheme } = useTheme();
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -24,22 +37,22 @@ export function Search({ ...props }: ButtonProps & DialogProps) {
           e.target instanceof HTMLTextAreaElement ||
           e.target instanceof HTMLSelectElement
         ) {
-          return
+          return;
         }
 
-        e.preventDefault()
-        setOpen((open) => !open)
+        e.preventDefault();
+        setOpen((open) => !open);
       }
-    }
+    };
 
-    document.addEventListener("keydown", down)
-    return () => document.removeEventListener("keydown", down)
-  }, [])
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
+  }, []);
 
   const runCommand = React.useCallback((command: () => unknown) => {
-    setOpen(false)
-    command()
-  }, [])
+    setOpen(false);
+    command();
+  }, []);
 
   return (
     <>
@@ -65,13 +78,26 @@ export function Search({ ...props }: ButtonProps & DialogProps) {
         <CommandInput placeholder="Type a command or search..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
+          <CommandGroup heading="Navigations">
+            {menus?.map((menu) => (
+              <CommandItem
+                value={menu.to}
+                onSelect={() => {
+                  runCommand(() => navigate(menu.to));
+                }}
+              >
+                {menu.title}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+          <CommandSeparator />
           <CommandGroup heading="Links">
             <CommandItem
               value="https://shadcnui-boilerplate.pages.dev/"
               onSelect={() => {
                 runCommand(() =>
                   navigate("https://shadcnui-boilerplate.pages.dev/"),
-                )
+                );
               }}
             >
               Document
@@ -95,5 +121,5 @@ export function Search({ ...props }: ButtonProps & DialogProps) {
         </CommandList>
       </CommandDialog>
     </>
-  )
+  );
 }

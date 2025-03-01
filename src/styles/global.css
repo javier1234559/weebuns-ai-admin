@@ -150,3 +150,35 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+
+  .delay-700 {
+    animation-delay: 700ms;
+  }
+
+  .delay-1000 {
+    animation-delay: 1000ms;
+  }
+
+  .animate-appear {
+    opacity: 0;
+    animation: appear 0.5s ease-out forwards;
+  }
+
+  .animate-appear-zoom {
+    opacity: 0;
+    animation: appear-zoom 0.5s ease-out forwards;
+  }
+
+  .thin-scrollbar {
+    @apply scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-400 hover:scrollbar-thumb-gray-300;
+  }
+}

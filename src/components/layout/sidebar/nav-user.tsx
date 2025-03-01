@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,30 +7,35 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 import {
   BadgeCheck,
-  Bell,
   ChevronsUpDown,
+  Clock,
   CreditCard,
   LogOut,
-  Sparkles,
-} from "lucide-react"
-import { Link } from "react-router-dom"
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
-import { useUser, useUserLogoutMutation } from "@/hooks/query/use-user"
+import { getLocalStorage } from "@/lib/utils";
+import { RouteNames } from "@/constraints/route-name";
 
 export function NavUser() {
-  const { isMobile } = useSidebar()
-  const { data: user } = useUser()
+  const { isMobile } = useSidebar();
+  const user = getLocalStorage("user");
+  const navigate = useNavigate();
 
-  const logout = useUserLogoutMutation()
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate(RouteNames.SignIn);
+  };
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -41,12 +46,12 @@ export function NavUser() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="size-8 rounded-lg">
-                <AvatarImage src={user.data.avatar} alt={user.data.username} />
+                <AvatarImage src={user.email} alt={user.email} />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.data.username}</span>
-                <span className="truncate text-xs">{user.data.email}</span>
+                <span className="truncate font-semibold">{user.email}</span>
+                <span className="truncate text-xs">{user.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -60,56 +65,60 @@ export function NavUser() {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-2 py-1.5 text-left text-sm">
                 <Avatar className="size-8 rounded-lg">
-                  <AvatarImage src={user.data.avatar} alt={user.data.username} />
+                  <AvatarImage src={user.email} alt={user.email} />
                   <AvatarFallback className="rounded-lg">
-                    {user.data.username.slice(0, 2)}
+                    {user.email.slice(0, 2)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.data.username}</span>
-                  <span className="truncate text-xs text-muted-foreground">{user.data.email}</span>
+                  <span className="truncate font-semibold">{user.email}</span>
+                  <span className="truncate text-xs text-muted-foreground">
+                    {user.email}
+                  </span>
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="my-1" />
             <DropdownMenuGroup>
-              <DropdownMenuItem className="flex items-center gap-2 px-2 py-1.5">
-                <Sparkles className="size-4" />
-                <span>user.upgrade_pro</span>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator className="my-1" />
-            <DropdownMenuGroup>
-              <DropdownMenuItem className="flex items-center gap-2 px-2 py-1.5" asChild>
+              <DropdownMenuItem
+                className="flex items-center gap-2 px-2 py-1.5"
+                asChild
+              >
                 <Link to="/settings/profile">
                   <BadgeCheck className="size-4" />
-                  <span>user.account</span>
+                  <span>Tài khoản</span>
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="flex items-center gap-2 px-2 py-1.5" asChild>
-                <Link to="/system/account/billing">
+              <DropdownMenuItem
+                className="flex items-center gap-2 px-2 py-1.5"
+                asChild
+              >
+                <Link to="/account/billing">
                   <CreditCard className="size-4" />
-                  <span>user.billing</span>
+                  <span>Card</span>
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="flex items-center gap-2 px-2 py-1.5" asChild>
+              <DropdownMenuItem
+                className="flex items-center gap-2 px-2 py-1.5"
+                asChild
+              >
                 <Link to="/system/notifications">
-                  <Bell className="size-4" />
-                  <span>user.notifications</span>
+                  <Clock className="size-4" />
+                  <span>Lịch sử</span>
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator className="my-1" />
             <DropdownMenuItem
               className="flex items-center gap-2 px-2 py-1.5"
-              onSelect={() => logout.mutate()}
+              onSelect={handleLogout}
             >
               <LogOut className="size-4" />
-              <span>user.logout</span>
+              <span>Đăng xuất</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

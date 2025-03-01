@@ -30,3 +30,6 @@ export type MenuItem = z.infer<typeof MenuItemSchema>
 export type IMenu = MenuItem
 
 export const MenuArraySchema = z.array(MenuItemSchema)
+
+
+

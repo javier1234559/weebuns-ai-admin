@@ -1,7 +1,5 @@
 import { buttonVariants } from "@/components/ui/button"
-import { m } from "framer-motion"
 import { useNavigate } from "react-router-dom"
-
 import { cn } from "@/lib/utils"
 
 export const AppNotFound = () => {
@@ -9,40 +7,22 @@ export const AppNotFound = () => {
 
   return (
     <div className="mx-auto flex h-screen max-w-lg flex-col items-center justify-center text-center">
-      <m.h1
-        className="text-9xl font-bold"
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <h1 className="text-9xl font-bold">
         404
-      </m.h1>
-      <m.h2
-        className="mt-4 text-2xl font-semibold"
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-      >
+      </h1>
+      <h2 className="mt-4 text-2xl font-semibold">
         UH OH! You're lost.
-      </m.h2>
-      <m.p
-        className="mt-2"
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-      >
+      </h2>
+      <p className="mt-2">
         The page you are looking for does not exist. How you got here is a
         mystery. But you can click the button below to go back to the homepage.
-      </m.p>
-      <m.button
+      </p>
+      <button
         className={cn("mt-4", buttonVariants({ variant: "default" }))}
         onClick={() => navigate("/")}
-        initial={{ scale: 1 }}
-        whileHover={{ scale: 1.1 }}
-        transition={{ type: "spring", stiffness: 300 }}
       >
         HOME
-      </m.button>
+      </button>
     </div>
   )
 }

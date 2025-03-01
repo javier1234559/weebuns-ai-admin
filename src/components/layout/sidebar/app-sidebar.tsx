@@ -6,44 +6,45 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import { Command } from "lucide-react";
+import * as React from "react";
+import { Link } from "react-router-dom";
+import { NavMain } from "@/components/layout/sidebar/nav-main";
 import {
-  Command,
-  Send,
-} from "lucide-react"
-import * as React from "react"
-import { Link } from "react-router-dom"
+  NavSecondary,
+  SecondaryMenu,
+} from "@/components/layout/sidebar/nav-secondary";
+import { IMenu } from "@/components/layout/sidebar/menu";
+import { RouteNames } from "@/constraints/route-name";
+import { globalConfig } from "@/config";
+import { NavUser } from "@/components/layout/sidebar/nav-user";
 
-import { NavMain } from "@/components/layout/sidebar/nav-main"
-import { NavSecondary } from "@/components/layout/sidebar/nav-secondary"
-import { NavUser } from "@/components/layout/sidebar/nav-user"
-import { globalConfig } from "@/config"
-import { useNavMenu } from "@/hooks/query/user-menu"
+export interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  menus: IMenu[];
+  navSecondary: SecondaryMenu[];
+}
 
-const navSecondary = [
-  {
-    title: "Feedback",
-    url: "https://github.com/TinsFox/shadcnui-boilerplate/issues",
-    icon: Send,
-    external: true,
-  },
-]
-
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { data: menus } = useNavMenu()
-
+export function AppSidebar({ menus, navSecondary, ...props }: AppSidebarProps) {
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar
+      variant="inset"
+      collapsible="icon"
+      className="thin-scrollbar"
+      {...props}
+    >
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link to="/dashboard">
+              <Link to={RouteNames.Home}>
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <Command className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{globalConfig.APP_NAME}</span>
+                  <span className="truncate font-semibold">
+                    {globalConfig.APP_NAME}
+                  </span>
                   <span className="truncate text-xs">Enterprise</span>
                 </div>
               </Link>
@@ -59,5 +60,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavUser />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }
