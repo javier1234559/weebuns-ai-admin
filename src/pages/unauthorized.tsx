@@ -1,20 +1,20 @@
 import { Button } from "@/components/ui/button";
 import { RouteNames } from "@/constraints/route-name";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AlertCircle, ArrowLeft, LogOut } from "lucide-react";
 
 export default function UnauthorizedPage() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem("user");
+    localStorage.removeItem("isAuthenticated");
 
     navigate(RouteNames.Home);
   };
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate(-2);
   };
 
   return (
@@ -24,18 +24,17 @@ export default function UnauthorizedPage() {
           <AlertCircle className="h-8 w-8 text-destructive" />
         </div>
 
-        <h1 className="text-2xl font-bold mb-2 text-card-foreground">Unauthorized</h1>
+        <h1 className="text-2xl font-bold mb-2 text-card-foreground">
+          Unauthorized
+        </h1>
 
         <p className="text-muted-foreground mb-6">
-          You are not authorized to access this page. Please try with another account that has appropriate permissions.
+          You are not authorized to access this page. Please try with another
+          account that has appropriate permissions.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button
-            variant="outline"
-            className="gap-2"
-            onClick={handleGoBack}
-          >
+          <Button variant="outline" className="gap-2" onClick={handleGoBack}>
             <ArrowLeft className="h-4 w-4" />
             Go Back
           </Button>

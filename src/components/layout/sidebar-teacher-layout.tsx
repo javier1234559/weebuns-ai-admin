@@ -14,7 +14,7 @@ import {
   Bell,
   BookCheck,
   BookOpenCheck,
-  CreditCard,
+  BookPlus,
   GraduationCap,
   Headphones,
   Send,
@@ -22,12 +22,13 @@ import {
 import { Gauge, BookOpen, Settings } from "lucide-react";
 import { SecondaryMenu } from "@/components/layout/sidebar/nav-secondary";
 import { IMenu } from "@/components/layout/sidebar/menu";
+import { RouteNames } from "@/constraints/route-name";
 
 export const menu: IMenu[] = [
   {
     title: "Tổng quan",
     icon: Gauge,
-    to: "/admin",
+    to: RouteNames.Teacher,
   },
   {
     title: "Bài học",
@@ -37,39 +38,39 @@ export const menu: IMenu[] = [
       {
         title: "Xem tất cả",
         icon: BookOpen,
-        to: "/admin/lesson/show-all",
+        to: RouteNames.TeacherLessonShowAll,
+      },
+      {
+        title: "Tạo bài học",
+        icon: BookPlus,
+        to: RouteNames.TeacherLessonCreate,
       },
       {
         title: "Chấm bài Writing",
         icon: BookCheck,
-        to: "/admin/lesson/writing-grading",
+        to: RouteNames.TeacherLessonWritingGrading,
       },
       {
-        title: "Chấm bài Listening",
+        title: "Xem thống kê Listening",
         icon: Headphones,
-        to: "/admin/lesson/listening-grading",
+        to: RouteNames.TeacherLessonListeningGrading,
       },
       {
-        title: "Chấm bài Reading",
+        title: "Xem thống kê Reading",
         icon: BookOpenCheck,
-        to: "/admin/lesson/reading-grading",
+        to: RouteNames.TeacherLessonReadingGrading,
       },
     ],
   },
   {
     title: "Thông báo",
     icon: Bell,
-    to: "/admin/notifications",
-  },
-  {
-    title: "Doanh thu",
-    icon: CreditCard,
-    to: "/admin/revenue",
+    to: RouteNames.TeacherNotificationSettings,
   },
   {
     title: "Cài đặt",
     icon: Settings,
-    to: "/admin/settings",
+    to: RouteNames.TeacherSettings,
   },
 ] as const;
 

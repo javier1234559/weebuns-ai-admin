@@ -1,7 +1,5 @@
+import Analysis from "@/feature/analysis";
+
 export default function TeacherPage() {
-  return (
-    <div>
-      <h1>Teacher Page</h1>
-    </div>
-  );
+  return <Analysis />;
 }

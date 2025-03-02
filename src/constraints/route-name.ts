@@ -30,6 +30,26 @@ export enum RouteNames {
   AdminHistory = "/admin/settings/history",
   AdminPayment = "/admin/settings/payment",
 
+  // Teacher
+  TeacherSettings = "/teacher/settings",
+  TeacherSettingsProfile = "/teacher/settings/profile",
+  TeacherSettingsAppearance = "/teacher/settings/appearance",
+  TeacherNotificationSettings = "/teacher/settings/notifications",
+  TeacherHistory = "/teacher/settings/history",
+  TeacherPayment = "/teacher/settings/payment",
+
+  // Lesson
+  TeacherLessonCreate = "/teacher/lesson/create",
+  TeacherLessonShowAll = "/teacher/lesson/show-all",
+  TeacherLessonWritingGrading = "/teacher/lesson/writing-grading",
+  TeacherLessonListeningGrading = "/teacher/lesson/listening-grading",
+  TeacherLessonReadingGrading = "/teacher/lesson/reading-grading",
+
+  TeacherLessonReading = "/teacher/lesson/reading",
+  TeacherLessonReadingCreate = "/teacher/lesson/reading/create",
+  TeacherLessonReadingEdit = "/teacher/lesson/reading/:id/edit",
+  TeacherLessonReadingDetail = "/teacher/lesson/reading/:id",
+
   // Writing = "/lesson/writing",
   // WritingCreate = "/lesson/writing/create",
   // WritingEdit = "/lesson/writing/edit/:id",
@@ -44,11 +64,6 @@ export enum RouteNames {
   // SpeakingCreate = "/lesson/speaking/create",
   // SpeakingEdit = "/lesson/speaking/edit/:id",
   // SpeakingDetail = "/lesson/speaking/detail/:id",
-
-  // Reading = "/lesson/reading",
-  // ReadingCreate = "/lesson/reading/create",
-  // ReadingEdit = "/lesson/reading/edit/:id",
-  // ReadingDetail = "/lesson/reading/detail/:id",
 
   // Listening = "/lesson/listening",
   // ListeningCreate = "/lesson/listening/create",

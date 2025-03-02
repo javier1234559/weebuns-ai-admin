@@ -57,7 +57,7 @@ export const menu: IMenu[] = [
     to: RouteNames.AdminArticles,
   },
   {
-    title: "Thông báo",
+    title: "Thông báo hệ thống",
     icon: Bell,
     to: RouteNames.AdminNotification,
   },
