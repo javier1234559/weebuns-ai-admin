@@ -91,7 +91,7 @@ const QuestionItem = ({
             </Button>
           </div>
 
-          {options.map((option: string, optionIndex: number) => (
+          {options.map((_option: string, optionIndex: number) => (
             <div key={optionIndex} className="flex items-center space-x-2">
               <FormField
                 control={control}

@@ -5,28 +5,31 @@ import {
   useQuery,
   useQueryClient,
   useSuspenseQuery,
-} from "@tanstack/react-query"
-import type { PaginationState } from "@tanstack/react-table"
-import { useNavigate } from "react-router-dom"
+} from "@tanstack/react-query";
+import type { PaginationState } from "@tanstack/react-table";
+import { useNavigate } from "react-router-dom";
 
-import { apiFetch } from "@/lib/api-fetch"
-import { IUserProfile, ILoginForm, IUsers } from "@/feature/user/type"
+import { apiFetch } from "@/lib/api-fetch";
+import { IUserProfile, IUsers } from "@/feature/user/type";
+import { ILoginForm } from "@/feature/user/components/UserAuthForm/schema";
 
-export const queryUser = () => queryOptions({
-  queryKey: ["userInfo"],
-  queryFn: async () => apiFetch<IUserProfile>("/api/users"),
-})
+export const queryUser = () =>
+  queryOptions({
+    queryKey: ["userInfo"],
+    queryFn: async () => apiFetch<IUserProfile>("/api/users"),
+  });
 
 export const queryUserInfo = () =>
   queryOptions({
     queryKey: ["user-info"],
-    queryFn: async () => apiFetch<{
-      data: IUserProfile
-    }>(`/api/users/info`),
-  })
+    queryFn: async () =>
+      apiFetch<{
+        data: IUserProfile;
+      }>(`/api/users/info`),
+  });
 
 export function useUser() {
-  return useSuspenseQuery(queryUserInfo())
+  return useSuspenseQuery(queryUserInfo());
 }
 
 export function useUserLoginMutation() {
@@ -37,39 +40,48 @@ export function useUserLoginMutation() {
         body: JSON.stringify(loginForm),
       }),
     mutationKey: ["user-login"],
-  })
+  });
 }
 
 export function useUserLogoutMutation() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return useMutation({
     mutationFn: async () => await apiFetch("/api/logout"),
     mutationKey: ["user-logout"],
     onSuccess: () => {
-      localStorage.clear()
-      navigate("/login")
+      localStorage.clear();
+      navigate("/login");
     },
-  })
+  });
 }
 
-export function useUsers(pagination?: PaginationState, searchParams?: Partial<IUsers>) {
-  const { pageIndex = 1, pageSize = 10 } = pagination || {}
+export function useUsers(
+  pagination?: PaginationState,
+  searchParams?: Partial<IUsers>,
+) {
+  const { pageIndex = 1, pageSize = 10 } = pagination || {};
   const { data, isPending, isFetching, refetch } = useQuery({
-    queryKey: ["users", pageIndex, pageSize, ...Object.entries(searchParams || {})],
-    queryFn: async () => apiFetch<{
-      list: IUsers[]
-      total: number
-      page: number
-      pageSize: number
-    }>("/api/users", {
-      body: JSON.stringify({
-        page: pageIndex,
-        pageSize,
-        ...searchParams,
+    queryKey: [
+      "users",
+      pageIndex,
+      pageSize,
+      ...Object.entries(searchParams || {}),
+    ],
+    queryFn: async () =>
+      apiFetch<{
+        list: IUsers[];
+        total: number;
+        page: number;
+        pageSize: number;
+      }>("/api/users", {
+        body: JSON.stringify({
+          page: pageIndex,
+          pageSize,
+          ...searchParams,
+        }),
       }),
-    }),
     placeholderData: keepPreviousData,
-  })
+  });
 
   return {
     isPending,
@@ -81,11 +93,11 @@ export function useUsers(pagination?: PaginationState, searchParams?: Partial<IU
       page: data?.page || 0,
       pageSize: data?.pageSize || 0,
     },
-  }
+  };
 }
 
 export function useUpdateUser() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (user: IUsers) =>
@@ -95,7 +107,7 @@ export function useUpdateUser() {
       }),
     onSuccess: () => {
       // 更新用户列表缓存
-      queryClient.invalidateQueries({ queryKey: ["users"] })
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     },
-  })
+  });
 }
