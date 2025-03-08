@@ -23,18 +23,24 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { getLocalStorage } from "@/lib/utils";
 import { RouteNames } from "@/constraints/route-name";
+import { useAuthStore } from "@/stores/auth-store";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-  const user = getLocalStorage("user");
   const navigate = useNavigate();
+  const { user, removeUser } = useAuthStore();
+
+  console.log(user);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    removeUser();
     navigate(RouteNames.SignIn);
   };
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <SidebarMenu>
@@ -47,11 +53,13 @@ export function NavUser() {
             >
               <Avatar className="size-8 rounded-lg">
                 <AvatarImage src={user.email} alt={user.email} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {user.email.slice(0, 2)}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.email}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-semibold">{user?.email}</span>
+                <span className="truncate text-xs">{user?.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -73,7 +81,7 @@ export function NavUser() {
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{user.email}</span>
                   <span className="truncate text-xs text-muted-foreground">
-                    {user.email}
+                    {user?.email}
                   </span>
                 </div>
               </div>

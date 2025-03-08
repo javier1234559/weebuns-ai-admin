@@ -1,19 +1,18 @@
-import { Navigate } from 'react-router-dom';
-import { RouteNames } from '@/constraints/route-name';
+import { Navigate } from "react-router-dom";
+import { RouteNames } from "@/constraints/route-name";
+import { useAuthStore } from "@/stores/auth-store";
+import { ROLES } from "@/constraints";
 interface TeacherGuardProps {
   children: React.ReactNode;
 }
 
 export default function TeacherGuard({ children }: TeacherGuardProps) {
-  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+  const { user } = useAuthStore();
+  const isTeacher = user && user.role === ROLES.TEACHER;
 
-  if (!isAuthenticated) {
+  if (!user) {
     return <Navigate to={RouteNames.SignIn} />;
   }
-
-  const userString = localStorage.getItem('user');
-  const user = userString ? JSON.parse(userString) : null;
-  const isTeacher = user && user.roles && user.roles.includes('teacher');
 
   if (!isTeacher) {
     return <Navigate to={`${RouteNames.Unauthorized}`} />;

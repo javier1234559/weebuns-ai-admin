@@ -1,19 +1,18 @@
-import { Navigate } from 'react-router-dom';
-import { RouteNames } from '@/constraints/route-name';
+import { Navigate } from "react-router-dom";
+import { RouteNames } from "@/constraints/route-name";
+import { useAuthStore } from "@/stores/auth-store";
+import { ROLES } from "@/constraints";
 interface AdminGuardProps {
   children: React.ReactNode;
 }
 
 export default function AdminGuard({ children }: AdminGuardProps) {
-  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+  const { user } = useAuthStore();
+  const isAdmin = user && user.role === ROLES.ADMIN;
 
-  if (!isAuthenticated) {
+  if (!user) {
     return <Navigate to={RouteNames.SignIn} />;
   }
-
-  const userString = localStorage.getItem('user');
-  const user = userString ? JSON.parse(userString) : null;
-  const isAdmin = user && user.roles && user.roles.includes('admin');
 
   if (!isAdmin) {
     return <Navigate to={RouteNames.Unauthorized} />;

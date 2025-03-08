@@ -19,8 +19,6 @@ export default function MainProviders({
   children: React.ReactNode;
 }) {
   return (
-    // <Provider store={store}>
-    //   <PersistGate loading={null} persistor={persistor}>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
         <div className="flex min-h-screen flex-col">
@@ -31,7 +29,5 @@ export default function MainProviders({
         </div>
       </ThemeProvider>
     </QueryClientProvider>
-    //   </PersistGate>
-    // </Provider>
   );
 }

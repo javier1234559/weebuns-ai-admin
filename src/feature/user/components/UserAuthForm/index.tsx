@@ -1,5 +1,5 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@/components/ui/button"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -7,41 +7,45 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import * as React from "react"
-import { useForm } from "react-hook-form"
-import { Link, useNavigate } from "react-router-dom"
-import { toast } from "sonner"
-import type { z } from "zod"
-import { Eye, EyeOff, Loader2, AlertCircle } from "lucide-react"
-import { cn, setLocalStorage } from "@/lib/utils"
-import { ILoginForm, loginFormSchema } from "@/feature/user/type"
-import { getRedirectUrl } from "@/feature/user/utils"
-import { useRoleStatus } from "@/feature/user/hooks/useRoleStatus"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { useState } from "react"
-import { RouteNames } from "@/constraints/route-name"
-import { ROLES } from "@/constraints"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import * as React from "react";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { getRedirectUrl } from "@/feature/user/utils";
+import { useRoleStatus } from "@/feature/user/hooks/useRoleStatus";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useState } from "react";
+import { RouteNames } from "@/constraints/route-name";
+import { ROLES } from "@/constraints";
+import { ILoginForm, loginFormSchema } from "./schema";
+import { useLogin } from "@/feature/user/hooks/useUserQueries";
+import { useAuthStore } from "@/stores/auth-store";
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement> & {
   onRoleSwitch?: () => void;
-}
+};
 
-const fakeUsers = [
-  { email: 'teacher@gmail.com', password: '123456', roles: [ROLES.TEACHER] },
-  { email: 'admin@gmail.com', password: '123456', roles: [ROLES.ADMIN] }
-];
+// const fakeUsers = [
+//   { email: 'teacher@gmail.com', password: '123456', roles: [ROLES.TEACHER] },
+//   { email: 'admin@gmail.com', password: '123456', roles: [ROLES.ADMIN] }
+// ];
 
-function UserAuthForm({ className, onRoleSwitch, ...props }: UserAuthFormProps) {
-  const redirectUrl = getRedirectUrl()
-  const navigate = useNavigate()
-  const { role} = useRoleStatus()
-  const [isLoading, setIsLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+function UserAuthForm({
+  className,
+  onRoleSwitch,
+  ...props
+}: UserAuthFormProps) {
+  const redirectUrl = getRedirectUrl();
+  const navigate = useNavigate();
+  const { role } = useRoleStatus();
+  const [showPassword, setShowPassword] = useState(false);
+  const { setUser } = useAuthStore();
 
-
+  const loginMutation = useLogin();
 
   const form = useForm<ILoginForm>({
     resolver: zodResolver(loginFormSchema),
@@ -49,60 +53,47 @@ function UserAuthForm({ className, onRoleSwitch, ...props }: UserAuthFormProps) 
       email: "",
       password: "",
     },
-  })
+  });
 
-  async function onSubmit(values: z.infer<typeof loginFormSchema>) {
-    setError(null)
-    setIsLoading(true)
+  async function onSubmit(values: ILoginForm) {
+    const user = await loginMutation.mutateAsync(values);
 
-    try {
-      await new Promise(r => setTimeout(r, 1000))
+    if (!user.user) {
+      throw new Error("Tài khoản hoặc mật khẩu không chính xác");
+    }
 
-      const user = fakeUsers.find(user =>
-        user.email === values.email && user.password === values.password
-      )
+    if (role && !user.user.role.includes(role)) {
+      throw new Error(
+        `Tài khoản này không có quyền đăng nhập với vai trò ${role}`,
+      );
+    }
 
-      if (!user) {
-        setError("Tài khoản hoặc mật khẩu không chính xác")
-        return
-      }
+    setUser(user.user);
+    toast.success("Đăng nhập thành công!");
 
-      if (role && !user.roles.includes(role)) {
-        setError(`Tài khoản này không có quyền đăng nhập với vai trò ${role}`)
-        return
-      }
-
-      setLocalStorage('isAuthenticated', true)
-      setLocalStorage('user', { email: user.email, roles: user.roles })
-
-      toast.success("Đăng nhập thành công!")
-
-      if (redirectUrl) {
-        navigate(redirectUrl, { replace: true })
+    if (redirectUrl) {
+      navigate(redirectUrl, { replace: true });
+    } else {
+      if (user.user.role.includes(ROLES.ADMIN)) {
+        navigate(RouteNames.Admin, { replace: true });
+      } else if (user.user.role.includes(ROLES.TEACHER)) {
+        navigate(RouteNames.Teacher, { replace: true });
       } else {
-        if (user.roles.includes(ROLES.ADMIN)) {
-          navigate(RouteNames.Admin, { replace: true })
-        } else if (user.roles.includes(ROLES.TEACHER)) {
-          navigate(RouteNames.Teacher, { replace: true })
-        } else {
-          navigate(RouteNames.Home, { replace: true })
-        }
+        navigate(RouteNames.Home, { replace: true });
       }
-    } catch (err) {
-      setError("Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại sau.")
-      console.error("Login error:", err)
-    } finally {
-      setIsLoading(false)
     }
   }
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>
-
-      {error && (
+      {loginMutation.error && (
         <Alert variant="destructive" className="mb-2">
           <AlertCircle className="h-4 w-4 mr-2" />
-          <AlertDescription>{error}</AlertDescription>
+          <AlertDescription>
+            {loginMutation.error instanceof Error
+              ? loginMutation.error.message
+              : "Đã xảy ra lỗi"}
+          </AlertDescription>
         </Alert>
       )}
 
@@ -122,7 +113,7 @@ function UserAuthForm({ className, onRoleSwitch, ...props }: UserAuthFormProps) 
                     autoCapitalize="none"
                     autoComplete="email"
                     autoCorrect="off"
-                    disabled={isLoading}
+                    disabled={loginMutation.isPending}
                   />
                 </FormControl>
                 <FormMessage />
@@ -144,7 +135,7 @@ function UserAuthForm({ className, onRoleSwitch, ...props }: UserAuthFormProps) 
                       autoCapitalize="none"
                       autoComplete="current-password"
                       autoCorrect="off"
-                      disabled={isLoading}
+                      disabled={loginMutation.isPending}
                       className="pr-10"
                     />
                     <Button
@@ -171,9 +162,15 @@ function UserAuthForm({ className, onRoleSwitch, ...props }: UserAuthFormProps) 
             )}
           />
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={loginMutation.isPending}
+          >
+            {loginMutation.isPending && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            {loginMutation.isPending ? "Đang đăng nhập..." : "Đăng nhập"}
           </Button>
         </form>
       </Form>
@@ -189,7 +186,7 @@ function UserAuthForm({ className, onRoleSwitch, ...props }: UserAuthFormProps) 
         </Link>
       </div>
     </div>
-  )
+  );
 }
 
-export default UserAuthForm
+export default UserAuthForm;

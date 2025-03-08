@@ -1,7 +1,7 @@
-import { z } from "zod"
+import { z } from "zod";
+import { User } from "@/services/swagger-types";
 
-
-export type Role = "admin" | "teacher";
+export type Role = User["role"];
 
 export const userProfileSchema = z.object({
   userId: z.string(),
@@ -33,11 +33,12 @@ export const userProfileSchema = z.object({
     )
     .optional()
     .default([]),
-})
-export type IUserProfile = z.infer<typeof userProfileSchema>
-export const userStatuses = ["active", "inactive", "busy"] as const
+});
 
-export const userRoles = ["admin", "user", "guest", "member"] as const
+export type IUserProfile = z.infer<typeof userProfileSchema>;
+export const userStatuses = ["active", "inactive", "busy"] as const;
+
+export const userRoles = ["user", "admin", "teacher"] as const;
 
 export const userSchema = z.object({
   id: z.string(),
@@ -49,22 +50,8 @@ export const userSchema = z.object({
   createdAt: z.string(),
   role: z.enum(userRoles),
   bio: z.string(),
-})
+});
 
-export type IUsers = z.infer<typeof userSchema>
+export type IUsers = z.infer<typeof userSchema>;
 
-export const loginFormSchema = z.object({
-  email: z
-    .string()
-    .min(1, {
-      message: "Email is required",
-    })
-    .email(),
-  password: z.string().min(1, {
-    message: "Password is required",
-  }),
-})
-
-export type ILoginForm = z.infer<typeof loginFormSchema>
-
-export const userStatus = ["active", "inactive", "pending"] as const
+export const userStatus = ["active", "inactive", "pending"] as const;
