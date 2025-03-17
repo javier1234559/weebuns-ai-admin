@@ -56,31 +56,35 @@ function UserAuthForm({
   });
 
   async function onSubmit(values: ILoginForm) {
-    const user = await loginMutation.mutateAsync(values);
+    try {
+      const user = await loginMutation.mutateAsync(values);
 
-    if (!user.user) {
-      throw new Error("Tài khoản hoặc mật khẩu không chính xác");
-    }
-
-    if (role && !user.user.role.includes(role)) {
-      throw new Error(
-        `Tài khoản này không có quyền đăng nhập với vai trò ${role}`,
-      );
-    }
-
-    setUser(user.user);
-    toast.success("Đăng nhập thành công!");
-
-    if (redirectUrl) {
-      navigate(redirectUrl, { replace: true });
-    } else {
-      if (user.user.role.includes(ROLES.ADMIN)) {
-        navigate(RouteNames.Admin, { replace: true });
-      } else if (user.user.role.includes(ROLES.TEACHER)) {
-        navigate(RouteNames.Teacher, { replace: true });
-      } else {
-        navigate(RouteNames.Home, { replace: true });
+      if (!user.user) {
+        throw new Error("Tài khoản hoặc mật khẩu không chính xác");
       }
+
+      if (role && !user.user.role.includes(role)) {
+        throw new Error(
+          `Tài khoản này không có quyền đăng nhập với vai trò ${role}`,
+        );
+      }
+
+      setUser(user.user);
+      toast.success("Đăng nhập thành công!");
+
+      if (redirectUrl) {
+        navigate(redirectUrl, { replace: true });
+      } else {
+        if (user.user.role.includes(ROLES.ADMIN)) {
+          navigate(RouteNames.Admin, { replace: true });
+        } else if (user.user.role.includes(ROLES.TEACHER)) {
+          navigate(RouteNames.Teacher, { replace: true });
+        } else {
+          navigate(RouteNames.Home, { replace: true });
+        }
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Đã xảy ra lỗi trong quá trình đăng nhập");
     }
   }
 

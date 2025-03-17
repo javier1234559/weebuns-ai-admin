@@ -1,6 +1,7 @@
 import axios from "axios";
 import { globalConfig } from "@/config";
 import { jwtDecode } from "jwt-decode";
+import { User } from "@/services/swagger-types";
 
 interface TokenPayload {
   exp: number;
@@ -15,7 +16,7 @@ class TokenManager {
   private static instance: TokenManager;
   private refreshPromise: Promise<string> | null = null;
   private readonly tokenKey = "accessToken";
-
+  private readonly userKey = "auth";
   private constructor() {}
 
   public static getInstance(): TokenManager {
@@ -114,6 +115,42 @@ class TokenManager {
 
     return this.refreshPromise;
   }
+
+  public getUser(): User | null {
+    if (typeof window === "undefined") {
+      return null;
+    }
+    const userStr = localStorage.getItem(this.userKey);
+    if (!userStr) return null;
+
+    try {
+      const state = JSON.parse(userStr);
+      return state.state.user;
+    } catch (error) {
+      console.error("Error parsing user data:", error);
+      return null;
+    }
+  }
+
+  public saveUser(userData: any): void {
+    if (typeof window === "undefined") {
+      return;
+    }
+    localStorage.setItem(
+      this.userKey,
+      JSON.stringify({
+        state: { user: userData },
+        version: 0,
+      }),
+    );
+  }
+
+  public clearUser(): void {
+    if (typeof window === "undefined") {
+      return;
+    }
+    localStorage.removeItem(this.userKey);
+  }
 }
 
 export const handleToken = async (): Promise<string | null> => {
@@ -122,6 +159,10 @@ export const handleToken = async (): Promise<string | null> => {
 
 export const getCurrentToken = (): string | null => {
   return TokenManager.getInstance().getAccessToken();
+};
+
+export const getCurrentUser = (): User | null => {
+  return TokenManager.getInstance().getUser();
 };
 
 export const tokenManager = TokenManager.getInstance();
