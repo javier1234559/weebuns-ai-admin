@@ -1,4 +1,4 @@
-import { SAMPLE_DATA } from "@/feature/lesson/vocabulary/data";
+import { SAMPLE_DATA } from "@/feature/vocabulary/data";
 import { useState, useCallback } from "react";
 import {
   useFloating,
@@ -11,7 +11,7 @@ import {
 } from "@floating-ui/react";
 import { splitTextPreserveHtml } from "@/lib/text";
 import { cn } from "@/lib/utils";
-import VocabularyCard from "@/feature/lesson/vocabulary/VocabularyCard";
+import VocabularyCard from "@/feature/vocabulary/VocabularyCard";
 
 interface WordStatus {
   isKnown: boolean;

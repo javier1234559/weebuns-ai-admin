@@ -191,7 +191,7 @@ export const ReadingNotesView = ({
         className="relative selection:bg-blue-100"
       >
         <article
-          className="prose prose-sm max-w-none dark:prose-invert md:prose-base lg:prose-lg prose-headings:mb-3 prose-p:mb-2"
+          className="content-editor"
           dangerouslySetInnerHTML={{ __html: content }}
         />
       </div>

@@ -17,6 +17,7 @@ import {
   BookPlus,
   GraduationCap,
   Headphones,
+  Mic,
   Send,
 } from "lucide-react";
 import { Gauge, BookOpen, Settings } from "lucide-react";
@@ -33,32 +34,85 @@ export const menu: IMenu[] = [
   {
     title: "Bài học",
     icon: GraduationCap,
-    to: "",
+    to: RouteNames.TeacherLessonShowAll,
     children: [
       {
         title: "Xem tất cả",
         icon: BookOpen,
         to: RouteNames.TeacherLessonShowAll,
       },
+    ],
+  },
+  {
+    title: "Writing",
+    icon: BookOpen,
+    to: RouteNames.TeacherWritingShowAll,
+    children: [
       {
-        title: "Tạo bài học",
+        title: "Xem tất cả",
+        icon: BookOpen,
+        to: RouteNames.TeacherWritingShowAll,
+      },
+      {
+        title: "Tạo bài viết",
         icon: BookPlus,
-        to: RouteNames.TeacherLessonCreate,
+        to: RouteNames.TeacherWritingCreate,
       },
       {
-        title: "Chấm bài Writing",
+        title: "Chấm bài viết",
         icon: BookCheck,
-        to: RouteNames.TeacherLessonWritingGrading,
+        to: RouteNames.TeacherWritingGrading,
+      },
+    ],
+  },
+  {
+    title: "Speaking",
+    icon: Mic,
+    to: "",
+    children: [
+      {
+        title: "Xem tất cả",
+        icon: BookOpen,
+        to: RouteNames.TeacherSpeakingShowAll,
       },
       {
-        title: "Xem thống kê Listening",
-        icon: Headphones,
-        to: RouteNames.TeacherLessonListeningGrading,
+        title: "Tạo bài nói",
+        icon: BookPlus,
+        to: RouteNames.TeacherSpeakingCreate,
+      },
+    ],
+  },
+  {
+    title: "Listening",
+    icon: Headphones,
+    to: "",
+    children: [
+      {
+        title: "Xem tất cả",
+        icon: BookOpen,
+        to: RouteNames.TeacherListeningShowAll,
       },
       {
-        title: "Xem thống kê Reading",
-        icon: BookOpenCheck,
-        to: RouteNames.TeacherLessonReadingGrading,
+        title: "Tạo bài nghe",
+        icon: BookPlus,
+        to: RouteNames.TeacherListeningCreate,
+      },
+    ],
+  },
+  {
+    title: "Reading",
+    icon: BookOpenCheck,
+    to: RouteNames.TeacherReadingShowAll,
+    children: [
+      {
+        title: "Xem tất cả",
+        icon: BookOpen,
+        to: RouteNames.TeacherReadingShowAll,
+      },
+      {
+        title: "Tạo bài đọc",
+        icon: BookPlus,
+        to: RouteNames.TeacherReadingCreate,
       },
     ],
   },

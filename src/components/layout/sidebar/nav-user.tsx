@@ -31,8 +31,6 @@ export function NavUser() {
   const navigate = useNavigate();
   const { user, removeUser } = useAuthStore();
 
-  console.log(user);
-
   const handleLogout = () => {
     removeUser();
     navigate(RouteNames.SignIn);

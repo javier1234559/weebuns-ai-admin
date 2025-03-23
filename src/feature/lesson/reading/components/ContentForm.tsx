@@ -6,8 +6,8 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import TipTapEditor from "@/components/feature/editor/TipTapEditor";
 
 const ContentForm = () => {
   const { control } = useFormContext();
@@ -27,12 +27,8 @@ const ContentForm = () => {
           name="content"
           render={({ field }) => (
             <FormItem>
-              <FormControl>
-                <Textarea
-                  placeholder="Enter the reading passage content here..."
-                  className="min-h-[400px] font-sans"
-                  {...field}
-                />
+              <FormControl className="h-full">
+                <TipTapEditor {...field} />
               </FormControl>
               <FormDescription>
                 HTML formatting can be used for paragraphs, headings, and other

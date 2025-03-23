@@ -1,4 +1,4 @@
-import { Vocabulary } from "@/feature/lesson/vocabulary/type";
+import { Vocabulary } from "@/feature/vocabulary/type";
 
 export const vocabularies: Vocabulary[] = [
   {

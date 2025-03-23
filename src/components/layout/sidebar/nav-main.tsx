@@ -18,7 +18,7 @@ export function NavMain({
 
   const { isPathActive, isParentActive } = useMemo(() => {
     const isPathActive = (path: string) => {
-      return location.pathname === path || location.pathname.startsWith(`${path}/`)
+      return location.pathname === path
     }
 
     const isParentActive = (item: IMenu) => {

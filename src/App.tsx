@@ -1,13 +1,9 @@
 import { SIDEBAR_COOKIE_NAME } from "@/constraints";
 import { getLocalStorage, setLocalStorage } from "@/lib/utils";
-import { useAuthStore } from "@/stores/auth-store";
 import { useLayoutEffect } from "react";
 import { Outlet } from "react-router-dom";
 
 function App() {
-  const user = useAuthStore((state) => state.user);
-
-  console.log(user);
 
   useLayoutEffect(() => {
     const handleOpenSettings = (e: KeyboardEvent) => {

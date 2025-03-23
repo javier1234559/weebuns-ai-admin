@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { VocabData } from "@/feature/lesson/vocabulary/data";
+import { VocabData } from "@/feature/vocabulary/data";
 
 const VocabularyCard = ({ data }: { data: VocabData }) => {
   return (

@@ -20,13 +20,13 @@ import PreviewTab from "@/feature/lesson/reading/components/PreviewTab";
 interface LessonReadingFormProps {
   isEdit?: boolean;
   initialData?: ReadingLessonFormValues | null;
-  onSubmit?: (data: ReadingLessonFormValues) => Promise<void>;
+  onSubmit: (data: ReadingLessonFormValues) => Promise<void>;
 }
 
 const ReadingLessonForm = ({
   isEdit = false,
   initialData = null,
-  onSubmit = async (data: ReadingLessonFormValues) => console.log(data),
+  onSubmit,
 }: LessonReadingFormProps) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("details");

@@ -18,3 +18,7 @@ export interface Lesson {
   updated_at: Date;
   deleted_at?: Date;
 }
+
+export const IELTS_SKILLS = ["writing", "reading", "listening", "speaking"];
+export const LESSONS_STATUS = ["all", "draft", "published", "archived"];
+export const LEVELS = ["all", "beginner", "intermediate", "advanced"];
