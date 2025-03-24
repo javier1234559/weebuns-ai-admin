@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, ArrowRight, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,10 +16,12 @@ import {
   ReadingLessonFormValues,
 } from "@/feature/lesson/reading/schema";
 import PreviewTab from "@/feature/lesson/reading/components/PreviewTab";
+import { ContentStatus, Lesson } from "@/services/swagger-types";
+import { toast } from "sonner";
 
 interface LessonReadingFormProps {
   isEdit?: boolean;
-  initialData?: ReadingLessonFormValues | null;
+  initialData?: Lesson | null;
   onSubmit: (data: ReadingLessonFormValues) => Promise<void>;
 }
 
@@ -35,8 +37,8 @@ const ReadingLessonForm = ({
     resolver: zodResolver(readingLessonSchema),
     defaultValues: initialData || {
       ...defaultValues,
-      level: defaultValues.level as "beginner" | "intermediate" | "advanced",
-      status: defaultValues.status as "draft" | "published" | "archived",
+      level: defaultValues.level,
+      status: defaultValues.status as ContentStatus,
     },
   });
 
@@ -48,10 +50,18 @@ const ReadingLessonForm = ({
 
   const handleSubmit = async (data: ReadingLessonFormValues) => {
     try {
+      console.log(data);
       await onSubmit(data);
     } catch (error) {
       console.error("Error handling form submission:", error);
     }
+  };
+
+  const handleInvalid = (data: FieldErrors<ReadingLessonFormValues>) => {
+    console.log(data);
+    toast.error(
+      "Form is invalid. Please check your inputs. " + JSON.stringify(data),
+    );
   };
 
   return (
@@ -86,7 +96,7 @@ const ReadingLessonForm = ({
       <FormProvider {...methods}>
         <form
           id="reading-lesson-form"
-          onSubmit={methods.handleSubmit(handleSubmit)}
+          onSubmit={methods.handleSubmit(handleSubmit, handleInvalid)}
           className="space-y-8"
         >
           <Tabs
@@ -95,7 +105,7 @@ const ReadingLessonForm = ({
             className="w-full"
           >
             <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="details">Lesson Details</TabsTrigger>
+              <TabsTrigger value="details">Basic Info</TabsTrigger>
               <TabsTrigger value="content">Reading Content</TabsTrigger>
               <TabsTrigger value="questions">Questions</TabsTrigger>
               <TabsTrigger value="preview">Preview</TabsTrigger>
@@ -119,7 +129,7 @@ const ReadingLessonForm = ({
             <TabsContent value="content" className="mt-6">
               <ContentForm />
 
-              <div className="w-full flex justify-end">
+              <div className="mt-6 w-full flex justify-end">
                 <Button
                   type="submit"
                   form="reading-lesson-form"
@@ -134,7 +144,7 @@ const ReadingLessonForm = ({
             <TabsContent value="questions" className="mt-6">
               <QuestionsForm />
 
-              <div className="w-full flex justify-end">
+              <div className="mt-6 w-full flex justify-end">
                 <Button
                   type="submit"
                   form="reading-lesson-form"
@@ -149,7 +159,7 @@ const ReadingLessonForm = ({
             <TabsContent value="preview" className="mt-6">
               <PreviewTab />
 
-              <div className="w-full flex justify-end">
+              <div className="mt-6 w-full flex justify-end">
                 <Button
                   type="submit"
                   form="reading-lesson-form"

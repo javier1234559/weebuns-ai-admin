@@ -37,7 +37,10 @@ export default function LessonPage() {
   const filteredLessons = mockIELTSLessons.filter((lesson) => {
     const matchesSearch =
       lesson.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      lesson.description.toLowerCase().includes(searchTerm.toLowerCase());
+      lesson.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lesson.tags.some((tag) =>
+        tag.toLowerCase().includes(searchTerm.toLowerCase()),
+      );
 
     const matchesSkill =
       skillFilter === "all" || lesson.skill.toLowerCase() === skillFilter;
@@ -114,7 +117,7 @@ export default function LessonPage() {
                 <SelectItem value="all">All Status</SelectItem>
                 <SelectItem value="published">Published</SelectItem>
                 <SelectItem value="draft">Draft</SelectItem>
-                <SelectItem value="archived">Archived</SelectItem>
+                <SelectItem value="deleted">Deleted</SelectItem>
               </SelectContent>
             </Select>
           </div>

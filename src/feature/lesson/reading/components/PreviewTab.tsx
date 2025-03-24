@@ -10,12 +10,12 @@ const PreviewTab = () => {
   const readingTestProps = {
     title: formValues.title || "",
     description: formValues.description || "",
-    content: formValues.content || "",
-    questions: formValues.questions.map((question: Question) => ({
+    content: formValues.content?.text || "",
+    questions: formValues.content.questions.map((question: Question) => ({
       id: question.id || String(Math.random()),
       question: question.question,
-      options: question.options,
-      answer: question.answer,
+      options: question.answer_list.map((option) => option.answer),
+      answer: question.right_answer,
     })),
   };
 

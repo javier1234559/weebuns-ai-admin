@@ -23,7 +23,7 @@ import { RouteNames } from "@/constraints/route-name";
 import { ROLES } from "@/constraints";
 import { ILoginForm, loginFormSchema } from "./schema";
 import { useLogin } from "@/feature/user/hooks/useUserQueries";
-import { useAuthStore } from "@/stores/auth-store";
+import { IUser, useAuthStore } from "@/stores/auth-store";
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement> & {
   onRoleSwitch?: () => void;
@@ -43,7 +43,7 @@ function UserAuthForm({
   const navigate = useNavigate();
   const { role } = useRoleStatus();
   const [showPassword, setShowPassword] = useState(false);
-  const { setUser } = useAuthStore();
+  const { setUser, setToken } = useAuthStore();
 
   const loginMutation = useLogin();
 
@@ -69,7 +69,8 @@ function UserAuthForm({
         );
       }
 
-      setUser(user.user);
+      setUser(user.user as IUser);
+      setToken(user.access_token);
       toast.success("Đăng nhập thành công!");
 
       if (redirectUrl) {

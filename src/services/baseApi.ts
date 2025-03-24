@@ -2,7 +2,7 @@ import axios from "axios";
 
 import { globalConfig } from "@/config";
 import { Api } from "@/services/swagger-types";
-import { handleToken } from "@/services/utils";
+import { getCurrentToken } from "@/services/utils";
 
 export const axiosInstance = axios.create({
   baseURL: globalConfig.API_URL,
@@ -14,7 +14,7 @@ export const axiosInstance = axios.create({
 
 // Header injection for auth
 const injectHeaders = async (headers: Record<string, string | undefined>) => {
-  const token = await handleToken();
+  const token = getCurrentToken();
 
   // Safe check for Content-Type
   const contentType = headers?.["Content-Type"];

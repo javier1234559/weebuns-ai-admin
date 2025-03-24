@@ -1,24 +1,10 @@
-export type ContentStatus = "draft" | "published" | "archived";
+import { Lesson as LessonSwagger } from "@/services/swagger-types";
 
-export interface Lesson {
-  id: string;
-  skill: string;
-  skill_type: string;
-  title: string;
-  image_url: string;
-  description: string;
-  lesson_type: string;
-  level: string;
-  topic: string;
-  time_limit: number;
-  content: any; // You might want to type this based on your skill_type
-  status: ContentStatus;
-  created_by: string;
-  created_at: Date;
-  updated_at: Date;
-  deleted_at?: Date;
-}
+export type ContentStatus = "draft" | "published" | "private" | "deleted";
+
+export type Lesson = LessonSwagger;
 
 export const IELTS_SKILLS = ["writing", "reading", "listening", "speaking"];
-export const LESSONS_STATUS = ["all", "draft", "published", "archived"];
+export const LESSONS_STATUS = ["all", "draft", "published", "deleted"];
 export const LEVELS = ["all", "beginner", "intermediate", "advanced"];
+export const IELTS_TOPICS = ["IELTS", "TOEIC"] as const;

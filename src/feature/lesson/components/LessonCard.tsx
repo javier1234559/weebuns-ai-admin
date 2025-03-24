@@ -27,9 +27,8 @@ import {
 import { QRCodeSVG } from "qrcode.react";
 import * as React from "react";
 import { toast } from "sonner";
-
 import { cn } from "@/lib/utils";
-import { Lesson } from "@/feature/lesson/types/lesson";
+import { Lesson } from "@/services/swagger-types";
 
 export interface LessonCardProps extends React.HTMLAttributes<HTMLDivElement> {
   lesson: Lesson;
@@ -70,7 +69,7 @@ export function LessonCard(props: LessonCardProps) {
         return "bg-green-500/10 text-green-500 dark:bg-green-500/20 dark:text-green-400";
       case "draft":
         return "bg-amber-500/10 text-amber-500 dark:bg-amber-500/20 dark:text-amber-400";
-      case "archived":
+      case "deleted":
         return "bg-muted text-muted-foreground";
       default:
         return "bg-muted text-muted-foreground";
@@ -110,9 +109,11 @@ export function LessonCard(props: LessonCardProps) {
           >
             {lesson.skill}
           </Badge>
-          <Badge variant="outline" className="capitalize text-xs">
-            {lesson.skill_type}
-          </Badge>
+          {lesson.tags.length > 0 && (
+            <Badge variant="outline" className="capitalize text-xs">
+              {lesson.tags.join(" ")}
+            </Badge>
+          )}
         </div>
         <Badge
           className={cn("capitalize text-xs", getStatusColor(lesson.status))}
@@ -134,7 +135,7 @@ export function LessonCard(props: LessonCardProps) {
             <div className="relative">
               <img
                 className="aspect-video w-full rounded-md object-cover transition-all hover:scale-[1.02]"
-                src={lesson.image_url}
+                src={lesson.thumbnailUrl || ""}
                 alt={lesson.title}
               />
             </div>
@@ -147,7 +148,7 @@ export function LessonCard(props: LessonCardProps) {
               </div>
               <div className="flex items-center gap-1 text-muted-foreground">
                 <Clock className="size-3" />
-                <span>{lesson.time_limit} min</span>
+                <span>{lesson.timeLimit} min</span>
               </div>
             </div>
 
@@ -155,7 +156,7 @@ export function LessonCard(props: LessonCardProps) {
 
             <div className="flex items-center justify-between w-full">
               <div className="text-xs text-muted-foreground">
-                {format(new Date(lesson.updated_at), "MMM dd, yyyy")}
+                {format(new Date(lesson.updatedAt), "MMM dd, yyyy")}
               </div>
               <div className="flex items-center gap-1">
                 <Tooltip>

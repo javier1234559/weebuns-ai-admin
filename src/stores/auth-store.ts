@@ -2,9 +2,14 @@ import { User } from "@/services/swagger-types";
 import { create, StateCreator } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
+export type IUser = Omit<User, "passwordHash">;
+
 interface AuthState {
-  user: User | null;
-  setUser: (user: User | null) => void;
+  token: string | null;
+  user: IUser | null;
+  setUser: (user: IUser | null) => void;
+  setToken: (token: string | null) => void;
+  removeToken: () => void;
   removeUser: () => void;
 }
 
@@ -22,9 +27,16 @@ const persistAuthMiddleware = (
 
 export const useAuthStore = create<AuthState>()(
   persistAuthMiddleware((set) => ({
+    token: null,
     user: null,
-    setUser: (user: User | null) => {
+    setUser: (user: IUser | null) => {
       set({ user });
+    },
+    setToken: (token: string | null) => {
+      set({ token });
+    },
+    removeToken: () => {
+      set({ token: null });
     },
     removeUser: () => {
       set({ user: null });

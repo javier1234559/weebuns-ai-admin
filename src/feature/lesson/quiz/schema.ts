@@ -7,10 +7,16 @@ export const questionSchema = z.object({
     .optional()
     .default(() => uuidv4()),
   question: z.string().min(1, "Question is required"),
-  options: z
-    .array(z.string().min(1, "Option cannot be empty"))
+  right_answer: z.string().min(1, "Correct answer is required"),
+  answer_list: z
+    .array(
+      z.object({
+        answer: z.string(),
+      }),
+    )
     .min(2, "At least 2 options are required"),
-  answer: z.string().min(1, "Correct answer is required"),
+  is_bookmark: z.boolean().default(false),
+  selected_answer: z.string().optional(),
 });
 
 export type Question = z.infer<typeof questionSchema>;

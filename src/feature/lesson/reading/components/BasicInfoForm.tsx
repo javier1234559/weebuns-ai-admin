@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { IELTS_TOPICS } from "@/feature/lesson/data";
+import { IELTS_TOPICS } from "@/feature/lesson/types/lesson";
 
 const BasicInfoForm = () => {
   const { control } = useFormContext();
@@ -60,20 +60,9 @@ const BasicInfoForm = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {IELTS_TOPICS.filter(
-                        (topic) =>
-                          topic === "reading_strategies" ||
-                          topic === "vocabulary" ||
-                          topic === "grammar",
-                      ).map((topic) => (
-                        <SelectItem key={topic} value={topic}>
-                          {topic
-                            .split("_")
-                            .map(
-                              (word) =>
-                                word.charAt(0).toUpperCase() + word.slice(1),
-                            )
-                            .join(" ")}
+                      {IELTS_TOPICS.map((topic) => (
+                        <SelectItem key={topic} value={topic.toLowerCase()}>
+                          {topic.toUpperCase()}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -137,7 +126,7 @@ const BasicInfoForm = () => {
 
             <FormField
               control={control}
-              name="time_limit"
+              name="timeLimit"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Time Limit (minutes)</FormLabel>
@@ -154,7 +143,7 @@ const BasicInfoForm = () => {
 
             <FormField
               control={control}
-              name="lesson_type"
+              name="lessonType"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Lesson Type</FormLabel>
@@ -165,12 +154,8 @@ const BasicInfoForm = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Tutorial">Tutorial</SelectItem>
-                      <SelectItem value="Practice Test">
-                        Practice Test
-                      </SelectItem>
-                      <SelectItem value="Workshop">Workshop</SelectItem>
-                      <SelectItem value="Course">Course</SelectItem>
+                      <SelectItem value="practice">Practice</SelectItem>
+                      <SelectItem value="test">Test</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormDescription>
@@ -204,7 +189,7 @@ const BasicInfoForm = () => {
                   <SelectContent>
                     <SelectItem value="draft">Draft</SelectItem>
                     <SelectItem value="published">Published</SelectItem>
-                    <SelectItem value="archived">Archived</SelectItem>
+                    <SelectItem value="deleted">Deleted</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormDescription>

@@ -36,7 +36,10 @@ export default function WritingPage() {
   const filteredLessons = mockIELTSLessons.filter((lesson) => {
     const matchesSearch =
       lesson.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      lesson.description.toLowerCase().includes(searchTerm.toLowerCase());
+      lesson.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lesson.tags.some((tag) =>
+        tag.toLowerCase().includes(searchTerm.toLowerCase()),
+      );
 
     const matchesLevel =
       levelFilter === "all" || lesson.level.toLowerCase() === levelFilter;
@@ -96,7 +99,7 @@ export default function WritingPage() {
                 <SelectItem value="all">All Status</SelectItem>
                 <SelectItem value="published">Published</SelectItem>
                 <SelectItem value="draft">Draft</SelectItem>
-                <SelectItem value="archived">Archived</SelectItem>
+                <SelectItem value="deleted">Deleted</SelectItem>
               </SelectContent>
             </Select>
           </div>

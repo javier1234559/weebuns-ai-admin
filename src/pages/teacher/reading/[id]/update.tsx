@@ -1,4 +1,4 @@
-import ReadingLessonView from "@/feature/lesson/reading/ReadingLessonView";
+import ReadingLessonView from "@/feature/lesson/reading/views/ReadingLessonView";
 import { useParams } from "react-router-dom";
 
 export default function UpdateReadingLessonPage() {

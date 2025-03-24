@@ -9,28 +9,31 @@ import { Question } from "@/feature/lesson/quiz/schema";
 const QuestionsForm = () => {
   const { setValue, getValues, watch } = useFormContext();
 
-  const questions = watch("questions");
-  const canRemoveQuestion = questions.length > 1;
+  const questions = watch("content.questions");
+  const canRemoveQuestion = questions?.length > 1;
 
   const handleAddQuestion = useCallback(() => {
-    const currentQuestions = getValues("questions");
-    setValue("questions", [
+    const currentQuestions = getValues("content.questions");
+    console.log(currentQuestions);
+    setValue("content.questions", [
       ...currentQuestions,
       {
         id: uuidv4(),
         question: "",
-        options: ["", ""],
-        answer: "",
+        right_answer: "",
+        answer_list: [{ answer: "" }, { answer: "" }],
+        is_bookmark: false,
+        selected_answer: undefined,
       },
     ]);
   }, [getValues, setValue]);
 
   const handleRemoveQuestion = useCallback(
     (index: number) => {
-      const currentQuestions = getValues("questions");
+      const currentQuestions = getValues("content.questions");
       if (currentQuestions.length > 1) {
         setValue(
-          "questions",
+          "content.questions",
           currentQuestions.filter(
             (_question: Question, i: number) => i !== index,
           ),
@@ -40,33 +43,31 @@ const QuestionsForm = () => {
     [getValues, setValue],
   );
 
-  // Handler cho việc thêm option mới cho câu hỏi
   const handleAddOption = useCallback(
     (questionIndex: number) => {
-      const currentQuestions = getValues("questions");
+      const currentQuestions = getValues("content.questions");
       const updatedQuestions = [...currentQuestions];
-      updatedQuestions[questionIndex].options.push("");
-      setValue("questions", updatedQuestions);
+      updatedQuestions[questionIndex].answer_list.push({ answer: "" });
+      setValue("content.questions", updatedQuestions);
     },
     [getValues, setValue],
   );
 
-  // Handler cho việc xóa một option của câu hỏi
   const handleRemoveOption = useCallback(
     (questionIndex: number, optionIndex: number) => {
-      const currentQuestions = getValues("questions");
-      if (currentQuestions[questionIndex].options.length > 2) {
+      const currentQuestions = getValues("content.questions");
+      if (currentQuestions[questionIndex].answer_list.length > 2) {
         const updatedQuestions = [...currentQuestions];
         const removedOption =
-          updatedQuestions[questionIndex].options[optionIndex];
-        updatedQuestions[questionIndex].options.splice(optionIndex, 1);
+          updatedQuestions[questionIndex].answer_list[optionIndex].answer;
+        updatedQuestions[questionIndex].answer_list.splice(optionIndex, 1);
 
         // Nếu option bị xóa là đáp án đúng, reset đáp án
-        if (updatedQuestions[questionIndex].answer === removedOption) {
-          updatedQuestions[questionIndex].answer = "";
+        if (updatedQuestions[questionIndex].right_answer === removedOption) {
+          updatedQuestions[questionIndex].right_answer = "";
         }
 
-        setValue("questions", updatedQuestions);
+        setValue("content.questions", updatedQuestions);
       }
     },
     [getValues, setValue],

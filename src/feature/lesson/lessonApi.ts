@@ -1,17 +1,22 @@
 import { handleApiError } from "@/lib/utils";
 import api from "@/services/baseApi";
-import { SkillType } from "@/services/swagger-types";
+import {
+  DeleteLessonResponse,
+  LessonsResponse,
+  ReadingResponse,
+  SkillType,
+} from "@/services/swagger-types";
 import { LessonType } from "@/services/swagger-types";
 import { ContentStatus } from "@/services/swagger-types";
 
 export interface LessonQueryParams {
-  limit?: number;
+  page?: number;
+  perPage?: number;
   skill?: SkillType;
   lessonType?: LessonType;
   topic?: string;
-  title?: string;
+  search?: string;
   status?: ContentStatus;
-  createdById?: string;
   level?: string;
   tags?: string;
 }
@@ -19,35 +24,44 @@ export interface LessonQueryParams {
 const lessonApi = {
   getAllLessons(params: LessonQueryParams) {
     return api
-      .lessonControllerGetLessons(params)
-      .then((res: any) => res.data)
+      .lessonControllerFindAll(params)
+      .then((res: any) => res.data as LessonsResponse)
       .catch((err: any) => {
         handleApiError(err);
         throw err.response.data;
       });
   },
-  getLessonById(id: string) {
+  getReadingById(id: string) {
     return api
-      .lessonControllerGetLessonById(id)
-      .then((res: any) => res.data)
+      .lessonControllerFindOneReading(id)
+      .then((res: any) => res.data as ReadingResponse)
       .catch((err: any) => {
         handleApiError(err);
         throw err.response.data;
       });
   },
-  createLesson(data: any) {
+  createReading(data: any) {
     return api
-      .lessonControllerCreateLesson(data)
-      .then((res: any) => res.data)
+      .lessonControllerCreateReading(data)
+      .then((res: any) => res.data as ReadingResponse)
       .catch((err: any) => {
         handleApiError(err);
         throw err.response.data;
       });
   },
-  updateLesson(id: string, data: any) {
+  updateReading(id: string, data: any) {
     return api
-      .lessonControllerUpdateLesson(id, data)
-      .then((res: any) => res.data)
+      .lessonControllerUpdateReading(id, data)
+      .then((res: any) => res.data as ReadingResponse)
+      .catch((err: any) => {
+        handleApiError(err);
+        throw err.response.data;
+      });
+  },
+  removeLesson(id: string) {
+    return api
+      .lessonControllerRemove(id)
+      .then((res: any) => res.data as DeleteLessonResponse)
       .catch((err: any) => {
         handleApiError(err);
         throw err.response.data;

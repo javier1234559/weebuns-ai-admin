@@ -24,7 +24,7 @@ const ContentForm = () => {
       <CardContent>
         <FormField
           control={control}
-          name="content"
+          name="content.text"
           render={({ field }) => (
             <FormItem>
               <FormControl className="h-full">

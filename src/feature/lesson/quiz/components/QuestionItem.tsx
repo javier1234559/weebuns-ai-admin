@@ -37,8 +37,8 @@ const QuestionItem = ({
 }: QuestionItemProps) => {
   const { control, watch } = useFormContext();
 
-  const options = watch(`questions.${questionIndex}.options`);
-  const canRemoveOption = options.length > 2;
+  const answer_list = watch(`content.questions.${questionIndex}.answer_list`);
+  const canRemoveOption = answer_list?.length > 2;
 
   return (
     <Card>
@@ -61,7 +61,7 @@ const QuestionItem = ({
       <CardContent className="space-y-4">
         <FormField
           control={control}
-          name={`questions.${questionIndex}.question`}
+          name={`content.questions.${questionIndex}.question`}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Question Text</FormLabel>
@@ -91,44 +91,46 @@ const QuestionItem = ({
             </Button>
           </div>
 
-          {options.map((_option: string, optionIndex: number) => (
-            <div key={optionIndex} className="flex items-center space-x-2">
-              <FormField
-                control={control}
-                name={`questions.${questionIndex}.options.${optionIndex}`}
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormControl>
-                      <div className="flex items-center space-x-2">
-                        <div className="flex items-center justify-center min-w-[28px] h-7 rounded-full bg-muted text-xs font-medium">
-                          {String.fromCharCode(65 + optionIndex)}
+          {answer_list.map(
+            (_option: { answer: string }, optionIndex: number) => (
+              <div key={optionIndex} className="flex items-center space-x-2">
+                <FormField
+                  control={control}
+                  name={`content.questions.${questionIndex}.answer_list.${optionIndex}.answer`}
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormControl>
+                        <div className="flex items-center space-x-2">
+                          <div className="flex items-center justify-center min-w-[28px] h-7 rounded-full bg-muted text-xs font-medium">
+                            {String.fromCharCode(65 + optionIndex)}
+                          </div>
+                          <Input
+                            placeholder={`Option ${String.fromCharCode(65 + optionIndex)}`}
+                            {...field}
+                          />
                         </div>
-                        <Input
-                          placeholder={`Option ${String.fromCharCode(65 + optionIndex)}`}
-                          {...field}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() => onRemoveOption(questionIndex, optionIndex)}
-                disabled={!canRemoveOption}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          ))}
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onRemoveOption(questionIndex, optionIndex)}
+                  disabled={!canRemoveOption}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ),
+          )}
         </div>
 
         <FormField
           control={control}
-          name={`questions.${questionIndex}.answer`}
+          name={`content.questions.${questionIndex}.right_answer`}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Correct Answer</FormLabel>
@@ -139,20 +141,22 @@ const QuestionItem = ({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {options.map((option: string, optionIndex: number) => {
-                    const trimmedOption = option.trim();
-                    if (!trimmedOption) return null;
+                  {answer_list.map(
+                    (option: { answer: string }, optionIndex: number) => {
+                      const trimmedOption = option.answer?.trim();
+                      if (!trimmedOption) return null;
 
-                    return (
-                      <SelectItem key={optionIndex} value={trimmedOption}>
-                        {`${String.fromCharCode(65 + optionIndex)}: ${
-                          trimmedOption.length > 30
-                            ? trimmedOption.substring(0, 30) + "..."
-                            : trimmedOption
-                        }`}
-                      </SelectItem>
-                    );
-                  })}
+                      return (
+                        <SelectItem key={optionIndex} value={trimmedOption}>
+                          {`${String.fromCharCode(65 + optionIndex)}: ${
+                            trimmedOption.length > 30
+                              ? trimmedOption.substring(0, 30) + "..."
+                              : trimmedOption
+                          }`}
+                        </SelectItem>
+                      );
+                    },
+                  )}
                 </SelectContent>
               </Select>
               <FormDescription>

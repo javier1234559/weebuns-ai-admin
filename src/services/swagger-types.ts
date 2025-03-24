@@ -86,49 +86,6 @@ export interface TextToSpeechResponseDto {
   voiceId: string;
 }
 
-export interface User {
-  /** @example "00321d6f-2bcf-4985-9659-92a571275da6" */
-  id: string;
-  /** @example "johndoe" */
-  username: string;
-  /** @example "john@example.com" */
-  email: string;
-  /** @example "$2b$10$sOToCWV4/2hJjVo7TJSqOuUbRq8ZRxM6EdfXq1/cIfmBF.5z8L5MK" */
-  passwordHash: string;
-  /**
-   * User role in the system
-   * @example "user"
-   */
-  role: "user" | "admin" | "teacher";
-  /**
-   * Authentication provider used
-   * @example "local"
-   */
-  authProvider: "local" | "google" | "facebook";
-  authProviderId: object | null;
-  /** @example "John" */
-  firstName: object | null;
-  /** @example "Doe" */
-  lastName: object | null;
-  /** @example "https://example.com/avatar.jpg" */
-  profilePicture: object | null;
-  /** @example false */
-  isEmailVerified: boolean;
-  lastLogin: object | null;
-  /**
-   * @format date-time
-   * @example "2024-01-01T00:00:00.000Z"
-   */
-  createdAt: string;
-  /**
-   * @format date-time
-   * @example "2024-01-01T00:00:00.000Z"
-   */
-  updatedAt: string;
-  /** Timestamp when the user was deleted (soft delete) */
-  deletedAt: object | null;
-}
-
 export interface PaginationOutputDto {
   /**
    * Total number of items
@@ -163,69 +120,75 @@ export interface PaginationOutputDto {
 }
 
 export interface UsersResponse {
-  users: User[];
+  data: string[];
   pagination: PaginationOutputDto;
 }
 
-export interface UserResponse {
-  user: object;
+export interface UserDto {
+  id: string;
+  email: string;
+  username: string;
+  firstName: object | null;
+  lastName: object | null;
+  role: "user" | "admin" | "teacher";
+  authProvider: "local" | "google" | "facebook";
+  authProviderId: object | null;
+  isEmailVerified: boolean;
+  lastLogin: object | null;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  deletedAt: object | null;
+  profilePicture: object | null;
+  teacherProfile: object | null;
+  studentProfile: object | null;
 }
 
-export interface CreateUserDto {
-  last_name: string;
-  first_name: string;
+export interface UserResponse {
+  /** User object */
+  user: UserDto;
+}
+
+export interface TeacherDto {
   username: string;
   email: string;
   password: string;
-  nativeLanguage: string;
-  profile_picture: string;
-  role: "user" | "admin" | "teacher";
-  auth_provider: "local" | "google" | "facebook";
-}
-
-export interface CreateUserResponse {
-  user: User;
-}
-
-export interface UpdateUserDto {
-  last_name?: string;
-  first_name?: string;
-  username?: string;
-  email?: string;
-  nativeLanguage?: string;
-  profile_picture?: string;
-  role?: "user" | "admin" | "teacher";
-  auth_provider?: "local" | "google" | "facebook";
-}
-
-export interface UpdateUserResponse {
-  user: User;
-}
-
-export interface UpdateProfileUserDto {
-  username: string;
-  email: string;
   firstName: string;
   lastName: string;
-  nativeLanguage: string;
-  profilePicture: string;
+  profilePicture?: string;
+  specialization: ("listening" | "reading" | "writing" | "speaking")[];
+  qualification: string;
+  teachingExperience: number;
+  hourlyRate: number;
+}
+
+export interface ProfileDto {
+  firstName?: string;
+  lastName?: string;
+  profilePicture?: string;
+  specialization?: ("listening" | "reading" | "writing" | "speaking")[];
+  qualification?: string;
+  teachingExperience?: number;
+  hourlyRate?: number;
+  targetStudyDuration?: number;
+  targetReading?: number;
+  targetListening?: number;
+  targetWriting?: number;
+  targetSpeaking?: number;
+  /** @format date-time */
+  nextExamDate?: string;
 }
 
 export interface DeleteUserResponse {
-  user: User;
+  message: string;
 }
 
-export interface RegisterDto {
-  username: string;
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-}
+export type RegisterDto = object;
 
 export interface UserRegisterResponse {
   access_token: string;
-  user: User;
+  user: UserDto;
 }
 
 export interface LoginDto {
@@ -235,7 +198,7 @@ export interface LoginDto {
 
 export interface UserLoginResponse {
   access_token: string;
-  user: User;
+  user: UserDto;
 }
 
 export interface LoginGoogleDto {
@@ -252,6 +215,10 @@ export interface UserRefreshTokenResponse {
 }
 
 export interface LogoutResponse {
+  /**
+   * Status message
+   * @example "Logged out successfully"
+   */
   message: string;
 }
 
@@ -321,40 +288,15 @@ export interface ResetPasswordResponse {
 export type DeleteResponseDto = object;
 
 export enum SkillType {
+  Listening = "listening",
   Reading = "reading",
   Writing = "writing",
-  Listening = "listening",
   Speaking = "speaking",
 }
 
 export enum LessonType {
   Practice = "practice",
   Test = "test",
-}
-
-export interface CreateLessonDto {
-  /** Skill type (value must match database enum exactly) */
-  skill: SkillType;
-  /** Title of the lesson */
-  title: string;
-  /** Description of the lesson */
-  description?: string | null;
-  /** Lesson type (value must match database enum exactly) */
-  lessonType: LessonType;
-  /** Topic of the lesson */
-  topic: string;
-  /** Time limit in minutes */
-  timeLimit?: number | null;
-  /** Lesson content in JSON format */
-  content?: object | null;
-  /** Thumbnail URL */
-  thumbnailUrl?: string | null;
-  /** Level code (e.g., BEGINNER) */
-  level: string;
-  /** Level type (e.g., level) */
-  levelType: string;
-  /** Tags for the lesson */
-  tags: string[];
 }
 
 export enum ContentStatus {
@@ -364,86 +306,324 @@ export enum ContentStatus {
   Deleted = "deleted",
 }
 
-export interface ResponseLessonDto {
-  /** Lesson ID */
+export interface TeacherProfileEntity {
   id: string;
-  skill: SkillType;
-  /** Title of the lesson */
-  title: string;
-  /** Description of the lesson */
-  description: string | null;
-  lessonType: LessonType;
-  /** Topic of the lesson */
-  topic: string;
-  /** Time limit in minutes */
-  timeLimit: number | null;
-  /** Lesson content in JSON format */
-  content: object | null;
-  /** Tags for the lesson */
-  tags: string[];
-  /** Thumbnail URL */
-  thumbnailUrl: string | null;
-  /** Status of the lesson */
-  status: ContentStatus;
-  /** ID of the user who created the lesson */
-  createdById: string;
+  userId: string;
+  specialization: ("listening" | "reading" | "writing" | "speaking")[];
+  qualification: object | null;
+  teachingExperience: object | null;
+  hourlyRate: object | null;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  deletedAt: object | null;
+}
+
+export interface StudentProfileEntity {
+  id: string;
+  userId: string;
+  targetStudyDuration: object | null;
+  targetReading: object | null;
+  targetListening: object | null;
+  targetWriting: object | null;
+  targetSpeaking: object | null;
+  nextExamDate: object | null;
+  tokensBalance: number;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  deletedAt: object | null;
+}
+
+export interface User {
+  /** @example "00321d6f-2bcf-4985-9659-92a571275da6" */
+  id: string;
+  /** @example "johndoe" */
+  username: string;
+  /** @example "john@example.com" */
+  email: string;
+  /** @example "$2b$10$sOToCWV4/2hJjVo7TJSqOuUbRq8ZRxM6EdfXq1/cIfmBF.5z8L5MK" */
+  passwordHash: string;
   /**
-   * Creation timestamp
+   * User role in the system
+   * @example "user"
+   */
+  role: "user" | "admin" | "teacher";
+  /**
+   * Authentication provider used
+   * @example "local"
+   */
+  authProvider: "local" | "google" | "facebook";
+  authProviderId: object | null;
+  /** @example "John" */
+  firstName: object | null;
+  /** @example "Doe" */
+  lastName: object | null;
+  /** @example "https://example.com/avatar.jpg" */
+  profilePicture: object | null;
+  /** @example false */
+  isEmailVerified: boolean;
+  lastLogin: object | null;
+  /**
    * @format date-time
+   * @example "2024-01-01T00:00:00.000Z"
    */
   createdAt: string;
   /**
-   * Last update timestamp
    * @format date-time
+   * @example "2024-01-01T00:00:00.000Z"
    */
   updatedAt: string;
+  /** Timestamp when the user was deleted (soft delete) */
+  deletedAt: object | null;
+  teacherProfile: TeacherProfileEntity | null;
+  studentProfile: StudentProfileEntity | null;
 }
 
-export interface PaginatedLessonsResponseDto {
-  /** Array of lessons */
-  data: ResponseLessonDto[];
-  /** Total number of lessons matching the query */
-  total: number;
-  /** Current page number */
-  page: number;
-  /** Number of items per page */
-  limit: number;
-  /** Total number of pages */
-  totalPages: number;
+export enum SubmissionStatus {
+  Draft = "draft",
+  Submitted = "submitted",
+  Completed = "completed",
+  Scored = "scored",
 }
 
-export interface UpdateLessonDto {
-  /** Skill type (value must match database enum exactly) */
-  skill?: SkillType;
-  /** Title of the lesson */
-  title?: string;
-  /** Description of the lesson */
-  description?: string | null;
-  /** Lesson type (value must match database enum exactly) */
-  lessonType?: LessonType;
-  /** Topic of the lesson */
-  topic?: string;
-  /**
-   * Time limit in minutes
-   * @format int32
-   */
-  timeLimit?: number | null;
-  /** Lesson content in JSON format */
-  content?: object | null;
-  /** URL hình ảnh thumbnail của lesson */
-  thumbnailUrl?: string | null;
-  /** Level code (e.g., BEGINNER) */
-  level?: string;
-  /** Level type (e.g., level) */
-  levelType?: string;
-  /** Tags for the lesson */
-  tags?: string[];
+export interface LessonSubmission {
+  id: string;
+  userId: string;
+  lessonId: string;
+  submissionType: SkillType;
+  status: SubmissionStatus;
+  content: object | null;
+  feedback: object | null;
+  /** @format int32 */
+  tokensUsed: number;
   /** @format date-time */
-  deletedAt?: string | null;
-  /** Status of the lesson */
-  status?: ContentStatus;
-  /** ID of the editor */
-  lastEditedById?: string;
+  submittedAt: string | null;
+  /** @format date-time */
+  gradedAt: string | null;
+  gradedById: string | null;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  user?: User;
+  lesson?: Lesson;
+  gradedBy?: User | null;
+}
+
+export interface ReferenceData {
+  id: string;
+  type: string;
+  code: string;
+  name: string;
+  metadata: object | null;
+  isActive: boolean;
+  /** @format int32 */
+  orderIndex: number;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  lessons?: Lesson[];
+}
+
+export interface Lesson {
+  id: string;
+  skill: SkillType;
+  title: string;
+  description: string | null;
+  lessonType: LessonType;
+  level: string;
+  topic: string;
+  /** @format int32 */
+  timeLimit: number | null;
+  content: object | null;
+  tags: string[];
+  thumbnailUrl: string | null;
+  status: ContentStatus;
+  createdById: string;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  /** @format date-time */
+  deletedAt: string | null;
+  createdBy?: User;
+  submissions?: LessonSubmission[];
+  levelRef?: ReferenceData;
+}
+
+export interface LessonsResponse {
+  data: Lesson[];
+  pagination: PaginationOutputDto;
+}
+
+export interface DeleteLessonResponse {
+  message: string;
+}
+
+export interface ReadingResponse {
+  data: Lesson;
+}
+
+export interface AnswerDTO {
+  answer: string;
+}
+
+export interface QuestionDTO {
+  id: string;
+  question: string;
+  right_answer: string;
+  answer_list: AnswerDTO[];
+  is_bookmark: boolean;
+  selected_answer: string;
+}
+
+export interface ContentReadingDTO {
+  text: string;
+  questions: QuestionDTO[];
+}
+
+export interface CreateReadingDTO {
+  title: string;
+  description: string;
+  lessonType: "practice" | "test";
+  level: string;
+  topic: string;
+  timeLimit: number;
+  tags: string[];
+  thumbnailUrl: string;
+  status: "draft" | "published" | "private" | "deleted";
+  createdById?: string;
+  content: ContentReadingDTO;
+}
+
+export interface UpdateReadingDTO {
+  title: string;
+  description: string;
+  lessonType: "practice" | "test";
+  level: string;
+  topic: string;
+  timeLimit: number;
+  tags: string[];
+  thumbnailUrl: string;
+  status: "draft" | "published" | "private" | "deleted";
+  createdById?: string;
+  content?: ContentReadingDTO;
+}
+
+export interface ListeningResponse {
+  data: Lesson;
+}
+
+export interface ContentListeningDTO {
+  audio_url: string;
+  question_list: string[];
+}
+
+export interface CreateListeningDTO {
+  title: string;
+  description: string;
+  lessonType: "practice" | "test";
+  level: string;
+  topic: string;
+  timeLimit: number;
+  tags: string[];
+  thumbnailUrl: string;
+  status: "draft" | "published" | "private" | "deleted";
+  createdById?: string;
+  content: ContentListeningDTO;
+}
+
+export interface UpdateListeningDTO {
+  title: string;
+  description: string;
+  lessonType: "practice" | "test";
+  level: string;
+  topic: string;
+  timeLimit: number;
+  tags: string[];
+  thumbnailUrl: string;
+  status: "draft" | "published" | "private" | "deleted";
+  createdById?: string;
+  content?: ContentListeningDTO;
+}
+
+export interface WritingResponse {
+  data: Lesson;
+}
+
+export interface ContentWritingDTO {
+  content_text: string;
+  instruction_text: string;
+  prompt_text: string;
+}
+
+export interface CreateWritingDTO {
+  title: string;
+  description: string;
+  lessonType: "practice" | "test";
+  level: string;
+  topic: string;
+  timeLimit: number;
+  tags: string[];
+  thumbnailUrl: string;
+  status: "draft" | "published" | "private" | "deleted";
+  createdById?: string;
+  content: ContentWritingDTO;
+}
+
+export interface UpdateWritingDTO {
+  title: string;
+  description: string;
+  lessonType: "practice" | "test";
+  level: string;
+  topic: string;
+  timeLimit: number;
+  tags: string[];
+  thumbnailUrl: string;
+  status: "draft" | "published" | "private" | "deleted";
+  createdById?: string;
+  content?: ContentWritingDTO;
+}
+
+export interface SpeakingResponse {
+  data: Lesson;
+}
+
+export interface ContentSpeakingDTO {
+  topic_text: string;
+  prompt_text: string;
+}
+
+export interface CreateSpeakingDTO {
+  title: string;
+  description: string;
+  lessonType: "practice" | "test";
+  level: string;
+  topic: string;
+  timeLimit: number;
+  tags: string[];
+  thumbnailUrl: string;
+  status: "draft" | "published" | "private" | "deleted";
+  createdById?: string;
+  content: ContentSpeakingDTO;
+}
+
+export interface UpdateSpeakingDTO {
+  title: string;
+  description: string;
+  lessonType: "practice" | "test";
+  level: string;
+  topic: string;
+  timeLimit: number;
+  tags: string[];
+  thumbnailUrl: string;
+  status: "draft" | "published" | "private" | "deleted";
+  createdById?: string;
+  content?: ContentSpeakingDTO;
 }
 
 export interface CreateVocabularyDto {
@@ -841,72 +1021,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags users
-     * @name UserControllerCreate
-     * @request POST:/api/users
-     * @secure
-     */
-    userControllerCreate: (data: CreateUserDto, params: RequestParams = {}) =>
-      this.request<CreateUserResponse, any>({
-        path: `/api/users`,
-        method: "POST",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags users
-     * @name UserControllerFindOne
+     * @name UserControllerFindById
      * @request GET:/api/users/{id}
      * @secure
      */
-    userControllerFindOne: (id: string, params: RequestParams = {}) =>
+    userControllerFindById: (id: string, params: RequestParams = {}) =>
       this.request<UserResponse, any>({
         path: `/api/users/${id}`,
         method: "GET",
         secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags users
-     * @name UserControllerUpdate
-     * @request PUT:/api/users/{id}
-     * @secure
-     */
-    userControllerUpdate: (id: string, data: UpdateUserDto, params: RequestParams = {}) =>
-      this.request<UpdateUserResponse, any>({
-        path: `/api/users/${id}`,
-        method: "PUT",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags users
-     * @name UserControllerUpdateProfile
-     * @request PATCH:/api/users/{id}
-     * @secure
-     */
-    userControllerUpdateProfile: (id: string, data: UpdateProfileUserDto, params: RequestParams = {}) =>
-      this.request<UpdateUserResponse, any>({
-        path: `/api/users/${id}`,
-        method: "PATCH",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -931,9 +1054,84 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags users
+     * @name UserControllerCreateTeacher
+     * @request POST:/api/users/teachers
+     * @secure
+     */
+    userControllerCreateTeacher: (data: TeacherDto, params: RequestParams = {}) =>
+      this.request<UserResponse, any>({
+        path: `/api/users/teachers`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags users
+     * @name UserControllerUpdateTeacher
+     * @request PATCH:/api/users/teachers/{id}
+     * @secure
+     */
+    userControllerUpdateTeacher: (id: string, data: TeacherDto, params: RequestParams = {}) =>
+      this.request<UserResponse, any>({
+        path: `/api/users/teachers/${id}`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags users
+     * @name UserControllerUpdateTeacherProfile
+     * @request PATCH:/api/users/teachers/{id}/profile
+     * @secure
+     */
+    userControllerUpdateTeacherProfile: (id: string, data: ProfileDto, params: RequestParams = {}) =>
+      this.request<UserResponse, any>({
+        path: `/api/users/teachers/${id}/profile`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags users
+     * @name UserControllerUpdateStudentProfile
+     * @request PATCH:/api/users/students/{id}/profile
+     * @secure
+     */
+    userControllerUpdateStudentProfile: (id: string, data: ProfileDto, params: RequestParams = {}) =>
+      this.request<UserResponse, any>({
+        path: `/api/users/students/${id}/profile`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags auth
      * @name AuthControllerMe
-     * @summary Get current user profile
      * @request GET:/api/auth/me
      */
     authControllerMe: (params: RequestParams = {}) =>
@@ -949,7 +1147,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags auth
      * @name AuthControllerRegister
-     * @summary Register new user
      * @request POST:/api/auth/register
      */
     authControllerRegister: (data: RegisterDto, params: RequestParams = {}) =>
@@ -967,7 +1164,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags auth
      * @name AuthControllerLogin
-     * @summary Login with email and password
      * @request POST:/api/auth/login
      */
     authControllerLogin: (data: LoginDto, params: RequestParams = {}) =>
@@ -985,7 +1181,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags auth
      * @name AuthControllerLoginWithGoogle
-     * @summary Login with Google
      * @request POST:/api/auth/login/google
      */
     authControllerLoginWithGoogle: (data: LoginGoogleDto, params: RequestParams = {}) =>
@@ -1003,7 +1198,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags auth
      * @name AuthControllerLoginWithFacebook
-     * @summary Login with Facebook
      * @request POST:/api/auth/login/facebook
      */
     authControllerLoginWithFacebook: (data: LoginFacebookDto, params: RequestParams = {}) =>
@@ -1021,7 +1215,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags auth
      * @name AuthControllerRefreshToken
-     * @summary Refresh access token
      * @request POST:/api/auth/refresh-token
      */
     authControllerRefreshToken: (params: RequestParams = {}) =>
@@ -1037,7 +1230,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags auth
      * @name AuthControllerLogout
-     * @summary Logout user
      * @request POST:/api/auth/logout
      */
     authControllerLogout: (params: RequestParams = {}) =>
@@ -1053,7 +1245,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags auth
      * @name AuthControllerRequestPasswordReset
-     * @summary Request password reset code
      * @request POST:/api/auth/password-reset/request
      */
     authControllerRequestPasswordReset: (data: RequestResetPasswordDto, params: RequestParams = {}) =>
@@ -1071,7 +1262,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags auth
      * @name AuthControllerVerifyResetCode
-     * @summary Verify reset code
      * @request POST:/api/auth/password-reset/verify
      */
     authControllerVerifyResetCode: (data: VerifyResetCodeDto, params: RequestParams = {}) =>
@@ -1089,7 +1279,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags auth
      * @name AuthControllerResetPassword
-     * @summary Reset password with code
      * @request POST:/api/auth/password-reset/reset
      */
     authControllerResetPassword: (data: ResetPasswordDto, params: RequestParams = {}) =>
@@ -1105,7 +1294,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags Upload
+     * @tags upload
      * @name UploadControllerUploadFile
      * @request POST:/api/uploads
      */
@@ -1116,7 +1305,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {},
     ) =>
-      this.request<DeleteResponseDto, any>({
+      this.request<RegisterDto, any>({
         path: `/api/uploads`,
         method: "POST",
         body: data,
@@ -1128,7 +1317,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags Upload
+     * @tags upload
      * @name UploadControllerUploadMany
      * @request POST:/api/uploads/many
      */
@@ -1158,7 +1347,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags Upload
+     * @tags upload
      * @name UploadControllerUploadVideo
      * @request POST:/api/uploads/video
      */
@@ -1169,7 +1358,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {},
     ) =>
-      this.request<DeleteResponseDto, any>({
+      this.request<RegisterDto, any>({
         path: `/api/uploads/video`,
         method: "POST",
         body: data,
@@ -1181,7 +1370,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags Upload
+     * @tags upload
      * @name UploadControllerDeleteFile
      * @request DELETE:/api/uploads/{key}
      */
@@ -1197,63 +1386,26 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags lessons
-     * @name LessonControllerCreateLesson
-     * @summary Create a new lesson
-     * @request POST:/api/lessons
-     * @secure
-     */
-    lessonControllerCreateLesson: (data: CreateLessonDto, params: RequestParams = {}) =>
-      this.request<ResponseLessonDto, any>({
-        path: `/api/lessons`,
-        method: "POST",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags lessons
-     * @name LessonControllerGetLessons
-     * @summary Get all lessons with filtering and pagination
+     * @name LessonControllerFindAll
      * @request GET:/api/lessons
      * @secure
      */
-    lessonControllerGetLessons: (
+    lessonControllerFindAll: (
       query?: {
-        /**
-         * Page number (starts from 1)
-         * @default 1
-         */
+        /** @default 1 */
         page?: number;
-        /**
-         * Number of items per page
-         * @default 10
-         */
-        limit?: number;
-        /** Filter by skill type */
-        skill?: SkillType;
-        /** Filter by lesson type */
-        lessonType?: LessonType;
-        /** Filter by topic */
-        topic?: string;
-        /** Filter by title (partial match) */
-        title?: string;
-        /** Filter by status */
-        status?: ContentStatus;
-        /** Filter by creator ID */
-        createdById?: string;
-        /** Filter by level */
+        /** @default 10 */
+        perPage?: number;
+        search?: string;
+        skill?: string;
         level?: string;
-        /** Filter by tag (comma-separated) */
-        tags?: string;
+        topic?: string;
+        status?: string;
+        tag?: string[];
       },
       params: RequestParams = {},
     ) =>
-      this.request<PaginatedLessonsResponseDto, any>({
+      this.request<LessonsResponse, any>({
         path: `/api/lessons`,
         method: "GET",
         query: query,
@@ -1266,14 +1418,30 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags lessons
-     * @name LessonControllerGetLessonById
-     * @summary Get a lesson by ID
-     * @request GET:/api/lessons/{id}
+     * @name LessonControllerRemove
+     * @request DELETE:/api/lessons/{id}
      * @secure
      */
-    lessonControllerGetLessonById: (id: string, params: RequestParams = {}) =>
-      this.request<ResponseLessonDto, void>({
+    lessonControllerRemove: (id: string, params: RequestParams = {}) =>
+      this.request<DeleteLessonResponse, any>({
         path: `/api/lessons/${id}`,
+        method: "DELETE",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags lessons
+     * @name LessonControllerFindOneReading
+     * @request GET:/api/lessons/reading/{id}
+     * @secure
+     */
+    lessonControllerFindOneReading: (id: string, params: RequestParams = {}) =>
+      this.request<ReadingResponse, any>({
+        path: `/api/lessons/reading/${id}`,
         method: "GET",
         secure: true,
         format: "json",
@@ -1284,14 +1452,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags lessons
-     * @name LessonControllerUpdateLesson
-     * @summary Update a lesson (partial update)
-     * @request PATCH:/api/lessons/{id}
+     * @name LessonControllerUpdateReading
+     * @request PATCH:/api/lessons/reading/{id}
      * @secure
      */
-    lessonControllerUpdateLesson: (id: string, data: UpdateLessonDto, params: RequestParams = {}) =>
-      this.request<ResponseLessonDto, void>({
-        path: `/api/lessons/${id}`,
+    lessonControllerUpdateReading: (id: string, data: UpdateReadingDTO, params: RequestParams = {}) =>
+      this.request<ReadingResponse, any>({
+        path: `/api/lessons/reading/${id}`,
         method: "PATCH",
         body: data,
         secure: true,
@@ -1304,16 +1471,182 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags lessons
-     * @name LessonControllerDeleteLesson
-     * @summary Delete a lesson (soft delete)
-     * @request DELETE:/api/lessons/{id}
+     * @name LessonControllerCreateReading
+     * @request POST:/api/lessons/reading
      * @secure
      */
-    lessonControllerDeleteLesson: (id: string, params: RequestParams = {}) =>
-      this.request<ResponseLessonDto, void>({
-        path: `/api/lessons/${id}`,
-        method: "DELETE",
+    lessonControllerCreateReading: (data: CreateReadingDTO, params: RequestParams = {}) =>
+      this.request<ReadingResponse, any>({
+        path: `/api/lessons/reading`,
+        method: "POST",
+        body: data,
         secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags lessons
+     * @name LessonControllerFindOneListening
+     * @request GET:/api/lessons/listening/{id}
+     * @secure
+     */
+    lessonControllerFindOneListening: (id: string, params: RequestParams = {}) =>
+      this.request<ListeningResponse, any>({
+        path: `/api/lessons/listening/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags lessons
+     * @name LessonControllerUpdateListening
+     * @request PATCH:/api/lessons/listening/{id}
+     * @secure
+     */
+    lessonControllerUpdateListening: (id: string, data: UpdateListeningDTO, params: RequestParams = {}) =>
+      this.request<ListeningResponse, any>({
+        path: `/api/lessons/listening/${id}`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags lessons
+     * @name LessonControllerCreateListening
+     * @request POST:/api/lessons/listening
+     * @secure
+     */
+    lessonControllerCreateListening: (data: CreateListeningDTO, params: RequestParams = {}) =>
+      this.request<ListeningResponse, any>({
+        path: `/api/lessons/listening`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags lessons
+     * @name LessonControllerFindOneWriting
+     * @request GET:/api/lessons/writing/{id}
+     * @secure
+     */
+    lessonControllerFindOneWriting: (id: string, params: RequestParams = {}) =>
+      this.request<WritingResponse, any>({
+        path: `/api/lessons/writing/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags lessons
+     * @name LessonControllerUpdateWriting
+     * @request PATCH:/api/lessons/writing/{id}
+     * @secure
+     */
+    lessonControllerUpdateWriting: (id: string, data: UpdateWritingDTO, params: RequestParams = {}) =>
+      this.request<WritingResponse, any>({
+        path: `/api/lessons/writing/${id}`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags lessons
+     * @name LessonControllerCreateWriting
+     * @request POST:/api/lessons/writing
+     * @secure
+     */
+    lessonControllerCreateWriting: (data: CreateWritingDTO, params: RequestParams = {}) =>
+      this.request<WritingResponse, any>({
+        path: `/api/lessons/writing`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags lessons
+     * @name LessonControllerFindOneSpeaking
+     * @request GET:/api/lessons/speaking/{id}
+     * @secure
+     */
+    lessonControllerFindOneSpeaking: (id: string, params: RequestParams = {}) =>
+      this.request<SpeakingResponse, any>({
+        path: `/api/lessons/speaking/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags lessons
+     * @name LessonControllerUpdateSpeaking
+     * @request PATCH:/api/lessons/speaking/{id}
+     * @secure
+     */
+    lessonControllerUpdateSpeaking: (id: string, data: UpdateSpeakingDTO, params: RequestParams = {}) =>
+      this.request<SpeakingResponse, any>({
+        path: `/api/lessons/speaking/${id}`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags lessons
+     * @name LessonControllerCreateSpeaking
+     * @request POST:/api/lessons/speaking
+     * @secure
+     */
+    lessonControllerCreateSpeaking: (data: CreateSpeakingDTO, params: RequestParams = {}) =>
+      this.request<SpeakingResponse, any>({
+        path: `/api/lessons/speaking`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),

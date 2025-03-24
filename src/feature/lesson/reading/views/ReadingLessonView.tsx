@@ -5,7 +5,7 @@ import {
   useReadingDetail,
   useReadingUpdate,
 } from "@/feature/lesson/reading/hooks/useReading";
-import ReadingLessonForm from "./components/LessonReadingForm";
+import ReadingLessonForm from "../components/LessonReadingForm";
 import { toast } from "sonner";
 
 interface ReadingLessonViewProps {

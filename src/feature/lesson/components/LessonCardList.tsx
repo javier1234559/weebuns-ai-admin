@@ -45,7 +45,7 @@ export function LessonCardList({
         return "bg-green-500/10 text-green-500 dark:bg-green-500/20 dark:text-green-400";
       case "draft":
         return "bg-amber-500/10 text-amber-500 dark:bg-amber-500/20 dark:text-amber-400";
-      case "archived":
+      case "deleted":
         return "bg-muted text-muted-foreground";
       default:
         return "bg-muted text-muted-foreground";
@@ -66,18 +66,6 @@ export function LessonCardList({
     }
   };
 
-  if (lessons.length === 0) {
-    return (
-      <div className="rounded-md border">
-        <div className="py-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            No lessons found matching your criteria.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="rounded-md border overflow-hidden">
       <div className="divide-y">
@@ -88,7 +76,7 @@ export function LessonCardList({
           >
             <div className="sm:w-24 flex-shrink-0">
               <img
-                src={lesson.image_url}
+                src={lesson.thumbnailUrl || ""}
                 alt={lesson.title}
                 className="h-16 w-full rounded-md object-cover"
               />
@@ -104,9 +92,11 @@ export function LessonCardList({
                 >
                   {lesson.skill}
                 </Badge>
-                <Badge variant="outline" className="capitalize text-xs">
-                  {lesson.skill_type}
-                </Badge>
+                {lesson.tags.length > 0 && (
+                  <Badge variant="outline" className="capitalize text-xs">
+                    {lesson.tags.join(" ")}
+                  </Badge>
+                )}
                 <Badge
                   className={cn(
                     "capitalize text-xs",
@@ -128,9 +118,9 @@ export function LessonCardList({
                 </div>
                 <div className="flex items-center gap-1">
                   <Clock className="size-3" />
-                  <span>{lesson.time_limit} min</span>
+                  <span>{lesson.timeLimit} min</span>
                 </div>
-                <div>{format(new Date(lesson.updated_at), "MMM dd, yyyy")}</div>
+                <div>{format(new Date(lesson.updatedAt), "MMM dd, yyyy")}</div>
               </div>
             </div>
 

@@ -8,65 +8,40 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Lesson, LESSONS_STATUS, LEVELS } from "@/feature/lesson/types/lesson";
+import { LESSONS_STATUS, LEVELS } from "@/feature/lesson/types/lesson";
 import { Plus, Search, Filter } from "lucide-react";
-
-import { mockIELTSLessons } from "@/feature/lesson/data";
-import { LessonCardGrid } from "@/feature/lesson/components/LessonCardGrid";
-import { LessonCardList } from "@/feature/lesson/components/LessonCardList";
 import { useNavigate } from "react-router-dom";
-import { replaceRouteName, RouteNames } from "@/constraints/route-name";
-import { globalConfig } from "@/config";
 import { capitalize } from "@/lib/text";
 import usePaginationUrl from "@/hooks/use-pagination-url";
-import AppPagination from "@/components/common/app-pagination";
+import { useReadingList } from "@/feature/lesson/reading/hooks/useReading";
+import { ContentStatus, SkillType } from "@/services/swagger-types";
+import ReadingShowAllView from "@/feature/lesson/reading/views/ReadingShowAllView";
+import { RouteNames } from "@/constraints/route-name";
 
 export default function LessonManagementPage() {
   const navigate = useNavigate();
   const [levelFilter, setLevelFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const { search, setSearch, page, perPage, updateQueryParams } =
+  const { search, searchParam, setSearch, page, perPage, updateQueryParams } =
     usePaginationUrl({
       defaultPage: 1,
       defaultPerPage: 10,
     });
 
-  const handleViewLesson = (lesson: Lesson) => {
-    const routeName = replaceRouteName(
-      `${globalConfig.APP_USER_URL}/${RouteNames.ReadingDetail}` as RouteNames,
-      { id: lesson.id },
-    );
-    window.open(routeName, "_blank");
-  };
-
-  const handleEditLesson = (lesson: Lesson) => {
-    const routeName = replaceRouteName(RouteNames.TeacherReadingUpdate, {
-      id: lesson.id,
-    });
-    navigate(routeName);
-  };
+  const { data, isLoading, isError, error } = useReadingList({
+    skill: "reading" as SkillType,
+    page,
+    perPage,
+    search: searchParam || undefined,
+    level: levelFilter !== "all" ? levelFilter : undefined,
+    status:
+      statusFilter !== "all" ? (statusFilter as ContentStatus) : undefined,
+  });
 
   const handleNavigateToCreate = () => {
     navigate(`${RouteNames.TeacherReadingCreate}`);
   };
-
-  const filteredLessons = mockIELTSLessons.filter((lesson) => {
-    const matchesSearch =
-      search === "" ||
-      lesson.title.toLowerCase().includes(search.toLowerCase()) ||
-      lesson.description.toLowerCase().includes(search.toLowerCase());
-
-    const matchesLevel =
-      levelFilter === "all" || lesson.level.toLowerCase() === levelFilter;
-
-    const matchesStatus =
-      statusFilter === "all" || lesson.status === statusFilter;
-
-    return matchesSearch && matchesLevel && matchesStatus;
-  });
 
   return (
     <div className="container mx-auto px-4 py-6 sm:px-6 lg:px-8">
@@ -140,70 +115,13 @@ export default function LessonManagementPage() {
           </div>
         </div>
 
-        <div className="w-full mt-4">
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-sm text-muted-foreground">
-              {filteredLessons.length} bài đọc
-            </p>
-            <Tabs
-              value={viewMode}
-              onValueChange={(v) => setViewMode(v as "grid" | "list")}
-              className="w-auto"
-            >
-              <TabsList className="h-9">
-                <TabsTrigger value="grid" className="text-xs px-3">
-                  Grid
-                </TabsTrigger>
-                <TabsTrigger value="list" className="text-xs px-3">
-                  List
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
-
-          {viewMode === "grid" ? (
-            <LessonCardGrid
-              lessons={filteredLessons}
-              onView={handleViewLesson}
-              onEdit={handleEditLesson}
-            />
-          ) : (
-            <LessonCardList
-              lessons={filteredLessons}
-              onView={handleViewLesson}
-              onEdit={handleEditLesson}
-            />
-          )}
-
-          {filteredLessons.length === 0 && (
-            <div className="flex flex-col items-center justify-center p-8 text-center border rounded-lg bg-muted/10">
-              <h3 className="mb-2 text-lg font-medium">
-                Không tìm thấy bài học
-              </h3>
-              <p className="mb-6 text-sm text-muted-foreground max-w-md">
-                {search || levelFilter !== "all" || statusFilter !== "all"
-                  ? "Thử điều chỉnh các bộ lọc để tìm kiếm những gì bạn đang tìm kiếm."
-                  : `Bạn chưa tạo bài đọc nào cả.`}
-              </p>
-              <Button onClick={handleNavigateToCreate}>
-                <Plus className="mr-2 size-4" />
-                Tạo bài đọc đầu tiên
-              </Button>
-            </div>
-          )}
-
-          {filteredLessons.length > 0 && (
-            <div className="ml-auto w-fit">
-              <div className="mt-8 flex justify-center">
-                <AppPagination
-                  currentPage={page}
-                  totalPages={Math.ceil(filteredLessons.length / perPage)}
-                  onPageChange={(page) => updateQueryParams({ page })}
-                />
-              </div>
-            </div>
-          )}
-        </div>
+        <ReadingShowAllView
+          data={data}
+          isLoading={isLoading}
+          isError={isError}
+          error={error}
+          onUpdateQueryParams={updateQueryParams}
+        />
       </div>
     </div>
   );
