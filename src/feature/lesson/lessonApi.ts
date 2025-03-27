@@ -3,6 +3,7 @@ import api from "@/services/baseApi";
 import {
   DeleteLessonResponse,
   LessonsResponse,
+  ListeningResponse,
   ReadingResponse,
   SkillType,
 } from "@/services/swagger-types";
@@ -22,6 +23,7 @@ export interface LessonQueryParams {
 }
 
 const lessonApi = {
+  //global
   getAllLessons(params: LessonQueryParams) {
     return api
       .lessonControllerFindAll(params)
@@ -31,6 +33,17 @@ const lessonApi = {
         throw err.response.data;
       });
   },
+  removeLesson(id: string) {
+    return api
+      .lessonControllerRemove(id)
+      .then((res: any) => res.data as DeleteLessonResponse)
+      .catch((err: any) => {
+        handleApiError(err);
+        throw err.response.data;
+      });
+  },
+
+  //reading
   getReadingById(id: string) {
     return api
       .lessonControllerFindOneReading(id)
@@ -58,10 +71,30 @@ const lessonApi = {
         throw err.response.data;
       });
   },
-  removeLesson(id: string) {
+
+  //listening
+  getListeningById(id: string) {
     return api
-      .lessonControllerRemove(id)
-      .then((res: any) => res.data as DeleteLessonResponse)
+      .lessonControllerFindOneListening(id)
+      .then((res: any) => res.data as ListeningResponse)
+      .catch((err: any) => {
+        handleApiError(err);
+        throw err.response.data;
+      });
+  },
+  createListening(data: any) {
+    return api
+      .lessonControllerCreateListening(data)
+      .then((res: any) => res.data as ListeningResponse)
+      .catch((err: any) => {
+        handleApiError(err);
+        throw err.response.data;
+      });
+  },
+  updateListening(id: string, data: any) {
+    return api
+      .lessonControllerUpdateListening(id, data)
+      .then((res: any) => res.data as ListeningResponse)
       .catch((err: any) => {
         handleApiError(err);
         throw err.response.data;

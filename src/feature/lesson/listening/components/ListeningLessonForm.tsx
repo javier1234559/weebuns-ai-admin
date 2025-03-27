@@ -6,45 +6,43 @@ import { ArrowLeft, ArrowRight, Save, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import BasicInfoForm from "@/feature/lesson/reading/components/BasicInfoForm";
-import ContentForm from "@/feature/lesson/reading/components/ContentForm";
+import BasicInfoForm from "@/feature/lesson/listening/components/BasicInfoForm";
+import ContentForm from "@/feature/lesson/listening/components/ContentForm";
 import QuestionsForm from "@/feature/lesson/quiz/components/QuestionsForm";
 
 import {
-  readingLessonSchema,
+  listeningLessonSchema,
   defaultValues,
-  ReadingLessonFormValues,
-} from "@/feature/lesson/reading/schema";
-import PreviewTab from "@/feature/lesson/reading/components/PreviewTab";
-import { ContentStatus, Lesson } from "@/services/swagger-types";
+  ListeningLessonFormValues,
+} from "@/feature/lesson/listening/schema";
+import PreviewTab from "@/feature/lesson/listening/components/PreviewTab";
+import { ContentStatus, Lesson, LessonType } from "@/services/swagger-types";
 import { toast } from "sonner";
 import { isDev } from "@/lib/utils";
-import {
-  LessonLevel,
-  LessonTopic,
-  LessonType,
-} from "@/feature/lesson/types/lesson";
+import { LessonLevel, LessonTopic } from "@/feature/lesson/types/lesson";
 
-interface LessonReadingFormProps {
+interface LessonListeningFormProps {
   isEdit?: boolean;
   initialData?: Lesson | null;
-  onSubmit: (data: ReadingLessonFormValues) => Promise<void>;
+  onSubmit: (data: ListeningLessonFormValues) => Promise<void>;
   isLoading?: boolean;
   onRemove?: () => void;
 }
 
-const ReadingLessonForm = ({
+const ListeningLessonForm = ({
   isEdit = false,
   initialData = null,
   onSubmit,
   isLoading = false,
   onRemove,
-}: LessonReadingFormProps) => {
+}: LessonListeningFormProps) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("details");
 
-  const methods = useForm<ReadingLessonFormValues>({
-    resolver: zodResolver(readingLessonSchema),
+  console.log(initialData);
+
+  const methods = useForm<ListeningLessonFormValues>({
+    resolver: zodResolver(listeningLessonSchema),
     defaultValues: initialData
       ? {
           ...initialData,
@@ -68,7 +66,7 @@ const ReadingLessonForm = ({
     }
   }, [isEdit, initialData, methods]);
 
-  const handleSubmit = async (data: ReadingLessonFormValues) => {
+  const handleSubmit = async (data: ListeningLessonFormValues) => {
     try {
       await onSubmit(data);
     } catch (error) {
@@ -76,7 +74,7 @@ const ReadingLessonForm = ({
     }
   };
 
-  const handleInvalid = (data: FieldErrors<ReadingLessonFormValues>) => {
+  const handleInvalid = (data: FieldErrors<ListeningLessonFormValues>) => {
     toast.error("Form is invalid. Please check your inputs !");
     if (isDev()) {
       console.log(JSON.stringify(data, null, 2));
@@ -98,12 +96,12 @@ const ReadingLessonForm = ({
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
-            {isEdit ? "Edit Reading Lesson" : "Create Reading Lesson"}
+            {isEdit ? "Edit Listening Lesson" : "Create Listening Lesson"}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
             {isEdit
-              ? "Update existing reading lesson"
-              : "Create a new reading lesson for IELTS preparation"}
+              ? "Update existing listening lesson"
+              : "Create a new listening lesson for IELTS preparation"}
           </p>
         </div>
         <div className="flex gap-2">
@@ -119,7 +117,7 @@ const ReadingLessonForm = ({
           )}
           <Button
             type="submit"
-            form="reading-lesson-form"
+            form="listening-lesson-form"
             className="gap-2"
             disabled={isLoading}
           >
@@ -131,7 +129,7 @@ const ReadingLessonForm = ({
 
       <FormProvider {...methods}>
         <form
-          id="reading-lesson-form"
+          id="listening-lesson-form"
           onSubmit={methods.handleSubmit(handleSubmit, handleInvalid)}
           className="space-y-8"
         >
@@ -142,7 +140,7 @@ const ReadingLessonForm = ({
           >
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="details">Basic Info</TabsTrigger>
-              <TabsTrigger value="content">Reading Content</TabsTrigger>
+              <TabsTrigger value="content">Listening Content</TabsTrigger>
               <TabsTrigger value="questions">Questions</TabsTrigger>
               <TabsTrigger value="preview">Preview</TabsTrigger>
             </TabsList>
@@ -153,7 +151,7 @@ const ReadingLessonForm = ({
               <div className="w-full flex justify-end">
                 <Button
                   type="button"
-                  form="reading-lesson-form"
+                  form="listening-lesson-form"
                   onClick={() => setActiveTab("content")}
                 >
                   <ArrowRight className="h-4 w-4" />
@@ -168,7 +166,7 @@ const ReadingLessonForm = ({
               <div className="mt-6 w-full flex justify-end">
                 <Button
                   type="button"
-                  form="reading-lesson-form"
+                  form="listening-lesson-form"
                   onClick={() => setActiveTab("questions")}
                 >
                   <ArrowRight className="h-4 w-4" />
@@ -183,7 +181,7 @@ const ReadingLessonForm = ({
               <div className="mt-6 w-full flex justify-end">
                 <Button
                   type="button"
-                  form="reading-lesson-form"
+                  form="listening-lesson-form"
                   onClick={() => setActiveTab("preview")}
                 >
                   <ArrowRight className="h-4 w-4" />
@@ -213,4 +211,4 @@ const ReadingLessonForm = ({
   );
 };
 
-export default ReadingLessonForm;
+export default ListeningLessonForm;

@@ -7,7 +7,7 @@ import {
   LESSON_TOPIC_TUPLE,
 } from "../types/lesson";
 
-export const readingLessonSchema = z.object({
+export const listeningLessonSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
   description: z.string().nullable(),
   lessonType: z.enum(LESSON_TYPE_TUPLE),
@@ -16,7 +16,7 @@ export const readingLessonSchema = z.object({
   timeLimit: z.number().nullable(),
   content: z
     .object({
-      text: z.string().min(50, "Content must be at least 50 characters"),
+      audio_url: z.string().min(1, "Audio URL is required"),
       questions: z.array(questionSchema),
     })
     .nullable(),
@@ -26,9 +26,9 @@ export const readingLessonSchema = z.object({
   createdById: z.string().optional(),
 });
 
-export type ReadingLessonFormValues = z.infer<typeof readingLessonSchema>;
+export type ListeningLessonFormValues = z.infer<typeof listeningLessonSchema>;
 
-export const defaultValues: ReadingLessonFormValues = {
+export const defaultValues: ListeningLessonFormValues = {
   title: "",
   description: null,
   topic: "ielts",
@@ -36,7 +36,7 @@ export const defaultValues: ReadingLessonFormValues = {
   timeLimit: 30,
   lessonType: "practice",
   content: {
-    text: "",
+    audio_url: "",
     questions: [
       {
         id: "1",

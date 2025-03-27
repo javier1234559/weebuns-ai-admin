@@ -109,11 +109,6 @@ export function LessonCard(props: LessonCardProps) {
           >
             {lesson.skill}
           </Badge>
-          {lesson.tags.length > 0 && (
-            <Badge variant="outline" className="capitalize text-xs">
-              {lesson.tags.join(" ")}
-            </Badge>
-          )}
         </div>
         <Badge
           className={cn("capitalize text-xs", getStatusColor(lesson.status))}
@@ -153,6 +148,22 @@ export function LessonCard(props: LessonCardProps) {
             </div>
 
             <Separator className="my-1" />
+
+            <div className="flex flex-col items-start w-full">
+              {lesson.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1 w-full items-start">
+                  {lesson.tags.map((tag) => (
+                    <Badge
+                      key={tag}
+                      variant="outline"
+                      className="capitalize text-xs"
+                    >
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <div className="flex items-center justify-between w-full">
               <div className="text-xs text-muted-foreground">

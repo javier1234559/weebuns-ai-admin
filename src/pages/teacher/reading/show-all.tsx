@@ -18,7 +18,7 @@ import { ContentStatus, SkillType } from "@/services/swagger-types";
 import ReadingShowAllView from "@/feature/lesson/reading/views/ReadingShowAllView";
 import { RouteNames } from "@/constraints/route-name";
 
-export default function LessonManagementPage() {
+export default function ReadingLessonListPage() {
   const navigate = useNavigate();
   const [levelFilter, setLevelFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
