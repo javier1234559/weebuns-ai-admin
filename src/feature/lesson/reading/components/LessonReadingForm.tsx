@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm, FormProvider, FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, ArrowRight, Save } from "lucide-react";
+import { ArrowLeft, ArrowRight, Save, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -18,17 +18,22 @@ import {
 import PreviewTab from "@/feature/lesson/reading/components/PreviewTab";
 import { ContentStatus, Lesson } from "@/services/swagger-types";
 import { toast } from "sonner";
+import { isDev } from "@/lib/utils";
 
 interface LessonReadingFormProps {
   isEdit?: boolean;
   initialData?: Lesson | null;
   onSubmit: (data: ReadingLessonFormValues) => Promise<void>;
+  isLoading?: boolean;
+  onRemove?: () => void;
 }
 
 const ReadingLessonForm = ({
   isEdit = false,
   initialData = null,
   onSubmit,
+  isLoading = false,
+  onRemove,
 }: LessonReadingFormProps) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("details");
@@ -50,7 +55,6 @@ const ReadingLessonForm = ({
 
   const handleSubmit = async (data: ReadingLessonFormValues) => {
     try {
-      console.log(data);
       await onSubmit(data);
     } catch (error) {
       console.error("Error handling form submission:", error);
@@ -58,10 +62,10 @@ const ReadingLessonForm = ({
   };
 
   const handleInvalid = (data: FieldErrors<ReadingLessonFormValues>) => {
-    console.log(data);
-    toast.error(
-      "Form is invalid. Please check your inputs. " + JSON.stringify(data),
-    );
+    toast.error("Form is invalid. Please check your inputs !");
+    if (isDev()) {
+      console.log(JSON.stringify(data, null, 2));
+    }
   };
 
   return (
@@ -87,10 +91,27 @@ const ReadingLessonForm = ({
               : "Create a new reading lesson for IELTS preparation"}
           </p>
         </div>
-        <Button type="submit" form="reading-lesson-form" className="gap-2">
-          <Save className="h-4 w-4" />
-          {isEdit ? "Update Lesson" : "Save Lesson"}
-        </Button>
+        <div className="flex gap-2">
+          {isEdit && (
+            <Button
+              variant="destructive"
+              onClick={onRemove}
+              disabled={isLoading}
+            >
+              <Trash className="h-4 w-4" />
+              Remove Lesson
+            </Button>
+          )}
+          <Button
+            type="submit"
+            form="reading-lesson-form"
+            className="gap-2"
+            disabled={isLoading}
+          >
+            <Save className="h-4 w-4" />
+            {isLoading ? "Saving..." : isEdit ? "Update Lesson" : "Save Lesson"}
+          </Button>
+        </div>
       </div>
 
       <FormProvider {...methods}>
@@ -116,7 +137,7 @@ const ReadingLessonForm = ({
 
               <div className="w-full flex justify-end">
                 <Button
-                  type="submit"
+                  type="button"
                   form="reading-lesson-form"
                   onClick={() => setActiveTab("content")}
                 >
@@ -131,7 +152,7 @@ const ReadingLessonForm = ({
 
               <div className="mt-6 w-full flex justify-end">
                 <Button
-                  type="submit"
+                  type="button"
                   form="reading-lesson-form"
                   onClick={() => setActiveTab("questions")}
                 >
@@ -146,7 +167,7 @@ const ReadingLessonForm = ({
 
               <div className="mt-6 w-full flex justify-end">
                 <Button
-                  type="submit"
+                  type="button"
                   form="reading-lesson-form"
                   onClick={() => setActiveTab("preview")}
                 >
@@ -161,7 +182,7 @@ const ReadingLessonForm = ({
 
               <div className="mt-6 w-full flex justify-end">
                 <Button
-                  type="submit"
+                  type="button"
                   form="reading-lesson-form"
                   onClick={() => setActiveTab("details")}
                 >

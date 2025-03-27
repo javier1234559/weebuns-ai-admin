@@ -11,6 +11,16 @@ export function isDev() {
   return import.meta.env.DEV;
 }
 
+export function logDev(message: any, ...args: any[]) {
+  if (isDev()) {
+    console.log(message, ...args);
+  }
+}
+
+export function log(error: any) {
+  console.error(error);
+}
+
 export function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }

@@ -37,6 +37,7 @@ export default function Toolbar({ editor }: { editor: Editor }) {
         <Button
           variant="ghost"
           size="icon"
+          type="button"
           onClick={() => editor?.chain().focus().undo().run()}
           disabled={!editor?.can().undo()}
         >
@@ -45,6 +46,7 @@ export default function Toolbar({ editor }: { editor: Editor }) {
         <Button
           variant="ghost"
           size="icon"
+          type="button"
           onClick={() => editor?.chain().focus().redo().run()}
           disabled={!editor?.can().redo()}
         >
@@ -57,6 +59,7 @@ export default function Toolbar({ editor }: { editor: Editor }) {
         <Button
           variant="ghost"
           size="icon"
+          type="button"
           onClick={() => editor?.chain().focus().setParagraph().run()}
           className={editor?.isActive("paragraph") ? "bg-accent" : ""}
         >
@@ -65,6 +68,7 @@ export default function Toolbar({ editor }: { editor: Editor }) {
         <Button
           variant="ghost"
           size="icon"
+          type="button"
           onClick={() =>
             editor?.chain().focus().toggleHeading({ level: 1 }).run()
           }
@@ -77,6 +81,7 @@ export default function Toolbar({ editor }: { editor: Editor }) {
         <Button
           variant="ghost"
           size="icon"
+          type="button"
           onClick={() =>
             editor?.chain().focus().toggleHeading({ level: 2 }).run()
           }
@@ -89,6 +94,7 @@ export default function Toolbar({ editor }: { editor: Editor }) {
         <Button
           variant="ghost"
           size="icon"
+          type="button"
           onClick={() =>
             editor?.chain().focus().toggleHeading({ level: 3 }).run()
           }
@@ -105,6 +111,7 @@ export default function Toolbar({ editor }: { editor: Editor }) {
         <Button
           variant="ghost"
           size="icon"
+          type="button"
           onClick={() => handleFontSizeChange(-1)}
         >
           <Minus className="h-4 w-4" />
@@ -113,6 +120,7 @@ export default function Toolbar({ editor }: { editor: Editor }) {
         <Button
           variant="ghost"
           size="icon"
+          type="button"
           onClick={() => handleFontSizeChange(1)}
         >
           <Plus className="h-4 w-4" />
@@ -124,6 +132,7 @@ export default function Toolbar({ editor }: { editor: Editor }) {
         <Button
           variant="ghost"
           size="icon"
+          type="button"
           onClick={() => editor?.chain().focus().toggleBold().run()}
           className={editor?.isActive("bold") ? "bg-accent" : ""}
         >
@@ -132,6 +141,7 @@ export default function Toolbar({ editor }: { editor: Editor }) {
         <Button
           variant="ghost"
           size="icon"
+          type="button"
           onClick={() => editor?.chain().focus().toggleItalic().run()}
           className={editor?.isActive("italic") ? "bg-accent" : ""}
         >
@@ -140,6 +150,7 @@ export default function Toolbar({ editor }: { editor: Editor }) {
         <Button
           variant="ghost"
           size="icon"
+          type="button"
           onClick={() => editor?.chain().focus().toggleUnderline().run()}
           className={editor?.isActive("underline") ? "bg-accent" : ""}
         >
@@ -148,6 +159,7 @@ export default function Toolbar({ editor }: { editor: Editor }) {
         <Button
           variant="ghost"
           size="icon"
+          type="button"
           onClick={() => editor?.chain().focus().toggleStrike().run()}
           className={editor?.isActive("strike") ? "bg-accent" : ""}
         >

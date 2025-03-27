@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IELTS_TOPICS } from "@/feature/lesson/types/lesson";
+import UploadImage from "@/components/feature/UploadImage";
 
 const BasicInfoForm = () => {
   const { control } = useFormContext();
@@ -166,6 +167,17 @@ const BasicInfoForm = () => {
               )}
             />
           </div>
+
+          <FormField
+            control={control}
+            name="thumbnailUrl"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Thumbnail Image</FormLabel>
+                <UploadImage value={field.value} onChange={field.onChange} />
+              </FormItem>
+            )}
+          />
         </CardContent>
       </Card>
 

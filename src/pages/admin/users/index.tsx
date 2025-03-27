@@ -24,7 +24,6 @@ import { Textarea } from "@/components/ui/textarea";
 import type { PaginationState } from "@tanstack/react-table";
 import * as React from "react";
 
-import { useUsers } from "@/hooks/query/use-user";
 import { Ellipsis } from "lucide-react";
 import { IUsers } from "@/feature/user/type";
 
@@ -202,19 +201,13 @@ export default function ShowAllLessonPage() {
     pageIndex: 0,
     pageSize: 10,
   });
-  const [searchParams, setSearchParams] = React.useState<Partial<IUsers>>({});
 
-  const {
-    data: users,
-    isLoading,
-    refetch,
-  } = useUsers(pagination, searchParams);
   const handlePaginationChange = (_pagination: PaginationState) => {
     setPagination(_pagination);
   };
 
   const handleSearch = (params: SearchParams) => {
-    setSearchParams(params);
+    console.log(params);
   };
 
   return (
@@ -222,14 +215,14 @@ export default function ShowAllLessonPage() {
       <div className="mb-4 text-2xl font-bold">Pro Data Table</div>
       <ProTable
         columns={columns}
-        data={users?.list}
-        isLoading={isLoading}
-        onRefresh={refetch}
+        data={[]}
+        isLoading={false}
+        onRefresh={() => {}}
         onSearch={handleSearch}
         pagination={{
           pageIndex: pagination.pageIndex,
           pageSize: pagination.pageSize,
-          total: users?.total ?? 0,
+          total: 0,
           onPaginationChange: handlePaginationChange,
         }}
       />

@@ -91,6 +91,7 @@ export function MultipleChoiceQuiz({
               <Button
                 variant="ghost"
                 size="icon"
+                type="button"
                 className={cn(
                   "size-8",
                   bookmarkedQuestions.has(q.id) && "text-yellow-500",
@@ -106,6 +107,7 @@ export function MultipleChoiceQuiz({
               {q.options.map((option, optIndex) => (
                 <button
                   key={optIndex}
+                  type="button"
                   onClick={() => onAnswerSelect?.(q.id, option)}
                   disabled={showCorrectAnswers}
                   className={cn(

@@ -520,7 +520,7 @@ export interface ListeningResponse {
 
 export interface ContentListeningDTO {
   audio_url: string;
-  question_list: string[];
+  questions: QuestionDTO[];
 }
 
 export interface CreateListeningDTO {
