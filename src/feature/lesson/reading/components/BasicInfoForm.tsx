@@ -19,6 +19,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IELTS_TOPICS } from "@/feature/lesson/types/lesson";
 import UploadImage from "@/components/feature/UploadImage";
+import UploadAudio from "@/components/feature/UploadAudio";
 
 const BasicInfoForm = () => {
   const { control } = useFormContext();
@@ -175,6 +176,18 @@ const BasicInfoForm = () => {
               <FormItem>
                 <FormLabel>Thumbnail Image</FormLabel>
                 <UploadImage value={field.value} onChange={field.onChange} />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name="audioUrl"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Audio File</FormLabel>
+                <UploadAudio value={field.value} onChange={field.onChange} />
+                <FormMessage />
               </FormItem>
             )}
           />

@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useId } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -58,6 +58,7 @@ const getCroppedImg = async (
 };
 
 const UploadImage = ({ value, onChange }: UploadImageProps) => {
+  const uploadId = useId();
   const [preview, setPreview] = useState<string | null>(value);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -142,9 +143,10 @@ const UploadImage = ({ value, onChange }: UploadImageProps) => {
   return (
     <div
       {...getRootProps()}
+      id={`upload-image-container-${uploadId}`}
       className="border-dashed border-2 border-gray-300 rounded-lg p-4 cursor-pointer hover:border-gray-400 transition-colors"
     >
-      <input {...getInputProps()} />
+      <input {...getInputProps()} id={`upload-image-input-${uploadId}`} />
       {preview ? (
         <div
           className="relative w-full h-64 flex items-center justify-center"
