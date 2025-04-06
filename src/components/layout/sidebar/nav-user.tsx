@@ -29,10 +29,11 @@ import { useAuthStore } from "@/stores/auth-store";
 export function NavUser() {
   const { isMobile } = useSidebar();
   const navigate = useNavigate();
-  const { user, removeUser } = useAuthStore();
+  const { user, removeUser, removeToken } = useAuthStore();
 
   const handleLogout = () => {
     removeUser();
+    removeToken();
     navigate(RouteNames.SignIn);
   };
 
