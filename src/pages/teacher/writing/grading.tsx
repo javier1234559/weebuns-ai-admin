@@ -13,12 +13,12 @@ import { Plus, Search, Filter } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { capitalize } from "@/lib/text";
 import usePaginationUrl from "@/hooks/use-pagination-url";
-import { ContentStatus, SkillType } from "@/services/swagger-types";
+import { SkillType } from "@/services/swagger-types";
 import { RouteNames } from "@/constraints/route-name";
-import { useWritingList } from "@/feature/lesson/writing/hooks/useWriting";
+import { useWritingSubmissionTeacher } from "@/feature/lesson/writing/hooks/useWriting";
 import WritingShowAllView from "@/feature/lesson/writing/views/WritingShowAllView";
 
-export default function WritingLessonListPage() {
+export default function GradeWritingLessonPage() {
   const navigate = useNavigate();
   const [levelFilter, setLevelFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -29,14 +29,12 @@ export default function WritingLessonListPage() {
       defaultPerPage: 10,
     });
 
-  const { data, isLoading, isError, error } = useWritingList({
+  const { data, isLoading, isError, error } = useWritingSubmissionTeacher({
     skill: "writing" as SkillType,
     page,
     perPage,
     search: searchParam || undefined,
     level: levelFilter !== "all" ? levelFilter : undefined,
-    status:
-      statusFilter !== "all" ? (statusFilter as ContentStatus) : undefined,
   });
 
   const handleNavigateToCreate = () => {

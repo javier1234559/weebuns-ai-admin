@@ -86,6 +86,79 @@ export interface TextToSpeechResponseDto {
   voiceId: string;
 }
 
+export interface ChatRequestDto {
+  /**
+   * The message from the user
+   * @example "Tell me about the benefits of learning a new language"
+   */
+  message: string;
+  /**
+   * Session ID to maintain conversation context
+   * @example "123e4567-e89b-12d3-a456-426614174000"
+   */
+  sessionId?: string;
+  /**
+   * System prompt to maintain conversation context
+   * @example "You are a helpful assistant"
+   */
+  systemPrompt?: string;
+}
+
+export interface ChatMessageDto {
+  /**
+   * Role of the message sender (user or assistant)
+   * @example "user"
+   */
+  role: string;
+  /**
+   * Content of the message
+   * @example "Tell me about the benefits of learning a new language"
+   */
+  content: string;
+}
+
+export interface ChatResponseDto {
+  /**
+   * The response from the AI assistant
+   * @example "Learning a new language offers numerous cognitive, social, and professional benefits..."
+   */
+  message: string;
+  /**
+   * Session ID to maintain conversation context
+   * @example "123e4567-e89b-12d3-a456-426614174000"
+   */
+  sessionId: string;
+  /** Full conversation history */
+  history: ChatMessageDto[];
+}
+
+export interface EvaluateEssayDto {
+  /** The essay topic or prompt */
+  topic: string;
+  /** The user's essay content to evaluate */
+  user_content: string;
+  /** Optional teacher prompt for AI to guide the evaluation */
+  teacher_prompt?: string;
+}
+
+export interface CorrectionDTO {
+  id: string;
+  sentence: string;
+  error: string;
+  suggestion: string;
+  reason: string;
+}
+
+export interface EvaluateEssayResponseDto {
+  overall_score: number;
+  task_response: number;
+  coherence_cohesion: number;
+  lexical_resource: number;
+  grammar: number;
+  corrections: CorrectionDTO[];
+  overall_feedback: string;
+}
+
 export interface PaginationOutputDto {
   /**
    * Total number of items
@@ -124,25 +197,82 @@ export interface UsersResponse {
   pagination: PaginationOutputDto;
 }
 
-export interface UserDto {
+export enum UserRole {
+  User = "user",
+  Admin = "admin",
+  Teacher = "teacher",
+}
+
+export enum AuthProvider {
+  Local = "local",
+  Google = "google",
+  Facebook = "facebook",
+}
+
+export interface TeacherProfileEntity {
   id: string;
-  email: string;
-  username: string;
-  firstName: object | null;
-  lastName: object | null;
-  role: "user" | "admin" | "teacher";
-  authProvider: "local" | "google" | "facebook";
-  authProviderId: object | null;
-  isEmailVerified: boolean;
-  lastLogin: object | null;
+  userId: string;
+  specialization: ("listening" | "reading" | "writing" | "speaking")[];
+  qualification: string | null;
+  teachingExperience: number | null;
+  hourlyRate: number | null;
   /** @format date-time */
   createdAt: string;
   /** @format date-time */
   updatedAt: string;
-  deletedAt: object | null;
-  profilePicture: object | null;
-  teacherProfile: object | null;
-  studentProfile: object | null;
+  /** @format date-time */
+  deletedAt: string | null;
+}
+
+export interface StudentProfileEntity {
+  id: string;
+  userId: string;
+  targetStudyDuration: number | null;
+  targetReading: number | null;
+  targetListening: number | null;
+  targetWriting: number | null;
+  targetSpeaking: number | null;
+  /** @format date-time */
+  nextExamDate: string | null;
+  tokensBalance: number;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  /** @format date-time */
+  deletedAt: string | null;
+}
+
+export interface UserDto {
+  /** @example "00321d6f-2bcf-4985-9659-92a571275da6" */
+  id: string;
+  /** @example "john@example.com" */
+  email: string;
+  /** @example "johndoe" */
+  username: string;
+  /** @example "John" */
+  firstName: string | null;
+  /** @example "Doe" */
+  lastName: string | null;
+  /** @example "user" */
+  role: UserRole;
+  /** @example "local" */
+  authProvider: AuthProvider;
+  authProviderId: string | null;
+  /** @example false */
+  isEmailVerified: boolean;
+  /** @format date-time */
+  lastLogin: string | null;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  /** @format date-time */
+  deletedAt: string | null;
+  /** @example "https://example.com/avatar.jpg" */
+  profilePicture: string | null;
+  teacherProfile: TeacherProfileEntity | null;
+  studentProfile: StudentProfileEntity | null;
 }
 
 export interface UserResponse {
@@ -153,7 +283,7 @@ export interface UserResponse {
 export interface TeacherDto {
   username: string;
   email: string;
-  password: string;
+  password?: string;
   firstName: string;
   lastName: string;
   profilePicture?: string;
@@ -306,37 +436,6 @@ export enum ContentStatus {
   Deleted = "deleted",
 }
 
-export interface TeacherProfileEntity {
-  id: string;
-  userId: string;
-  specialization: ("listening" | "reading" | "writing" | "speaking")[];
-  qualification: object | null;
-  teachingExperience: object | null;
-  hourlyRate: object | null;
-  /** @format date-time */
-  createdAt: string;
-  /** @format date-time */
-  updatedAt: string;
-  deletedAt: object | null;
-}
-
-export interface StudentProfileEntity {
-  id: string;
-  userId: string;
-  targetStudyDuration: object | null;
-  targetReading: object | null;
-  targetListening: object | null;
-  targetWriting: object | null;
-  targetSpeaking: object | null;
-  nextExamDate: object | null;
-  tokensBalance: number;
-  /** @format date-time */
-  createdAt: string;
-  /** @format date-time */
-  updatedAt: string;
-  deletedAt: object | null;
-}
-
 export interface User {
   /** @example "00321d6f-2bcf-4985-9659-92a571275da6" */
   id: string;
@@ -350,22 +449,23 @@ export interface User {
    * User role in the system
    * @example "user"
    */
-  role: "user" | "admin" | "teacher";
+  role: UserRole;
   /**
    * Authentication provider used
    * @example "local"
    */
-  authProvider: "local" | "google" | "facebook";
-  authProviderId: object | null;
+  authProvider: AuthProvider;
+  authProviderId: string | null;
   /** @example "John" */
-  firstName: object | null;
+  firstName: string | null;
   /** @example "Doe" */
-  lastName: object | null;
+  lastName: string | null;
   /** @example "https://example.com/avatar.jpg" */
-  profilePicture: object | null;
+  profilePicture: string | null;
   /** @example false */
   isEmailVerified: boolean;
-  lastLogin: object | null;
+  /** @format date-time */
+  lastLogin: string | null;
   /**
    * @format date-time
    * @example "2024-01-01T00:00:00.000Z"
@@ -376,8 +476,11 @@ export interface User {
    * @example "2024-01-01T00:00:00.000Z"
    */
   updatedAt: string;
-  /** Timestamp when the user was deleted (soft delete) */
-  deletedAt: object | null;
+  /**
+   * Timestamp when the user was deleted (soft delete)
+   * @format date-time
+   */
+  deletedAt: string | null;
   teacherProfile: TeacherProfileEntity | null;
   studentProfile: StudentProfileEntity | null;
 }
@@ -411,6 +514,8 @@ export interface LessonSubmission {
   user?: User;
   lesson?: Lesson;
   gradedBy?: User | null;
+  /** @format date-time */
+  deletedAt: string | null;
 }
 
 export interface ReferenceData {
@@ -464,10 +569,6 @@ export interface DeleteLessonResponse {
   message: string;
 }
 
-export interface ReadingResponse {
-  data: Lesson;
-}
-
 export interface AnswerDTO {
   answer: string;
 }
@@ -477,13 +578,41 @@ export interface QuestionDTO {
   question: string;
   right_answer: string;
   answer_list: AnswerDTO[];
-  is_bookmark: boolean;
-  selected_answer: string;
 }
 
 export interface ContentReadingDTO {
   text: string;
   questions: QuestionDTO[];
+}
+
+export interface ReadingLesson {
+  id: string;
+  skill: SkillType;
+  title: string;
+  description: string | null;
+  lessonType: LessonType;
+  level: string;
+  topic: string;
+  /** @format int32 */
+  timeLimit: number | null;
+  content: ContentReadingDTO | null;
+  tags: string[];
+  thumbnailUrl: string | null;
+  status: ContentStatus;
+  createdById: string;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  /** @format date-time */
+  deletedAt: string | null;
+  createdBy?: User;
+  submissions?: LessonSubmission[];
+  levelRef?: ReferenceData;
+}
+
+export interface ReadingResponse {
+  data: ReadingLesson;
 }
 
 export interface CreateReadingDTO {
@@ -514,13 +643,39 @@ export interface UpdateReadingDTO {
   content?: ContentReadingDTO;
 }
 
-export interface ListeningResponse {
-  data: Lesson;
-}
-
 export interface ContentListeningDTO {
   audio_url: string;
   questions: QuestionDTO[];
+}
+
+export interface ListeningLesson {
+  id: string;
+  skill: SkillType;
+  title: string;
+  description: string | null;
+  lessonType: LessonType;
+  level: string;
+  topic: string;
+  /** @format int32 */
+  timeLimit: number | null;
+  content: ContentListeningDTO | null;
+  tags: string[];
+  thumbnailUrl: string | null;
+  status: ContentStatus;
+  createdById: string;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  /** @format date-time */
+  deletedAt: string | null;
+  createdBy?: User;
+  submissions?: LessonSubmission[];
+  levelRef?: ReferenceData;
+}
+
+export interface ListeningResponse {
+  data: ListeningLesson;
 }
 
 export interface CreateListeningDTO {
@@ -551,14 +706,82 @@ export interface UpdateListeningDTO {
   content?: ContentListeningDTO;
 }
 
-export interface WritingResponse {
-  data: Lesson;
+export interface SampleEssayDTO {
+  /** Instructions for the sample essay */
+  instruction: string;
+  /** First body paragraph of the sample essay */
+  body1: string;
+  /** Second body paragraph of the sample essay */
+  body2: string;
+  /** Conclusion of the sample essay */
+  conclusion: string;
+}
+
+export interface ResourcesDTO {
+  /** Guide for analyzing the writing task */
+  analysis_guide: string;
+  /** Sample essay for reference */
+  sample_essay: SampleEssayDTO;
+}
+
+export interface VocabularyItemDTO {
+  /** Vocabulary term */
+  term: string;
+  /** Meanings of the vocabulary term */
+  meaning: string[];
+  /** Example sentence using the vocabulary term */
+  example_sentence: string;
+  /** URL to an image related to the vocabulary term */
+  image_url: string;
+  /** Reference link for the vocabulary term */
+  reference_link: string;
+  /** Name of the reference for the vocabulary term */
+  reference_name: string;
+  /** Tags associated with the vocabulary term */
+  tags: string[];
+  /** Repetition level of the vocabulary term */
+  repetition_level: number;
 }
 
 export interface ContentWritingDTO {
-  content_text: string;
-  instruction_text: string;
-  prompt_text: string;
+  /** AI prompt for generating writing content */
+  ai_prompt: string;
+  /** Writing task description */
+  task: string;
+  /** Resources for the writing task */
+  resources: ResourcesDTO;
+  /** List of vocabulary items for the writing task */
+  vocabulary_list: VocabularyItemDTO[];
+}
+
+export interface WritingLesson {
+  id: string;
+  skill: SkillType;
+  title: string;
+  description: string | null;
+  lessonType: LessonType;
+  level: string;
+  topic: string;
+  /** @format int32 */
+  timeLimit: number | null;
+  content: ContentWritingDTO | null;
+  tags: string[];
+  thumbnailUrl: string | null;
+  status: ContentStatus;
+  createdById: string;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  /** @format date-time */
+  deletedAt: string | null;
+  createdBy?: User;
+  submissions?: LessonSubmission[];
+  levelRef?: ReferenceData;
+}
+
+export interface WritingResponse {
+  data: WritingLesson;
 }
 
 export interface CreateWritingDTO {
@@ -589,13 +812,39 @@ export interface UpdateWritingDTO {
   content?: ContentWritingDTO;
 }
 
-export interface SpeakingResponse {
-  data: Lesson;
-}
-
 export interface ContentSpeakingDTO {
   topic_text: string;
   prompt_text: string;
+}
+
+export interface SpeakingLesson {
+  id: string;
+  skill: SkillType;
+  title: string;
+  description: string | null;
+  lessonType: LessonType;
+  level: string;
+  topic: string;
+  /** @format int32 */
+  timeLimit: number | null;
+  content: ContentSpeakingDTO | null;
+  tags: string[];
+  thumbnailUrl: string | null;
+  status: ContentStatus;
+  createdById: string;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  /** @format date-time */
+  deletedAt: string | null;
+  createdBy?: User;
+  submissions?: LessonSubmission[];
+  levelRef?: ReferenceData;
+}
+
+export interface SpeakingResponse {
+  data: SpeakingLesson;
 }
 
 export interface CreateSpeakingDTO {
@@ -626,108 +875,270 @@ export interface UpdateSpeakingDTO {
   content?: ContentSpeakingDTO;
 }
 
-export interface CreateVocabularyDto {
-  term: string;
-  meaning: string[];
-  exampleSentence?: string | null;
-  imageUrl?: string | null;
-  referenceLink?: string | null;
-  referenceName?: string | null;
-  tags: string[];
-  /** @format date-time */
-  nextReview?: string | null;
-  /**
-   * Repetition level from 0 to 6
-   * @example 1
-   */
-  repetitionLevel?: number | null;
+export interface CreateCommentDto {
+  /** The ID of the entity being commented on */
+  entityId: string;
+  /** The content of the comment */
+  content: string;
+  /** The ID of the parent comment if this is a reply */
+  parentId?: string;
+  /** The ID of the submission being commented on */
+  submissionId: string;
 }
 
-export interface VocabularyDto {
-  id: string;
-  term: string;
-  meaning: string[];
-  exampleSentence: string | null;
-  imageUrl: string | null;
-  referenceLink: string | null;
-  referenceName: string | null;
-  tags: string[];
-  /** @format int32 */
-  repetitionLevel: number;
-  /** @format date-time */
-  nextReview: string | null;
-  /** @format date-time */
-  createdAt: string;
-  /** @format date-time */
-  updatedAt: string;
+export type Comment = object;
+
+export interface CreateCommentResponse {
+  comment: Comment;
 }
 
-export interface VocabularyPractice {
-  id: string;
-  userId: string;
-  vocabularyId: string;
-  /** @format float */
-  successRate: number | null;
-  /** @format date-time */
-  lastPracticed: string | null;
-  /** @format date-time */
-  nextReview: string | null;
-  /** @format date-time */
-  createdAt: string;
-  user?: User;
-  vocabulary?: Vocabulary;
-}
-
-export interface Vocabulary {
-  id: string;
-  term: string;
-  meaning: string[];
-  exampleSentence: string | null;
-  imageUrl: string | null;
-  referenceLink: string | null;
-  referenceName: string | null;
-  tags: string[];
-  /** @format int32 */
-  repetitionLevel: number;
-  /** @format date-time */
-  nextReview: string | null;
-  createdById: string;
-  /** @format date-time */
-  createdAt: string;
-  /** @format date-time */
-  updatedAt: string;
-  createdBy?: User;
-  practices?: VocabularyPractice[];
-}
-
-export interface VocabularyResponseDto {
-  data: Vocabulary;
+export interface CommentsResponse {
+  comments: Comment[];
   pagination: PaginationOutputDto;
 }
 
-export interface UpdateVocabularyDto {
-  term?: string;
-  meaning?: string[];
-  exampleSentence?: string | null;
-  imageUrl?: string | null;
-  referenceLink?: string | null;
-  referenceName?: string | null;
-  tags?: string[];
-  /** @format date-time */
-  nextReview?: string | null;
-  /**
-   * Repetition level from 0 to 6
-   * @example 1
-   */
-  repetitionLevel?: number | null;
+export interface CommentResponse {
+  comment: Comment;
 }
 
-export interface UpdateVocabularyReviewDto {
-  /**
-   * Repetition level from 0 to 6
-   * @example 1
-   */
-  repetitionLevel: number;
+export interface UpdateCommentResponse {
+  comment: Comment;
+}
+
+export interface DeleteCommentResponse {
+  comment: Comment;
+}
+
+export interface LessonSubmissionsResponse {
+  data: LessonSubmission[];
+  pagination: PaginationOutputDto;
+}
+
+export interface DeleteLessonSubmissionResponse {
+  message: string;
+}
+
+export interface ContentReadingSubmissionDTO {
+  text: string;
+  questions: QuestionDTO[];
+}
+
+export interface ReadingFeedbackDto {
+  totalQuestions: number;
+  correctAnswers: number;
+  incorrectAnswers: number;
+  accuracy: number;
+}
+
+export interface ReadingSubmission {
+  id: string;
+  userId: string;
+  lessonId: string;
+  submissionType: SkillType;
+  status: SubmissionStatus;
+  content: ContentReadingSubmissionDTO | null;
+  feedback: ReadingFeedbackDto | null;
+  /** @format int32 */
+  tokensUsed: number;
+  /** @format date-time */
+  submittedAt: string | null;
+  /** @format date-time */
+  gradedAt: string | null;
+  gradedById: string | null;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  user?: User;
+  lesson?: Lesson;
+  gradedBy?: User | null;
+  /** @format date-time */
+  deletedAt: string | null;
+}
+
+export interface ReadingSubmissionResponse {
+  data: ReadingSubmission;
+}
+
+export interface CreateReadingSubmissionDTO {
+  lessonId: string;
+  submissionType: "listening" | "reading" | "writing" | "speaking";
+  tokensUsed: number;
+  content: ContentReadingSubmissionDTO;
+}
+
+export interface ContentListeningSubmissionDTO {
+  audio_url: string;
+  question_list: QuestionDTO[];
+}
+
+export interface ListeningFeedbackDto {
+  totalQuestions: number;
+  correctAnswers: number;
+  incorrectAnswers: number;
+  accuracy: number;
+}
+
+export interface ListeningSubmission {
+  id: string;
+  userId: string;
+  lessonId: string;
+  submissionType: SkillType;
+  status: SubmissionStatus;
+  content: ContentListeningSubmissionDTO | null;
+  feedback: ListeningFeedbackDto | null;
+  /** @format int32 */
+  tokensUsed: number;
+  /** @format date-time */
+  submittedAt: string | null;
+  /** @format date-time */
+  gradedAt: string | null;
+  gradedById: string | null;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  user?: User;
+  lesson?: Lesson;
+  gradedBy?: User | null;
+  /** @format date-time */
+  deletedAt: string | null;
+}
+
+export interface ListeningSubmissionResponse {
+  data: ListeningSubmission;
+}
+
+export interface CreateListeningSubmissionDTO {
+  lessonId: string;
+  submissionType: "listening" | "reading" | "writing" | "speaking";
+  tokensUsed: number;
+  content: ContentListeningSubmissionDTO;
+}
+
+export interface ChatMessageDTO {
+  id: string;
+  role: "bot" | "user";
+  text: string;
+  audio_url?: string;
+  timestamp: string;
+  recommend_answer?: string[];
+}
+
+export interface ContentSpeakingSubmissionDTO {
+  topic_text: string;
+  prompt_text: string;
+  chat_history: ChatMessageDTO[];
+}
+
+export interface SpeakingSubmission {
+  id: string;
+  userId: string;
+  lessonId: string;
+  submissionType: SkillType;
+  status: SubmissionStatus;
+  content: ContentSpeakingSubmissionDTO | null;
+  feedback: object | null;
+  /** @format int32 */
+  tokensUsed: number;
+  /** @format date-time */
+  submittedAt: string | null;
+  /** @format date-time */
+  gradedAt: string | null;
+  gradedById: string | null;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  user?: User;
+  lesson?: Lesson;
+  gradedBy?: User | null;
+  /** @format date-time */
+  deletedAt: string | null;
+}
+
+export interface SpeakingSubmissionResponse {
+  data: SpeakingSubmission;
+}
+
+export interface CreateSpeakingSubmissionDTO {
+  lessonId: string;
+  submissionType: "listening" | "reading" | "writing" | "speaking";
+  tokensUsed: number;
+  content: ContentSpeakingSubmissionDTO;
+}
+
+export interface UserDataDTO {
+  instruction: string;
+  body1: string;
+  body2: string;
+  conclusion: string;
+}
+
+export interface ContentWritingSubmissionDTO {
+  user_data: UserDataDTO;
+  lesson_id: string;
+  chat_history: ChatMessageDTO[];
+}
+
+export interface WritingFeedbackDTO {
+  overall_score: number;
+  task_response: number;
+  coherence_cohesion: number;
+  lexical_resource: number;
+  grammar: number;
+  corrections: CorrectionDTO[];
+  overall_feedback: string;
+}
+
+export interface WritingSubmission {
+  id: string;
+  userId: string;
+  lessonId: string;
+  submissionType: SkillType;
+  status: SubmissionStatus;
+  content: ContentWritingSubmissionDTO | null;
+  feedback: WritingFeedbackDTO | null;
+  /** @format int32 */
+  tokensUsed: number;
+  /** @format date-time */
+  submittedAt: string | null;
+  /** @format date-time */
+  gradedAt: string | null;
+  gradedById: string | null;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  user?: User;
+  lesson?: Lesson;
+  gradedBy?: User | null;
+  /** @format date-time */
+  deletedAt: string | null;
+}
+
+export interface WritingSubmissionResultResponse {
+  data: WritingSubmission;
+  exampleEssay: SampleEssayDTO;
+}
+
+export interface CreateWritingSubmissionDTO {
+  lessonId: string;
+  submissionType: "listening" | "reading" | "writing" | "speaking";
+  tokensUsed: number;
+  content: ContentWritingSubmissionDTO;
+}
+
+export interface WritingSubmissionResponse {
+  data: WritingSubmission;
+}
+
+export interface UpdateWritingSubmissionDTO {
+  lessonId: string;
+  submissionType: "listening" | "reading" | "writing" | "speaking";
+  tokensUsed: number;
+  content?: ContentWritingSubmissionDTO;
+  feedback?: WritingFeedbackDTO;
 }
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
@@ -987,6 +1398,40 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/api/ai/tts/all`,
         method: "GET",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ai
+     * @name AiControllerChat
+     * @request POST:/api/ai/chat
+     */
+    aiControllerChat: (data: ChatRequestDto, params: RequestParams = {}) =>
+      this.request<ChatResponseDto, any>({
+        path: `/api/ai/chat`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ai
+     * @name AiControllerEvaluateEssay
+     * @request POST:/api/ai/evaluate-essay
+     */
+    aiControllerEvaluateEssay: (data: EvaluateEssayDto, params: RequestParams = {}) =>
+      this.request<EvaluateEssayResponseDto, any>({
+        path: `/api/ai/evaluate-essay`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
         ...params,
       }),
 
@@ -1401,6 +1846,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         level?: string;
         topic?: string;
         status?: string;
+        lessonType?: string;
         tag?: string[];
       },
       params: RequestParams = {},
@@ -1654,15 +2100,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags vocabularies
-     * @name VocabularyControllerCreate
-     * @summary Create a new vocabulary
-     * @request POST:/api/vocabularies
+     * @tags comments
+     * @name CommentControllerCreate
+     * @summary Create a new comment
+     * @request POST:/api/comments
      * @secure
      */
-    vocabularyControllerCreate: (data: CreateVocabularyDto, params: RequestParams = {}) =>
-      this.request<VocabularyDto, any>({
-        path: `/api/vocabularies`,
+    commentControllerCreate: (data: CreateCommentDto, params: RequestParams = {}) =>
+      this.request<CreateCommentResponse, any>({
+        path: `/api/comments`,
         method: "POST",
         body: data,
         secure: true,
@@ -1674,27 +2120,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags vocabularies
-     * @name VocabularyControllerFindAll
-     * @summary Get all vocabularies with pagination
-     * @request GET:/api/vocabularies
+     * @tags comments
+     * @name CommentControllerFindAll
+     * @summary Get all comments
+     * @request GET:/api/comments
      * @secure
      */
-    vocabularyControllerFindAll: (
-      query?: {
+    commentControllerFindAll: (
+      query: {
         /** @default 1 */
         page?: number;
         /** @default 10 */
         perPage?: number;
-        /** Filter vocabularies by tags */
-        tags?: string[];
-        /** Search vocabularies by term */
-        term?: string;
+        submissionId: string;
       },
       params: RequestParams = {},
     ) =>
-      this.request<VocabularyResponseDto, any>({
-        path: `/api/vocabularies`,
+      this.request<CommentsResponse, any>({
+        path: `/api/comments`,
         method: "GET",
         query: query,
         secure: true,
@@ -1705,15 +2148,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags vocabularies
-     * @name VocabularyControllerGetDueVocabularies
-     * @summary Get all vocabularies due for review
-     * @request GET:/api/vocabularies/due
+     * @tags comments
+     * @name CommentControllerFindOne
+     * @summary Get a comment by ID
+     * @request GET:/api/comments/{id}
      * @secure
      */
-    vocabularyControllerGetDueVocabularies: (params: RequestParams = {}) =>
-      this.request<VocabularyDto[], any>({
-        path: `/api/vocabularies/due`,
+    commentControllerFindOne: (id: string, params: RequestParams = {}) =>
+      this.request<CommentResponse, any>({
+        path: `/api/comments/${id}`,
         method: "GET",
         secure: true,
         format: "json",
@@ -1723,15 +2166,51 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags vocabularies
-     * @name VocabularyControllerFindOne
-     * @summary Get a vocabulary by id
-     * @request GET:/api/vocabularies/{id}
+     * @tags comments
+     * @name CommentControllerUpdate
+     * @summary Update a comment
+     * @request PUT:/api/comments/{id}
      * @secure
      */
-    vocabularyControllerFindOne: (id: string, params: RequestParams = {}) =>
-      this.request<VocabularyDto, any>({
-        path: `/api/vocabularies/${id}`,
+    commentControllerUpdate: (id: string, params: RequestParams = {}) =>
+      this.request<UpdateCommentResponse, any>({
+        path: `/api/comments/${id}`,
+        method: "PUT",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags comments
+     * @name CommentControllerRemove
+     * @summary Delete a comment
+     * @request DELETE:/api/comments/{id}
+     * @secure
+     */
+    commentControllerRemove: (id: string, params: RequestParams = {}) =>
+      this.request<DeleteCommentResponse, any>({
+        path: `/api/comments/${id}`,
+        method: "DELETE",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags comments
+     * @name CommentControllerFindReplies
+     * @summary Get all replies for a comment
+     * @request GET:/api/comments/{id}/replies
+     * @secure
+     */
+    commentControllerFindReplies: (id: string, params: RequestParams = {}) =>
+      this.request<CommentResponse[], any>({
+        path: `/api/comments/${id}/replies`,
         method: "GET",
         secure: true,
         format: "json",
@@ -1741,15 +2220,220 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags vocabularies
-     * @name VocabularyControllerUpdate
-     * @summary Update a vocabulary
-     * @request PATCH:/api/vocabularies/{id}
+     * @tags lesson-submissions
+     * @name LessonSubmissionControllerFindAll
+     * @request GET:/api/lesson-submissions
      * @secure
      */
-    vocabularyControllerUpdate: (id: string, data: UpdateVocabularyDto, params: RequestParams = {}) =>
-      this.request<VocabularyDto, any>({
-        path: `/api/vocabularies/${id}`,
+    lessonSubmissionControllerFindAll: (
+      query?: {
+        /** @default 1 */
+        page?: number;
+        /** @default 10 */
+        perPage?: number;
+        search?: string;
+        userId?: string;
+        lessonId?: string;
+        submissionType?: string;
+        status?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<LessonSubmissionsResponse, any>({
+        path: `/api/lesson-submissions`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags lesson-submissions
+     * @name LessonSubmissionControllerGetAllSubmissionsByUser
+     * @request GET:/api/lesson-submissions/user
+     * @secure
+     */
+    lessonSubmissionControllerGetAllSubmissionsByUser: (
+      query?: {
+        /** @default 1 */
+        page?: number;
+        /** @default 10 */
+        perPage?: number;
+        search?: string;
+        submissionType?: string;
+        status?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<LessonSubmissionsResponse, any>({
+        path: `/api/lesson-submissions/user`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags lesson-submissions
+     * @name LessonSubmissionControllerRemove
+     * @request DELETE:/api/lesson-submissions/{id}
+     * @secure
+     */
+    lessonSubmissionControllerRemove: (id: string, params: RequestParams = {}) =>
+      this.request<DeleteLessonSubmissionResponse, any>({
+        path: `/api/lesson-submissions/${id}`,
+        method: "DELETE",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags lesson-submissions
+     * @name LessonSubmissionControllerFindOneReading
+     * @request GET:/api/lesson-submissions/reading/{id}
+     * @secure
+     */
+    lessonSubmissionControllerFindOneReading: (id: string, params: RequestParams = {}) =>
+      this.request<ReadingSubmissionResponse, any>({
+        path: `/api/lesson-submissions/reading/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags lesson-submissions
+     * @name LessonSubmissionControllerCreateReading
+     * @request POST:/api/lesson-submissions/reading
+     * @secure
+     */
+    lessonSubmissionControllerCreateReading: (data: CreateReadingSubmissionDTO, params: RequestParams = {}) =>
+      this.request<ReadingSubmissionResponse, any>({
+        path: `/api/lesson-submissions/reading`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags lesson-submissions
+     * @name LessonSubmissionControllerFindOneListening
+     * @request GET:/api/lesson-submissions/listening/{id}
+     * @secure
+     */
+    lessonSubmissionControllerFindOneListening: (id: string, params: RequestParams = {}) =>
+      this.request<ListeningSubmissionResponse, any>({
+        path: `/api/lesson-submissions/listening/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags lesson-submissions
+     * @name LessonSubmissionControllerCreateListening
+     * @request POST:/api/lesson-submissions/listening
+     * @secure
+     */
+    lessonSubmissionControllerCreateListening: (data: CreateListeningSubmissionDTO, params: RequestParams = {}) =>
+      this.request<ListeningSubmissionResponse, any>({
+        path: `/api/lesson-submissions/listening`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags lesson-submissions
+     * @name LessonSubmissionControllerFindOneSpeaking
+     * @request GET:/api/lesson-submissions/speaking/{id}
+     * @secure
+     */
+    lessonSubmissionControllerFindOneSpeaking: (id: string, params: RequestParams = {}) =>
+      this.request<SpeakingSubmissionResponse, any>({
+        path: `/api/lesson-submissions/speaking/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags lesson-submissions
+     * @name LessonSubmissionControllerCreateSpeaking
+     * @request POST:/api/lesson-submissions/speaking
+     * @secure
+     */
+    lessonSubmissionControllerCreateSpeaking: (data: CreateSpeakingSubmissionDTO, params: RequestParams = {}) =>
+      this.request<SpeakingSubmissionResponse, any>({
+        path: `/api/lesson-submissions/speaking`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags lesson-submissions
+     * @name LessonSubmissionControllerFindOneWriting
+     * @request GET:/api/lesson-submissions/writing/{id}
+     * @secure
+     */
+    lessonSubmissionControllerFindOneWriting: (id: string, params: RequestParams = {}) =>
+      this.request<WritingSubmissionResultResponse, any>({
+        path: `/api/lesson-submissions/writing/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags lesson-submissions
+     * @name LessonSubmissionControllerUpdateWriting
+     * @request PATCH:/api/lesson-submissions/writing/{id}
+     * @secure
+     */
+    lessonSubmissionControllerUpdateWriting: (
+      id: string,
+      data: UpdateWritingSubmissionDTO,
+      params: RequestParams = {},
+    ) =>
+      this.request<WritingSubmissionResponse, any>({
+        path: `/api/lesson-submissions/writing/${id}`,
         method: "PATCH",
         body: data,
         secure: true,
@@ -1761,34 +2445,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags vocabularies
-     * @name VocabularyControllerRemove
-     * @summary Delete a vocabulary
-     * @request DELETE:/api/vocabularies/{id}
+     * @tags lesson-submissions
+     * @name LessonSubmissionControllerCreateWriting
+     * @request POST:/api/lesson-submissions/writing
      * @secure
      */
-    vocabularyControllerRemove: (id: string, params: RequestParams = {}) =>
-      this.request<VocabularyDto, any>({
-        path: `/api/vocabularies/${id}`,
-        method: "DELETE",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags vocabularies
-     * @name VocabularyControllerUpdateReviewStatus
-     * @summary Update vocabulary review status
-     * @request PATCH:/api/vocabularies/{id}/review
-     * @secure
-     */
-    vocabularyControllerUpdateReviewStatus: (id: string, data: UpdateVocabularyReviewDto, params: RequestParams = {}) =>
-      this.request<VocabularyDto, any>({
-        path: `/api/vocabularies/${id}/review`,
-        method: "PATCH",
+    lessonSubmissionControllerCreateWriting: (data: CreateWritingSubmissionDTO, params: RequestParams = {}) =>
+      this.request<WritingSubmissionResponse, any>({
+        path: `/api/lesson-submissions/writing`,
+        method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,

@@ -5,17 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, ArrowRight, Save, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import BasicInfoForm from "@/feature/lesson/components/BasicInfoForm";
-import ContentForm from "@/feature/lesson/reading/components/ContentForm";
-import QuestionsForm from "@/feature/lesson/quiz/components/QuestionsForm";
-
 import {
-  readingLessonSchema,
+  writingLessonSchema,
   defaultValues,
-  ReadingLessonFormValues,
-} from "@/feature/lesson/reading/schema";
-import PreviewTab from "@/feature/lesson/reading/components/PreviewTab";
+  WritingLessonFormValues,
+} from "@/feature/lesson/writing/schema";
 import { ContentStatus, Lesson } from "@/services/swagger-types";
 import { toast } from "sonner";
 import { isDev } from "@/lib/utils";
@@ -24,27 +19,30 @@ import {
   LessonTopic,
   LessonType,
 } from "@/feature/lesson/types/lesson";
+import ResourceForm from "./ResourceForm";
+import TaskForm from "./TaskForm";
+import VocabularyForm from "./VocabularyForm";
 
-interface LessonReadingFormProps {
+interface WritingLessonFormProps {
   isEdit?: boolean;
   initialData?: Lesson | null;
-  onSubmit: (data: ReadingLessonFormValues) => Promise<void>;
+  onSubmit: (data: WritingLessonFormValues) => Promise<void>;
   isLoading?: boolean;
   onRemove?: () => void;
 }
 
-const ReadingLessonForm = ({
+const WritingLessonForm = ({
   isEdit = false,
   initialData = null,
   onSubmit,
   isLoading = false,
   onRemove,
-}: LessonReadingFormProps) => {
+}: WritingLessonFormProps) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("details");
 
-  const methods = useForm<ReadingLessonFormValues>({
-    resolver: zodResolver(readingLessonSchema),
+  const methods = useForm<WritingLessonFormValues>({
+    resolver: zodResolver(writingLessonSchema),
     defaultValues: initialData
       ? {
           ...initialData,
@@ -68,7 +66,7 @@ const ReadingLessonForm = ({
     }
   }, [isEdit, initialData, methods]);
 
-  const handleSubmit = async (data: ReadingLessonFormValues) => {
+  const handleSubmit = async (data: WritingLessonFormValues) => {
     try {
       await onSubmit(data);
     } catch (error) {
@@ -76,7 +74,7 @@ const ReadingLessonForm = ({
     }
   };
 
-  const handleInvalid = (data: FieldErrors<ReadingLessonFormValues>) => {
+  const handleInvalid = (data: FieldErrors<WritingLessonFormValues>) => {
     toast.error("Form is invalid. Please check your inputs !");
     if (isDev()) {
       console.log(JSON.stringify(data, null, 2));
@@ -98,113 +96,98 @@ const ReadingLessonForm = ({
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
-            {isEdit ? "Edit Reading Lesson" : "Create Reading Lesson"}
+            {isEdit ? "Edit Writing Lesson" : "Create Writing Lesson"}
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-muted-foreground">
             {isEdit
-              ? "Update existing reading lesson"
-              : "Create a new reading lesson for IELTS preparation"}
+              ? "Update the writing lesson details below"
+              : "Fill in the details to create a new writing lesson"}
           </p>
         </div>
         <div className="flex gap-2">
-          {isEdit && (
+          {isEdit && onRemove && (
             <Button
               variant="destructive"
+              size="sm"
               onClick={onRemove}
               disabled={isLoading}
             >
-              <Trash className="h-4 w-4" />
-              Remove Lesson
+              <Trash className="mr-2 h-4 w-4" />
+              Delete
             </Button>
           )}
           <Button
             type="submit"
-            form="reading-lesson-form"
-            className="gap-2"
+            form="writing-lesson-form"
+            size="sm"
             disabled={isLoading}
           >
-            <Save className="h-4 w-4" />
-            {isLoading ? "Saving..." : isEdit ? "Update Lesson" : "Save Lesson"}
+            {isLoading ? (
+              "Saving..."
+            ) : (
+              <>
+                <Save className="mr-2 h-4 w-4" />
+                {isEdit ? "Update" : "Create"}
+              </>
+            )}
           </Button>
         </div>
       </div>
 
       <FormProvider {...methods}>
         <form
-          id="reading-lesson-form"
+          id="writing-lesson-form"
           onSubmit={methods.handleSubmit(handleSubmit, handleInvalid)}
           className="space-y-8"
         >
-          <Tabs
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className="w-full"
-          >
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="details">Basic Info</TabsTrigger>
-              <TabsTrigger value="content">Reading Content</TabsTrigger>
-              <TabsTrigger value="questions">Questions</TabsTrigger>
-              <TabsTrigger value="preview">Preview</TabsTrigger>
+              <TabsTrigger value="task">Task & Prompt</TabsTrigger>
+              <TabsTrigger value="resources">Resources</TabsTrigger>
+              <TabsTrigger value="vocabulary">Vocabulary</TabsTrigger>
             </TabsList>
-
-            <TabsContent value="details" className="space-y-6 mt-6">
+            <TabsContent value="details" className="space-y-6">
               <BasicInfoForm />
-
-              <div className="w-full flex justify-end">
+              <div className="mt-6 w-full flex justify-end">
                 <Button
                   type="button"
-                  form="reading-lesson-form"
-                  onClick={() => setActiveTab("content")}
+                  form="writing-lesson-form"
+                  onClick={() => setActiveTab("task")}
                 >
                   <ArrowRight className="h-4 w-4" />
                   Next
                 </Button>
               </div>
             </TabsContent>
-
-            <TabsContent value="content" className="mt-6">
-              <ContentForm />
-
+            <TabsContent value="task" className="space-y-6">
+              <TaskForm />
               <div className="mt-6 w-full flex justify-end">
                 <Button
                   type="button"
-                  form="reading-lesson-form"
-                  onClick={() => setActiveTab("questions")}
+                  form="writing-lesson-form"
+                  onClick={() => setActiveTab("resources")}
                 >
                   <ArrowRight className="h-4 w-4" />
                   Next
                 </Button>
               </div>
             </TabsContent>
-
-            <TabsContent value="questions" className="mt-6">
-              <QuestionsForm />
-
+            <TabsContent value="resources" className="space-y-6">
+              <ResourceForm />
               <div className="mt-6 w-full flex justify-end">
                 <Button
                   type="button"
-                  form="reading-lesson-form"
-                  onClick={() => setActiveTab("preview")}
+                  form="writing-lesson-form"
+                  onClick={() => setActiveTab("vocabulary")}
                 >
                   <ArrowRight className="h-4 w-4" />
                   Next
                 </Button>
               </div>
             </TabsContent>
-
-            <TabsContent value="preview" className="mt-6">
-              <PreviewTab />
-
-              <div className="mt-6 w-full flex justify-end">
-                <Button
-                  type="button"
-                  form="reading-lesson-form"
-                  onClick={() => setActiveTab("details")}
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                  Back
-                </Button>
-              </div>
+            <TabsContent value="vocabulary" className="space-y-6">
+              <VocabularyForm />
             </TabsContent>
           </Tabs>
         </form>
@@ -213,4 +196,4 @@ const ReadingLessonForm = ({
   );
 };
 
-export default ReadingLessonForm;
+export default WritingLessonForm;

@@ -11,10 +11,10 @@ import ContentForm from "@/feature/lesson/reading/components/ContentForm";
 import QuestionsForm from "@/feature/lesson/quiz/components/QuestionsForm";
 
 import {
-  readingLessonSchema,
+  speakingLessonSchema,
   defaultValues,
-  ReadingLessonFormValues,
-} from "@/feature/lesson/reading/schema";
+  SpeakingLessonFormValues,
+} from "@/feature/lesson/speaking/schema";
 import PreviewTab from "@/feature/lesson/reading/components/PreviewTab";
 import { ContentStatus, Lesson } from "@/services/swagger-types";
 import { toast } from "sonner";
@@ -25,26 +25,26 @@ import {
   LessonType,
 } from "@/feature/lesson/types/lesson";
 
-interface LessonReadingFormProps {
+interface LessonSpeakingFormProps {
   isEdit?: boolean;
   initialData?: Lesson | null;
-  onSubmit: (data: ReadingLessonFormValues) => Promise<void>;
+  onSubmit: (data: SpeakingLessonFormValues) => Promise<void>;
   isLoading?: boolean;
   onRemove?: () => void;
 }
 
-const ReadingLessonForm = ({
+const SpeakingLessonForm = ({
   isEdit = false,
   initialData = null,
   onSubmit,
   isLoading = false,
   onRemove,
-}: LessonReadingFormProps) => {
+}: LessonSpeakingFormProps) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("details");
 
-  const methods = useForm<ReadingLessonFormValues>({
-    resolver: zodResolver(readingLessonSchema),
+  const methods = useForm<SpeakingLessonFormValues>({
+    resolver: zodResolver(speakingLessonSchema),
     defaultValues: initialData
       ? {
           ...initialData,
@@ -68,7 +68,7 @@ const ReadingLessonForm = ({
     }
   }, [isEdit, initialData, methods]);
 
-  const handleSubmit = async (data: ReadingLessonFormValues) => {
+  const handleSubmit = async (data: SpeakingLessonFormValues) => {
     try {
       await onSubmit(data);
     } catch (error) {
@@ -76,7 +76,7 @@ const ReadingLessonForm = ({
     }
   };
 
-  const handleInvalid = (data: FieldErrors<ReadingLessonFormValues>) => {
+  const handleInvalid = (data: FieldErrors<SpeakingLessonFormValues>) => {
     toast.error("Form is invalid. Please check your inputs !");
     if (isDev()) {
       console.log(JSON.stringify(data, null, 2));
@@ -98,12 +98,12 @@ const ReadingLessonForm = ({
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
-            {isEdit ? "Edit Reading Lesson" : "Create Reading Lesson"}
+            {isEdit ? "Edit Speaking Lesson" : "Create Speaking Lesson"}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
             {isEdit
-              ? "Update existing reading lesson"
-              : "Create a new reading lesson for IELTS preparation"}
+              ? "Update existing speaking lesson"
+              : "Create a new speaking lesson for IELTS preparation"}
           </p>
         </div>
         <div className="flex gap-2">
@@ -213,4 +213,4 @@ const ReadingLessonForm = ({
   );
 };
 
-export default ReadingLessonForm;
+export default SpeakingLessonForm;

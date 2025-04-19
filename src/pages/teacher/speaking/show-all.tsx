@@ -8,135 +8,121 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Lesson } from "@/feature/lesson/types/lesson";
-import { Plus, Search } from "lucide-react";
+import { LESSONS_STATUS, LEVELS } from "@/feature/lesson/types/lesson";
+import { Plus, Search, Filter } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { capitalize } from "@/lib/text";
+import usePaginationUrl from "@/hooks/use-pagination-url";
+import { ContentStatus, SkillType } from "@/services/swagger-types";
+import { RouteNames } from "@/constraints/route-name";
+import { useSpeakingList } from "@/feature/lesson/speaking/hooks/useSpeaking";
+import SpeakingShowAllView from "@/feature/lesson/speaking/views/SpeakingShowAllView";
 
-import { mockIELTSLessons } from "@/feature/lesson/data";
-import { LessonCardGrid } from "@/feature/lesson/components/LessonCardGrid";
-import { LessonCardList } from "@/feature/lesson/components/LessonCardList";
-
-export default function WritingPage() {
-  const [searchTerm, setSearchTerm] = useState("");
+export default function SpeakingLessonListPage() {
+  const navigate = useNavigate();
   const [levelFilter, setLevelFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const handleViewLesson = (lesson: Lesson) => {
-    console.log("Viewing lesson:", lesson);
-  };
+  const { search, searchParam, setSearch, page, perPage, updateQueryParams } =
+    usePaginationUrl({
+      defaultPage: 1,
+      defaultPerPage: 10,
+    });
 
-  const handleEditLesson = (lesson: Lesson) => {
-    console.log("Editing lesson:", lesson);
-  };
-
-  const handleCreateLesson = () => {
-    console.log("Creating new lesson");
-  };
-
-  const filteredLessons = mockIELTSLessons.filter((lesson) => {
-    const matchesSearch =
-      lesson.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      lesson.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      lesson.tags.some((tag) =>
-        tag.toLowerCase().includes(searchTerm.toLowerCase()),
-      );
-
-    const matchesLevel =
-      levelFilter === "all" || lesson.level.toLowerCase() === levelFilter;
-
-    const matchesStatus =
-      statusFilter === "all" || lesson.status === statusFilter;
-
-    return matchesSearch && matchesLevel && matchesStatus;
+  const { data, isLoading, isError, error } = useSpeakingList({
+    skill: "speaking" as SkillType,
+    page,
+    perPage,
+    search: searchParam || undefined,
+    level: levelFilter !== "all" ? levelFilter : undefined,
+    status:
+      statusFilter !== "all" ? (statusFilter as ContentStatus) : undefined,
   });
 
+  const handleNavigateToCreate = () => {
+    navigate(`${RouteNames.TeacherSpeakingCreate}`);
+  };
+
   return (
-    <div className="container mx-auto px-4 py-4 sm:px-6 lg:px-8">
-      <div className="space-y-4 mb-4">
+    <div className="container mx-auto px-4 py-6 sm:px-6 lg:px-8">
+      <div className="space-y-6">
         <div className="flex flex-col sm:flex-row justify-between gap-4 sm:items-center">
           <div>
-            <h1 className="text-xl font-semibold tracking-tight">
-              IELTS Writing
+            <h1 className="text-2xl font-bold tracking-tight">
+              Quản lý bài học
             </h1>
-            <p className="text-xs text-muted-foreground mt-1">
-              Manage and organize your IELTS writing lesson content
+            <p className="text-sm text-muted-foreground mt-1">
+              Tạo và quản lý nội dung bài học IELTS
             </p>
           </div>
-          <Button size="sm" className="gap-1 h-8" onClick={handleCreateLesson}>
-            <Plus className="size-3.5" />
-            <span>New Writing</span>
+        </div>
+
+        <div className="flex flex-col sm:flex-row justify-between gap-4 sm:items-center">
+          <h2 className="text-xl font-semibold tracking-tight capitalize">
+            Bài học
+          </h2>
+          <Button
+            size="sm"
+            className="gap-1 h-9"
+            onClick={handleNavigateToCreate}
+          >
+            <Plus className="size-4" />
+            <span>Tạo bài học đầu tiên</span>
           </Button>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search writing lessons..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-8 h-8 text-sm"
+              placeholder="Search lessons..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-8 h-10 text-sm"
             />
           </div>
           <div className="flex flex-wrap gap-2 sm:flex-nowrap">
             <Select value={levelFilter} onValueChange={setLevelFilter}>
-              <SelectTrigger className="h-8 text-xs w-[110px]">
+              <SelectTrigger className="h-10 text-sm w-[130px]">
+                <Filter className="mr-1 h-3.5 w-3.5" />
                 <SelectValue placeholder="Level" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Levels</SelectItem>
-                <SelectItem value="beginner">Beginner</SelectItem>
-                <SelectItem value="intermediate">Intermediate</SelectItem>
-                <SelectItem value="advanced">Advanced</SelectItem>
+                {LEVELS.map((level) => (
+                  <SelectItem key={level} value={level} className="capitalize">
+                    {capitalize(level)}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="h-8 text-xs w-[110px]">
+              <SelectTrigger className="h-10 text-sm w-[130px]">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="published">Published</SelectItem>
-                <SelectItem value="draft">Draft</SelectItem>
-                <SelectItem value="deleted">Deleted</SelectItem>
+              <SelectContent className="capitalize">
+                {LESSONS_STATUS.map((status) => (
+                  <SelectItem
+                    key={status}
+                    value={status}
+                    className="capitalize"
+                  >
+                    {capitalize(status)}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
         </div>
+
+        <SpeakingShowAllView
+          data={data}
+          isLoading={isLoading}
+          isError={isError}
+          error={error}
+          onUpdateQueryParams={updateQueryParams}
+        />
       </div>
-
-      <Tabs defaultValue="grid" className="w-full">
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-xs text-muted-foreground">
-            Showing {filteredLessons.length} lessons
-          </p>
-          <TabsList className="h-8">
-            <TabsTrigger value="grid" className="text-xs px-3">
-              Grid
-            </TabsTrigger>
-            <TabsTrigger value="list" className="text-xs px-3">
-              List
-            </TabsTrigger>
-          </TabsList>
-        </div>
-
-        <TabsContent value="grid" className="w-full mt-0">
-          <LessonCardGrid
-            lessons={filteredLessons}
-            onView={handleViewLesson}
-            onEdit={handleEditLesson}
-          />
-        </TabsContent>
-
-        <TabsContent value="list" className="w-full mt-0">
-          <LessonCardList
-            lessons={filteredLessons}
-            onView={handleViewLesson}
-            onEdit={handleEditLesson}
-          />
-        </TabsContent>
-      </Tabs>
     </div>
   );
 }

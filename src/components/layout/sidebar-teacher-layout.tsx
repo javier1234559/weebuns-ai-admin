@@ -15,7 +15,6 @@ import {
   BookCheck,
   BookOpenCheck,
   BookPlus,
-  GraduationCap,
   Headphones,
   Mic,
   Send,
@@ -30,18 +29,6 @@ export const menu: IMenu[] = [
     title: "Tổng quan",
     icon: Gauge,
     to: RouteNames.Teacher,
-  },
-  {
-    title: "Bài học",
-    icon: GraduationCap,
-    to: RouteNames.TeacherLessonShowAll,
-    children: [
-      {
-        title: "Xem tất cả",
-        icon: BookOpen,
-        to: RouteNames.TeacherLessonShowAll,
-      },
-    ],
   },
   {
     title: "Writing",
