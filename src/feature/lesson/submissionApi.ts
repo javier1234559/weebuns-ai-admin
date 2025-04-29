@@ -145,6 +145,26 @@ const submissionApi = {
         throw err.response.data;
       });
   },
+
+  getWritingSubmissionById(id: string) {
+    return api
+      .lessonSubmissionControllerFindOneWriting(id)
+      .then((res: AxiosResponse<WritingSubmissionResponse>) => res.data)
+      .catch((err: any) => {
+        handleApiError(err);
+        throw err.response.data;
+      });
+  },
+
+  updateWritingSubmission(id: string, data: UpdateWritingSubmissionDTO) {
+    return api
+      .lessonSubmissionControllerUpdateWriting(id, data)
+      .then((res: AxiosResponse<WritingSubmissionResponse>) => res.data)
+      .catch((err: any) => {
+        handleApiError(err);
+        throw err.response.data;
+      });
+  },
 };
 
 export default submissionApi;

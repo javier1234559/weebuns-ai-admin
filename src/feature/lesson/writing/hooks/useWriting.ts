@@ -8,6 +8,8 @@ import {
   SkillType,
   SubmissionStatus,
   UpdateWritingDTO,
+  UpdateWritingSubmissionDTO,
+  WritingSubmission,
 } from "@/services/swagger-types";
 import {
   useMutation,
@@ -97,14 +99,58 @@ export interface SubmissionQueryParams {
   tags?: string;
 }
 
+export const WRITING_SUBMISSION_KEY_FACTORY = {
+  all: ["submission"] as const,
+  lists: () => [...WRITING_SUBMISSION_KEY_FACTORY.all, "list"] as const,
+  list: (params: any) =>
+    [...WRITING_SUBMISSION_KEY_FACTORY.lists(), params] as const,
+  details: () => [...WRITING_SUBMISSION_KEY_FACTORY.all, "detail"] as const,
+  detail: (id: string) =>
+    [...WRITING_SUBMISSION_KEY_FACTORY.details(), id] as const,
+};
+
 export const useWritingSubmissionTeacher = (
   params: SubmissionQueryParams,
   options?: UseQueryOptions<LessonSubmissionsResponse>,
 ) => {
   return useQuery({
-    queryKey: WRITING_KEY_FACTORY.list(params),
+    queryKey: WRITING_SUBMISSION_KEY_FACTORY.list(params),
     queryFn: () => submissionApi.getAllSubmissions(params),
     staleTime: 1000 * 60 * 5, // 5 minutes
     ...(typeof options === "object" ? options : {}),
+  });
+};
+
+export const useWritingSubmissionDetail = (
+  id: string | null,
+  options?: UseQueryOptions<WritingSubmission>,
+) => {
+  return useQuery({
+    queryKey: WRITING_SUBMISSION_KEY_FACTORY.detail(id ?? ""),
+    queryFn: async () => {
+      const response = await submissionApi.getWritingSubmissionById(id ?? "");
+      return response.data;
+    },
+    enabled: !!id,
+    ...(typeof options === "object" ? options : {}),
+  });
+};
+
+export const useWritingUpdateSubmissionTeacher = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: UpdateWritingSubmissionDTO;
+    }) => submissionApi.updateWritingSubmission(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: WRITING_SUBMISSION_KEY_FACTORY.all,
+      });
+    },
   });
 };

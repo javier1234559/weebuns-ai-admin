@@ -45,7 +45,9 @@ export enum RouteNames {
   TeacherWritingGrading = "/teacher/writing/grading",
   TeacherWritingGradingDetail = "/teacher/writing/grading/:id",
   TeacherWritingUpdate = "/teacher/writing/:id/update",
-  WritingDetail = "/lesson/writing/detail/:id",
+  TeacherWritingGradingUpdate = "/teacher/writing/grading/:submissionId/update",
+  WritingDetail = "/lesson/writing/:id",
+  WritingResultDetail = "/lesson/writing/grading/:id",
 
   TeacherSpeakingCreate = "/teacher/speaking/create",
   TeacherSpeakingShowAll = "/teacher/speaking/show-all",
@@ -53,17 +55,17 @@ export enum RouteNames {
   TeacherSpeakingGradingDetail = "/teacher/speaking/grading/:id",
   TeacherSpeakingUpdate = "/teacher/speaking/:id/update",
   TeacherSpeakingDetail = "/teacher/speaking/:id",
-  SpeakingDetail = "/lesson/speaking/detail/:id",
+  SpeakingDetail = "/lesson/speaking/:id",
 
   TeacherListeningCreate = "/teacher/listening/create",
   TeacherListeningShowAll = "/teacher/listening/show-all",
   TeacherListeningUpdate = "/teacher/listening/:id/update",
-  ListeningDetail = "/lesson/listening/detail/:id",
+  ListeningDetail = "/lesson/listening/:id",
 
   TeacherReadingCreate = "/teacher/reading/create",
   TeacherReadingShowAll = "/teacher/reading/show-all",
   TeacherReadingUpdate = "/teacher/reading/:id/update",
-  ReadingDetail = "/reading/:id",
+  ReadingDetail = "/lesson/reading/:id",
 }
 
 export function replaceRouteName(

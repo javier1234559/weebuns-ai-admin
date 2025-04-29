@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -8,20 +7,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LESSONS_STATUS, LEVELS } from "@/feature/lesson/types/lesson";
-import { Plus, Search, Filter } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Search, Filter } from "lucide-react";
 import { capitalize } from "@/lib/text";
 import usePaginationUrl from "@/hooks/use-pagination-url";
-import { SkillType } from "@/services/swagger-types";
-import { RouteNames } from "@/constraints/route-name";
+import { SkillType, SubmissionStatus } from "@/services/swagger-types";
 import { useWritingSubmissionTeacher } from "@/feature/lesson/writing/hooks/useWriting";
-import WritingShowAllView from "@/feature/lesson/writing/views/WritingShowAllView";
+import WritingGradingShowAllView from "@/feature/lesson/writing/views/WritingGradingShowAllView";
 
 export default function GradeWritingLessonPage() {
-  const navigate = useNavigate();
-  const [levelFilter, setLevelFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState<SubmissionStatus>(
+    SubmissionStatus.Submitted,
+  );
 
   const { search, searchParam, setSearch, page, perPage, updateQueryParams } =
     usePaginationUrl({
@@ -30,16 +26,12 @@ export default function GradeWritingLessonPage() {
     });
 
   const { data, isLoading, isError, error } = useWritingSubmissionTeacher({
-    skill: "writing" as SkillType,
+    submissionType: "writing" as SkillType,
     page,
     perPage,
     search: searchParam || undefined,
-    level: levelFilter !== "all" ? levelFilter : undefined,
+    status: statusFilter,
   });
-
-  const handleNavigateToCreate = () => {
-    navigate(`${RouteNames.TeacherWritingCreate}`);
-  };
 
   return (
     <div className="container mx-auto px-4 py-6 sm:px-6 lg:px-8">
@@ -47,26 +39,12 @@ export default function GradeWritingLessonPage() {
         <div className="flex flex-col sm:flex-row justify-between gap-4 sm:items-center">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">
-              Quản lý bài viết
+              Quản lý bài chấm điểm
             </h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Tạo và quản lý nội dung bài viết IELTS
+              Chấm điểm bài viết
             </p>
           </div>
-        </div>
-
-        <div className="flex flex-col sm:flex-row justify-between gap-4 sm:items-center">
-          <h2 className="text-xl font-semibold tracking-tight capitalize">
-            Bài viết
-          </h2>
-          <Button
-            size="sm"
-            className="gap-1 h-9"
-            onClick={handleNavigateToCreate}
-          >
-            <Plus className="size-4" />
-            <span>Tạo bài viết đầu tiên</span>
-          </Button>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3">
@@ -80,26 +58,18 @@ export default function GradeWritingLessonPage() {
             />
           </div>
           <div className="flex flex-wrap gap-2 sm:flex-nowrap">
-            <Select value={levelFilter} onValueChange={setLevelFilter}>
+            <Select
+              value={statusFilter}
+              onValueChange={(value) =>
+                setStatusFilter(value as SubmissionStatus)
+              }
+            >
               <SelectTrigger className="h-10 text-sm w-[130px]">
                 <Filter className="mr-1 h-3.5 w-3.5" />
-                <SelectValue placeholder="Level" />
-              </SelectTrigger>
-              <SelectContent>
-                {LEVELS.map((level) => (
-                  <SelectItem key={level} value={level} className="capitalize">
-                    {capitalize(level)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="h-10 text-sm w-[130px]">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
-              <SelectContent className="capitalize">
-                {LESSONS_STATUS.map((status) => (
+              <SelectContent>
+                {Object.values(SubmissionStatus).map((status) => (
                   <SelectItem
                     key={status}
                     value={status}
@@ -113,7 +83,7 @@ export default function GradeWritingLessonPage() {
           </div>
         </div>
 
-        <WritingShowAllView
+        <WritingGradingShowAllView
           data={data}
           isLoading={isLoading}
           isError={isError}
