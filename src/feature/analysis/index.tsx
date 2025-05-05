@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/card";
 import { Overview } from "./components/overview";
 import { RecentSales } from "./components/recent-sales";
+import { dataOverview } from "@/feature/analysis/data";
 
 export default function Analysis() {
   return (
@@ -114,7 +115,7 @@ export default function Analysis() {
             <CardTitle>Overview</CardTitle>
           </CardHeader>
           <CardContent className="pl-2">
-            <Overview />
+            <Overview data={dataOverview} />
           </CardContent>
         </Card>
         <Card className="col-span-3">

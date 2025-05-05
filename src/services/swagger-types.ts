@@ -160,44 +160,6 @@ export interface EvaluateEssayResponseDto {
   overall_feedback: string;
 }
 
-export interface PaginationOutputDto {
-  /**
-   * Total number of items
-   * @example 100
-   */
-  totalItems: number;
-  /**
-   * Current page number
-   * @example 1
-   */
-  currentPage: number;
-  /**
-   * Total number of pages
-   * @example 10
-   */
-  totalPages: number;
-  /**
-   * Number of items per page
-   * @example 10
-   */
-  itemsPerPage: number;
-  /**
-   * Indicates if there is a next page
-   * @example true
-   */
-  hasNextPage: boolean;
-  /**
-   * Indicates if there is a previous page
-   * @example false
-   */
-  hasPreviousPage: boolean;
-}
-
-export interface UsersResponse {
-  data: string[];
-  pagination: PaginationOutputDto;
-}
-
 export enum UserRole {
   User = "user",
   Admin = "admin",
@@ -235,7 +197,6 @@ export interface StudentProfileEntity {
   targetSpeaking: number | null;
   /** @format date-time */
   nextExamDate: string | null;
-  tokensBalance: number;
   /** @format date-time */
   createdAt: string;
   /** @format date-time */
@@ -247,33 +208,88 @@ export interface StudentProfileEntity {
 export interface UserDto {
   /** @example "00321d6f-2bcf-4985-9659-92a571275da6" */
   id: string;
-  /** @example "john@example.com" */
-  email: string;
   /** @example "johndoe" */
   username: string;
+  /** @example "john@example.com" */
+  email: string;
+  /**
+   * User role in the system
+   * @example "user"
+   */
+  role: UserRole;
+  /**
+   * Authentication provider used
+   * @example "local"
+   */
+  authProvider: AuthProvider;
+  authProviderId: string | null;
   /** @example "John" */
   firstName: string | null;
   /** @example "Doe" */
   lastName: string | null;
-  /** @example "user" */
-  role: UserRole;
-  /** @example "local" */
-  authProvider: AuthProvider;
-  authProviderId: string | null;
+  /** @example "https://example.com/avatar.jpg" */
+  profilePicture: string | null;
   /** @example false */
   isEmailVerified: boolean;
   /** @format date-time */
   lastLogin: string | null;
-  /** @format date-time */
+  /**
+   * @format date-time
+   * @example "2024-01-01T00:00:00.000Z"
+   */
   createdAt: string;
-  /** @format date-time */
+  /**
+   * @format date-time
+   * @example "2024-01-01T00:00:00.000Z"
+   */
   updatedAt: string;
-  /** @format date-time */
+  /**
+   * Timestamp when the user was deleted (soft delete)
+   * @format date-time
+   */
   deletedAt: string | null;
-  /** @example "https://example.com/avatar.jpg" */
-  profilePicture: string | null;
   teacherProfile: TeacherProfileEntity | null;
   studentProfile: StudentProfileEntity | null;
+}
+
+export interface PaginationOutputDto {
+  /**
+   * Total number of items
+   * @example 100
+   */
+  totalItems: number;
+  /**
+   * Current page number
+   * @example 1
+   */
+  currentPage: number;
+  /**
+   * Total number of pages
+   * @example 10
+   */
+  totalPages: number;
+  /**
+   * Number of items per page
+   * @example 10
+   */
+  itemsPerPage: number;
+  /**
+   * Indicates if there is a next page
+   * @example true
+   */
+  hasNextPage: boolean;
+  /**
+   * Indicates if there is a previous page
+   * @example false
+   */
+  hasPreviousPage: boolean;
+}
+
+export interface UsersResponse {
+  /** List of users */
+  data: UserDto[];
+  /** Pagination details */
+  pagination: PaginationOutputDto;
 }
 
 export interface UserResponse {
@@ -877,37 +893,72 @@ export interface UpdateSpeakingDTO {
 }
 
 export interface CreateCommentDto {
-  /** The ID of the entity being commented on */
-  entityId: string;
-  /** The content of the comment */
+  /** Identifier to group comments (e.g. writing-all, writing-detail-123) */
+  identifierId: string;
+  /** Content of the comment */
   content: string;
-  /** The ID of the parent comment if this is a reply */
+  /** Parent comment ID if this is a reply */
   parentId?: string;
-  /** The ID of the submission being commented on */
-  submissionId: string;
 }
 
-export type Comment = object;
-
-export interface CreateCommentResponse {
-  comment: Comment;
+export interface CommentUserResponse {
+  id: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  profilePicture: string;
+  role: "user" | "admin" | "teacher";
 }
 
-export interface CommentsResponse {
-  comments: Comment[];
-  pagination: PaginationOutputDto;
+export interface CommentReactionResponse {
+  id: string;
+  userId: string;
+  type: "like" | "teacher_heart";
+  /** @format date-time */
+  createdAt: string;
 }
 
 export interface CommentResponse {
-  comment: Comment;
+  id: string;
+  identifierId: string;
+  userId: string;
+  content: string;
+  parentId: object;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  deletedAt: object;
+  lessonSubmissionId: object;
+  user: CommentUserResponse;
+  reactions: CommentReactionResponse[];
+  _count: object;
+  likesCount: number;
+  lovesCount: number;
+  hasReplies: boolean;
+  userReaction: "like" | "teacher_heart" | null;
 }
 
-export interface UpdateCommentResponse {
-  comment: Comment;
+export interface CreateCommentResponse {
+  comment: CommentResponse;
+}
+
+export interface CommentsResponse {
+  data: CommentResponse[];
+  pagination: PaginationOutputDto;
+}
+
+export interface AddReactionDto {
+  /** Type of reaction (like, teacher_heart) */
+  type: "like" | "teacher_heart";
+}
+
+export interface AddReactionResponse {
+  message: string;
 }
 
 export interface DeleteCommentResponse {
-  comment: Comment;
+  message: string;
 }
 
 export interface LessonSubmissionsResponse {
@@ -1145,37 +1196,17 @@ export interface UpdateWritingSubmissionDTO {
 export interface CreateVocabularyDto {
   term: string;
   meaning: string[];
-  exampleSentence?: string | null;
-  imageUrl?: string | null;
-  referenceLink?: string | null;
-  referenceName?: string | null;
-  tags: string[];
-  /** @format date-time */
-  nextReview?: string | null;
+  exampleSentence?: string;
+  imageUrl?: string;
+  referenceLink?: string;
+  referenceName?: string;
   /**
    * Repetition level from 0 to 6
    * @example 1
    */
-  repetitionLevel?: number | null;
-}
-
-export interface VocabularyDto {
-  id: string;
-  term: string;
-  meaning: string[];
-  exampleSentence: string | null;
-  imageUrl: string | null;
-  referenceLink: string | null;
-  referenceName: string | null;
-  tags: string[];
-  /** @format int32 */
-  repetitionLevel: number;
+  repetitionLevel?: number;
   /** @format date-time */
-  nextReview: string | null;
-  /** @format date-time */
-  createdAt: string;
-  /** @format date-time */
-  updatedAt: string;
+  nextReview?: string;
 }
 
 export interface VocabularyPractice {
@@ -1202,7 +1233,6 @@ export interface Vocabulary {
   imageUrl: string | null;
   referenceLink: string | null;
   referenceName: string | null;
-  tags: string[];
   /** @format int32 */
   repetitionLevel: number;
   /** @format date-time */
@@ -1218,24 +1248,27 @@ export interface Vocabulary {
 
 export interface VocabularyResponseDto {
   data: Vocabulary;
+}
+
+export interface VocabulariesResponse {
+  data: Vocabulary[];
   pagination: PaginationOutputDto;
 }
 
 export interface UpdateVocabularyDto {
   term?: string;
   meaning?: string[];
-  exampleSentence?: string | null;
-  imageUrl?: string | null;
-  referenceLink?: string | null;
-  referenceName?: string | null;
-  tags?: string[];
-  /** @format date-time */
-  nextReview?: string | null;
+  exampleSentence?: string;
+  imageUrl?: string;
+  referenceLink?: string;
+  referenceName?: string;
   /**
    * Repetition level from 0 to 6
    * @example 1
    */
-  repetitionLevel?: number | null;
+  repetitionLevel?: number;
+  /** @format date-time */
+  nextReview?: string;
 }
 
 export interface UpdateVocabularyReviewDto {
@@ -1246,9 +1279,88 @@ export interface UpdateVocabularyReviewDto {
   repetitionLevel: number;
 }
 
-export interface DeleteVocabularyResponseDto {
-  /** @example "Vocabulary deleted successfully" */
+export interface DeleteVocabularyResponse {
   message: string;
+}
+
+export interface TokenWallet {
+  id: string;
+  userId: string;
+  balance: number;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  deletedAt?: object;
+}
+
+export interface TokenWalletResponse {
+  wallet: TokenWallet;
+}
+
+export interface TokenPackage {
+  id: string;
+  pricePerToken: number;
+  oldPricePerToken: number;
+  message: string;
+  popular: boolean;
+  code: string;
+  name: string;
+  tokens: number;
+  price: number;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+}
+
+export interface TokenPackagesResponse {
+  packages: TokenPackage[];
+}
+
+export interface CreateTransactionDto {
+  packageCode: string;
+  paymentType: "bank" | "momo" | "zalopay" | "internal";
+}
+
+export interface PaymentUrlResponse {
+  paymentUrl: string;
+}
+
+export interface Transaction {
+  id: string;
+  transactionId: string;
+  userId: string;
+  packageId: object;
+  currency: string;
+  amount: number;
+  tokenAmount: number;
+  paymentType: "bank" | "momo" | "zalopay" | "internal";
+  status: "pending" | "completed" | "failed" | "refunded";
+  /** @format date-time */
+  paymentDate: string;
+  type: "token_purchase" | "token_use";
+  reason?: object;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  package?: TokenPackage;
+  user?: User;
+}
+
+export interface TransactionsResponse {
+  data: Transaction[];
+  pagination: PaginationOutputDto;
+}
+
+export interface UseTokensDto {
+  tokenAmount: number;
+  reason?: string;
+}
+
+export interface TransactionResponse {
+  transaction: Transaction;
 }
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
@@ -1560,6 +1672,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         /** @default 10 */
         perPage?: number;
         search?: string;
+        role?: string;
       },
       params: RequestParams = {},
     ) =>
@@ -2212,7 +2325,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags comments
      * @name CommentControllerCreate
-     * @summary Create a new comment
      * @request POST:/api/comments
      * @secure
      */
@@ -2232,7 +2344,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags comments
      * @name CommentControllerFindAll
-     * @summary Get all comments
      * @request GET:/api/comments
      * @secure
      */
@@ -2242,7 +2353,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         page?: number;
         /** @default 10 */
         perPage?: number;
-        submissionId: string;
+        /** Identifier to filter comments (e.g. writing-all, writing-detail-123) */
+        identifierId: string;
       },
       params: RequestParams = {},
     ) =>
@@ -2259,15 +2371,25 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags comments
-     * @name CommentControllerFindOne
-     * @summary Get a comment by ID
-     * @request GET:/api/comments/{id}
+     * @name CommentControllerFindReplies
+     * @request GET:/api/comments/replies
      * @secure
      */
-    commentControllerFindOne: (id: string, params: RequestParams = {}) =>
-      this.request<CommentResponse, any>({
-        path: `/api/comments/${id}`,
+    commentControllerFindReplies: (
+      query: {
+        /** @default 1 */
+        page?: number;
+        /** @default 10 */
+        perPage?: number;
+        /** Comment ID to get replies for */
+        commentId: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<CommentsResponse, any>({
+        path: `/api/comments/replies`,
         method: "GET",
+        query: query,
         secure: true,
         format: "json",
         ...params,
@@ -2277,16 +2399,17 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags comments
-     * @name CommentControllerUpdate
-     * @summary Update a comment
-     * @request PUT:/api/comments/{id}
+     * @name CommentControllerAddReaction
+     * @request POST:/api/comments/{id}/reactions
      * @secure
      */
-    commentControllerUpdate: (id: string, params: RequestParams = {}) =>
-      this.request<UpdateCommentResponse, any>({
-        path: `/api/comments/${id}`,
-        method: "PUT",
+    commentControllerAddReaction: (id: string, data: AddReactionDto, params: RequestParams = {}) =>
+      this.request<AddReactionResponse, any>({
+        path: `/api/comments/${id}/reactions`,
+        method: "POST",
+        body: data,
         secure: true,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -2295,33 +2418,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags comments
-     * @name CommentControllerRemove
-     * @summary Delete a comment
+     * @name CommentControllerDelete
      * @request DELETE:/api/comments/{id}
      * @secure
      */
-    commentControllerRemove: (id: string, params: RequestParams = {}) =>
+    commentControllerDelete: (id: string, params: RequestParams = {}) =>
       this.request<DeleteCommentResponse, any>({
         path: `/api/comments/${id}`,
         method: "DELETE",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags comments
-     * @name CommentControllerFindReplies
-     * @summary Get all replies for a comment
-     * @request GET:/api/comments/{id}/replies
-     * @secure
-     */
-    commentControllerFindReplies: (id: string, params: RequestParams = {}) =>
-      this.request<CommentResponse[], any>({
-        path: `/api/comments/${id}/replies`,
-        method: "GET",
         secure: true,
         format: "json",
         ...params,
@@ -2581,7 +2685,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     vocabularyControllerCreate: (data: CreateVocabularyDto, params: RequestParams = {}) =>
-      this.request<VocabularyDto, any>({
+      this.request<VocabularyResponseDto, any>({
         path: `/api/vocabularies`,
         method: "POST",
         body: data,
@@ -2606,14 +2710,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         page?: number;
         /** @default 10 */
         perPage?: number;
-        /** Filter vocabularies by tags */
-        tags?: string[];
-        /** Search vocabularies by term */
-        term?: string;
+        search?: string;
+        repetitionLevel?: number;
+        dueDate?: boolean;
       },
       params: RequestParams = {},
     ) =>
-      this.request<VocabularyResponseDto, any>({
+      this.request<VocabulariesResponse, any>({
         path: `/api/vocabularies`,
         method: "GET",
         query: query,
@@ -2632,7 +2735,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     vocabularyControllerGetDueVocabularies: (params: RequestParams = {}) =>
-      this.request<VocabularyDto[], any>({
+      this.request<VocabulariesResponse, any>({
         path: `/api/vocabularies/due`,
         method: "GET",
         secure: true,
@@ -2650,7 +2753,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     vocabularyControllerFindOne: (id: string, params: RequestParams = {}) =>
-      this.request<VocabularyDto, any>({
+      this.request<VocabularyResponseDto, any>({
         path: `/api/vocabularies/${id}`,
         method: "GET",
         secure: true,
@@ -2668,7 +2771,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     vocabularyControllerUpdate: (id: string, data: UpdateVocabularyDto, params: RequestParams = {}) =>
-      this.request<VocabularyDto, any>({
+      this.request<VocabularyResponseDto, any>({
         path: `/api/vocabularies/${id}`,
         method: "PATCH",
         body: data,
@@ -2688,7 +2791,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     vocabularyControllerRemove: (id: string, params: RequestParams = {}) =>
-      this.request<DeleteVocabularyResponseDto, any>({
+      this.request<DeleteVocabularyResponse, any>({
         path: `/api/vocabularies/${id}`,
         method: "DELETE",
         secure: true,
@@ -2706,9 +2809,157 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     vocabularyControllerUpdateReviewStatus: (id: string, data: UpdateVocabularyReviewDto, params: RequestParams = {}) =>
-      this.request<VocabularyDto, any>({
+      this.request<VocabularyResponseDto, any>({
         path: `/api/vocabularies/${id}/review`,
         method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags payments
+     * @name PaymentControllerHandleCallback
+     * @request POST:/api/payments/{provider}/callback
+     */
+    paymentControllerHandleCallback: (provider: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/payments/${provider}/callback`,
+        method: "POST",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags token
+     * @name TokenControllerGetWallet
+     * @request GET:/api/token/wallet
+     * @secure
+     */
+    tokenControllerGetWallet: (params: RequestParams = {}) =>
+      this.request<TokenWalletResponse, any>({
+        path: `/api/token/wallet`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags token
+     * @name TokenControllerGetPackages
+     * @request GET:/api/token/plans
+     * @secure
+     */
+    tokenControllerGetPackages: (params: RequestParams = {}) =>
+      this.request<TokenPackagesResponse, any>({
+        path: `/api/token/plans`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags token
+     * @name TokenControllerCreateTransaction
+     * @request POST:/api/token/charge
+     * @secure
+     */
+    tokenControllerCreateTransaction: (data: CreateTransactionDto, params: RequestParams = {}) =>
+      this.request<PaymentUrlResponse, any>({
+        path: `/api/token/charge`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags token
+     * @name TokenControllerGetTransactions
+     * @request GET:/api/token/transactions
+     * @secure
+     */
+    tokenControllerGetTransactions: (
+      query?: {
+        /** @default 1 */
+        page?: number;
+        /** @default 10 */
+        perPage?: number;
+        paymentType?: string;
+        status?: string;
+        type?: string;
+        from?: string;
+        to?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<TransactionsResponse, any>({
+        path: `/api/token/transactions`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags token
+     * @name TokenControllerGetAdminTransactions
+     * @request GET:/api/token/admin/transactions
+     * @secure
+     */
+    tokenControllerGetAdminTransactions: (
+      query?: {
+        /** @default 1 */
+        page?: number;
+        /** @default 10 */
+        perPage?: number;
+        paymentType?: string;
+        status?: string;
+        type?: string;
+        from?: string;
+        to?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<TransactionsResponse, any>({
+        path: `/api/token/admin/transactions`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags token
+     * @name TokenControllerUseTokens
+     * @request POST:/api/token/use
+     * @secure
+     */
+    tokenControllerUseTokens: (data: UseTokensDto, params: RequestParams = {}) =>
+      this.request<TransactionResponse, any>({
+        path: `/api/token/use`,
+        method: "POST",
         body: data,
         secure: true,
         type: ContentType.Json,

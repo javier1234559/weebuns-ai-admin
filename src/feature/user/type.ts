@@ -42,16 +42,82 @@ export const userRoles = ["user", "admin", "teacher"] as const;
 
 export const userSchema = z.object({
   id: z.string(),
-  amount: z.string(),
-  status: z.enum(userStatuses),
-  email: z.string().email(),
-  name: z.string(),
-  avatar: z.string(),
+  username: z.string(),
+  email: z.string(),
+  role: z.enum(["admin", "teacher", "user"]),
+  profilePicture: z.string().optional(),
   createdAt: z.string(),
-  role: z.enum(userRoles),
+  isEmailVerified: z.boolean(),
   bio: z.string(),
 });
 
-export type IUsers = z.infer<typeof userSchema>;
-
 export const userStatus = ["active", "inactive", "pending"] as const;
+
+export type UserRole = "admin" | "teacher" | "user";
+export type AuthProvider = "local" | "google" | "facebook";
+
+export interface TeacherProfile {
+  id: string;
+  userId: string;
+  specialization: string[];
+  qualification: string | null;
+  teachingExperience: number | null;
+  hourlyRate: number | null;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+}
+
+export interface StudentProfile {
+  id: string;
+  userId: string;
+  targetStudyDuration: number | null;
+  targetReading: number | null;
+  targetListening: number | null;
+  targetWriting: number | null;
+  targetSpeaking: number | null;
+  nextExamDate: string | null;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+}
+
+export interface IUsers {
+  id: string;
+  username: string;
+  email: string;
+  role: UserRole;
+  authProvider: AuthProvider;
+  authProviderId: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  profilePicture: string | null;
+  isEmailVerified: boolean;
+  lastLogin: string | null;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  teacherProfile: TeacherProfile | null;
+  studentProfile: StudentProfile | null;
+}
+
+export interface PaginationResponse {
+  totalItems: number;
+  currentPage: number;
+  totalPages: number;
+  itemsPerPage: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface UsersResponse {
+  data: IUsers[];
+  pagination: {
+    totalItems: number;
+    currentPage: number;
+    totalPages: number;
+    itemsPerPage: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}

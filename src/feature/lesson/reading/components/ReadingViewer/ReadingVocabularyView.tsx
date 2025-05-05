@@ -11,7 +11,7 @@ import {
 } from "@floating-ui/react";
 import { splitTextPreserveHtml } from "@/lib/text";
 import { cn } from "@/lib/utils";
-import VocabularyCard from "@/feature/vocabulary/VocabularyCard";
+import VocabularyCard from "@/feature/vocabulary/components/VocabularyCard";
 
 interface WordStatus {
   isKnown: boolean;

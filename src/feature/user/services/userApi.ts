@@ -1,72 +1,21 @@
 import { handleApiError } from "@/lib/utils";
 import api from "@/services/baseApi";
 import {
-  LoginDto,
-  RegisterDto,
   RequestResetPasswordDto,
   ResetPasswordDto,
   VerifyResetCodeDto,
+  TeacherDto,
+  ProfileDto,
 } from "@/services/swagger-types";
 
-const authApi = {
-  login: (form: LoginDto) =>
-    api
-      .authControllerLogin(form)
-      .then((res) => res.data)
-      .catch((error) => {
-        handleApiError(error?.response?.data);
-        throw new Error(
-          error?.response?.data?.error || "Đã xảy ra lỗi khi đăng nhập",
-        );
-      }),
+export interface FindAllUserQuery {
+  search?: string;
+  page?: number;
+  perPage?: number;
+  role?: string;
+}
 
-  register: (form: RegisterDto) =>
-    api
-      .authControllerRegister(form)
-      .then((res) => res.data)
-      .catch((error) => {
-        handleApiError(error?.response?.data);
-        throw new Error(
-          error?.response?.data?.error || "Đã xảy ra lỗi khi đăng ký",
-        );
-      }),
-
-  loginGoogle: (accessToken: string) =>
-    api
-      .authControllerLoginWithGoogle({ accessToken })
-      .then((res) => res.data)
-      .catch((error) => {
-        handleApiError(error?.response?.data);
-        throw new Error(
-          error?.response?.data?.error ||
-            "Đã xảy ra lỗi khi đăng nhập với Google",
-        );
-      }),
-
-  loginFacebook: (accessToken: string) =>
-    api
-      .authControllerLoginWithFacebook({ accessToken })
-      .then((res) => res.data)
-      .catch((error) => {
-        handleApiError(error?.response?.data);
-        throw new Error(
-          error?.response?.data?.error ||
-            "Đã xảy ra lỗi khi đăng nhập với Facebook",
-        );
-      }),
-
-  getCurrentUser: () =>
-    api
-      .authControllerMe()
-      .then((res) => res.data)
-      .catch((error) => {
-        handleApiError(error?.response?.data);
-        throw new Error(
-          error?.response?.data?.error ||
-            "Đã xảy ra lỗi khi lấy thông tin người dùng",
-        );
-      }),
-
+const userApi = {
   logout: () =>
     api
       .authControllerLogout()
@@ -124,6 +73,88 @@ const authApi = {
             "Đã xảy ra lỗi khi cập nhật thông tin",
         );
       }),
+
+  findAll: (params: FindAllUserQuery) =>
+    api
+      .userControllerFindAll(params)
+      .then((res) => res.data)
+      .catch((error) => {
+        handleApiError(error?.response?.data);
+        throw new Error(
+          error?.response?.data?.error ||
+            "Đã xảy ra lỗi khi lấy danh sách người dùng",
+        );
+      }),
+
+  findById: (id: string) =>
+    api
+      .userControllerFindById(id)
+      .then((res) => res.data)
+      .catch((error) => {
+        handleApiError(error?.response?.data);
+        throw new Error(
+          error?.response?.data?.error ||
+            "Đã xảy ra lỗi khi lấy thông tin người dùng",
+        );
+      }),
+
+  createTeacher: (data: TeacherDto) =>
+    api
+      .userControllerCreateTeacher(data)
+      .then((res) => res.data)
+      .catch((error) => {
+        handleApiError(error?.response?.data);
+        throw new Error(
+          error?.response?.data?.error || "Đã xảy ra lỗi khi tạo giáo viên",
+        );
+      }),
+
+  updateTeacher: (id: string, data: TeacherDto) =>
+    api
+      .userControllerUpdateTeacher(id, data)
+      .then((res) => res.data)
+      .catch((error) => {
+        handleApiError(error?.response?.data);
+        throw new Error(
+          error?.response?.data?.error ||
+            "Đã xảy ra lỗi khi cập nhật giáo viên",
+        );
+      }),
+
+  updateTeacherProfile: (id: string, data: ProfileDto) =>
+    api
+      .userControllerUpdateTeacherProfile(id, data)
+      .then((res) => res.data)
+      .catch((error) => {
+        handleApiError(error?.response?.data);
+        throw new Error(
+          error?.response?.data?.error ||
+            "Đã xảy ra lỗi khi cập nhật thông tin giáo viên",
+        );
+      }),
+
+  updateStudentProfile: (id: string, data: ProfileDto) =>
+    api
+      .userControllerUpdateStudentProfile(id, data)
+      .then((res) => res.data)
+      .catch((error) => {
+        handleApiError(error?.response?.data);
+        throw new Error(
+          error?.response?.data?.error ||
+            "Đã xảy ra lỗi khi cập nhật thông tin học viên",
+        );
+      }),
+
+  remove: (id: string) =>
+    api
+      .userControllerRemove(id)
+      .then((res) => res.data)
+      .catch((error) => {
+        handleApiError(error?.response?.data);
+        throw new Error(
+          error?.response?.data?.error || "Đã xảy ra lỗi khi xóa người dùng",
+        );
+      }),
 };
 
-export default authApi;
+export default userApi;

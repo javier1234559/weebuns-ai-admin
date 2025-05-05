@@ -22,7 +22,7 @@ import { useState } from "react";
 import { RouteNames } from "@/constraints/route-name";
 import { ROLES } from "@/constraints";
 import { ILoginForm, loginFormSchema } from "./schema";
-import { useLogin } from "@/feature/user/hooks/useUserQueries";
+import { useLogin } from "@/feature/user/hooks/useAuth";
 import { IUser, useAuthStore } from "@/stores/auth-store";
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement> & {

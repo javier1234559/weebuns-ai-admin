@@ -4,15 +4,7 @@ import type {
 } from "@/components/feature/data-table/pro-table/types";
 import { ProTable } from "@/components/feature/data-table/pro-table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -20,12 +12,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import type { PaginationState } from "@tanstack/react-table";
 import * as React from "react";
-
-import { Ellipsis } from "lucide-react";
 import { IUsers } from "@/feature/user/type";
+import { useUserList } from "@/feature/user/hooks/useUser";
+import UserActions from "@/feature/user/components/UserActions";
 
 const columns: ColumnDef<IUsers>[] = [
   {
@@ -51,27 +42,27 @@ const columns: ColumnDef<IUsers>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "id",
-    header: "ID",
+    accessorKey: "username",
+    header: "Username",
     cell: ({ row }) => (
-      <div className="lowercase line-clamp-1">{row.getValue("id")}</div>
+      <div className="lowercase">{row.getValue("username")}</div>
     ),
     search: {
-      placeholder: "Search by ID",
+      placeholder: "Search by username",
     },
   },
   {
-    accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => <div className="lowercase">{row.getValue("name")}</div>,
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
     search: {
-      placeholder: "Search by name",
+      placeholder: "Search by email",
     },
   },
   {
     accessorKey: "role",
     header: "Role",
-    cell: ({ row }) => <div className="lowercase">{row.getValue("role")}</div>,
+    cell: ({ row }) => <div className="capitalize">{row.getValue("role")}</div>,
     search: {
       render: ({ value, onChange }) => (
         <Select value={value} onValueChange={onChange}>
@@ -80,6 +71,7 @@ const columns: ColumnDef<IUsers>[] = [
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="admin">Admin</SelectItem>
+            <SelectItem value="teacher">Teacher</SelectItem>
             <SelectItem value="user">User</SelectItem>
           </SelectContent>
         </Select>
@@ -87,13 +79,15 @@ const columns: ColumnDef<IUsers>[] = [
     },
   },
   {
-    accessorKey: "avatar",
+    accessorKey: "profilePicture",
     header: "Avatar",
     cell: ({ row }) => (
       <div className="lowercase">
         <Avatar>
-          <AvatarImage src={row.getValue("avatar")} />
-          <AvatarFallback>{row.original.name.charAt(0)}</AvatarFallback>
+          <AvatarImage src={row.getValue("profilePicture")} />
+          <AvatarFallback>
+            {row.original.username?.charAt(0) || "U"}
+          </AvatarFallback>
         </Avatar>
       </div>
     ),
@@ -119,87 +113,34 @@ const columns: ColumnDef<IUsers>[] = [
     },
   },
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "isEmailVerified",
+    header: "Email Verified",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
+      <div className="capitalize">
+        {row.getValue("isEmailVerified") ? "Yes" : "No"}
+      </div>
     ),
-    search: {
-      placeholder: "Search by status",
-      render: ({ value, onChange }) => (
-        <Select value={value} onValueChange={onChange}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="active">Active</SelectItem>
-            <SelectItem value="inactive">Inactive</SelectItem>
-            <SelectItem value="pending">Pending</SelectItem>
-          </SelectContent>
-        </Select>
-      ),
-    },
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
-    search: {
-      render: ({ value, onChange }) => (
-        <Textarea
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder="Type your message here."
-        />
-      ),
-    },
-  },
-  {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
-    cell: ({ row }) => {
-      const amount = Number.parseFloat(row.getValue("amount"));
-
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
   },
   {
     id: "actions",
     enableHiding: false,
     header: () => <div className="">Actions</div>,
-    cell: ({ row }) => {
-      const user = row.original;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="size-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <Ellipsis className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(user.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    cell: ({ row }) => <UserActions user={row.original} />,
   },
 ];
 
-export default function ShowAllLessonPage() {
+export default function UsersPage() {
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 2,
+  });
+
+  const [searchParams, setSearchParams] = React.useState<SearchParams>({});
+
+  const { data, isLoading, refetch } = useUserList({
+    page: pagination.pageIndex + 1,
+    perPage: pagination.pageSize,
+    ...searchParams,
   });
 
   const handlePaginationChange = (_pagination: PaginationState) => {
@@ -207,22 +148,22 @@ export default function ShowAllLessonPage() {
   };
 
   const handleSearch = (params: SearchParams) => {
-    console.log(params);
+    setSearchParams(params);
   };
 
   return (
     <div>
-      <div className="mb-4 text-2xl font-bold">Pro Data Table</div>
+      <div className="mb-4 text-2xl font-bold">Users Management</div>
       <ProTable
         columns={columns}
-        data={[]}
-        isLoading={false}
-        onRefresh={() => {}}
+        data={data?.data || []}
+        isLoading={isLoading}
+        onRefresh={refetch}
         onSearch={handleSearch}
         pagination={{
           pageIndex: pagination.pageIndex,
           pageSize: pagination.pageSize,
-          total: 0,
+          total: data?.pagination?.totalItems || 0,
           onPaginationChange: handlePaginationChange,
         }}
       />
