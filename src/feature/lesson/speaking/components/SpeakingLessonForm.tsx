@@ -5,17 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, ArrowRight, Save, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import BasicInfoForm from "@/feature/lesson/components/BasicInfoForm";
-import ContentForm from "@/feature/lesson/reading/components/ContentForm";
-import QuestionsForm from "@/feature/lesson/quiz/components/QuestionsForm";
-
 import {
   speakingLessonSchema,
   defaultValues,
   SpeakingLessonFormValues,
 } from "@/feature/lesson/speaking/schema";
-import PreviewTab from "@/feature/lesson/reading/components/PreviewTab";
 import { ContentStatus, Lesson } from "@/services/swagger-types";
 import { toast } from "sonner";
 import { isDev } from "@/lib/utils";
@@ -24,6 +19,7 @@ import {
   LessonTopic,
   LessonType,
 } from "@/feature/lesson/types/lesson";
+import ContentForm from "@/feature/lesson/speaking/components/ContentForm";
 
 interface LessonSpeakingFormProps {
   isEdit?: boolean;
@@ -52,6 +48,7 @@ const SpeakingLessonForm = ({
           status: initialData.status as ContentStatus,
           topic: initialData.topic as LessonTopic,
           lessonType: initialData.lessonType as LessonType,
+          thumbnailUrl: initialData.thumbnailUrl || "",
         }
       : defaultValues,
   });
@@ -64,6 +61,7 @@ const SpeakingLessonForm = ({
         status: initialData.status as ContentStatus,
         topic: initialData.topic as LessonTopic,
         lessonType: initialData.lessonType as LessonType,
+        thumbnailUrl: initialData.thumbnailUrl || "",
       });
     }
   }, [isEdit, initialData, methods]);
@@ -140,11 +138,9 @@ const SpeakingLessonForm = ({
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="details">Basic Info</TabsTrigger>
               <TabsTrigger value="content">Reading Content</TabsTrigger>
-              <TabsTrigger value="questions">Questions</TabsTrigger>
-              <TabsTrigger value="preview">Preview</TabsTrigger>
             </TabsList>
 
             <TabsContent value="details" className="space-y-6 mt-6">
@@ -164,36 +160,6 @@ const SpeakingLessonForm = ({
 
             <TabsContent value="content" className="mt-6">
               <ContentForm />
-
-              <div className="mt-6 w-full flex justify-end">
-                <Button
-                  type="button"
-                  form="reading-lesson-form"
-                  onClick={() => setActiveTab("questions")}
-                >
-                  <ArrowRight className="h-4 w-4" />
-                  Next
-                </Button>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="questions" className="mt-6">
-              <QuestionsForm />
-
-              <div className="mt-6 w-full flex justify-end">
-                <Button
-                  type="button"
-                  form="reading-lesson-form"
-                  onClick={() => setActiveTab("preview")}
-                >
-                  <ArrowRight className="h-4 w-4" />
-                  Next
-                </Button>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="preview" className="mt-6">
-              <PreviewTab />
 
               <div className="mt-6 w-full flex justify-end">
                 <Button

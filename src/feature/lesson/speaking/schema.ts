@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { questionSchema } from "../quiz/schema";
 import {
   LESSON_TYPE_TUPLE,
   LESSON_LEVEL_TUPLE,
@@ -16,12 +15,18 @@ export const speakingLessonSchema = z.object({
   timeLimit: z.number().nullable(),
   content: z
     .object({
-      text: z.string().min(50, "Content must be at least 50 characters"),
-      questions: z.array(questionSchema),
+      topicText: z.string().min(1, "Topic text is required"),
+      promptText: z.string().min(1, "Prompt text is required"),
+      followupExamples: z
+        .array(z.string())
+        .min(1, "At least one follow-up example is required"),
+      backgroundKnowledge: z
+        .string()
+        .min(1, "Background knowledge is required"),
     })
     .nullable(),
   tags: z.array(z.string()),
-  thumbnailUrl: z.string().nullable(),
+  thumbnailUrl: z.string().default(""),
   status: z.enum(LESSON_STATUS_TUPLE),
   createdById: z.string().optional(),
 });
@@ -29,18 +34,26 @@ export const speakingLessonSchema = z.object({
 export type SpeakingLessonFormValues = z.infer<typeof speakingLessonSchema>;
 
 export const defaultValues: SpeakingLessonFormValues = {
-  title: "",
-  description: null,
+  title: "Travel and Tourism",
+  description: "A speaking lesson about travel experiences",
   topic: "ielts",
   level: "beginner",
   timeLimit: 30,
   lessonType: "practice",
   content: {
-    text: "",
-    questions: [],
+    topicText: "Travel and Tourism",
+    promptText: "Let's practice speaking English",
+    followupExamples: [
+      "What places have you visited?",
+      "How was your last trip?",
+      "Do you prefer traveling alone or with friends?",
+      "What country would you like to visit next and why?",
+    ],
+    backgroundKnowledge:
+      "Focus on travel experiences, cultural differences, and common travel vocabulary such as 'hotel', 'sightseeing', 'itinerary', 'passport'.",
   },
-  tags: [],
-  thumbnailUrl: null,
-  status: "draft",
+  tags: ["ielts", "speaking", "travel", "tourism"],
+  thumbnailUrl: "",
+  status: "published",
   createdById: undefined,
 };

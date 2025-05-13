@@ -29,25 +29,80 @@ export const readingLessonSchema = z.object({
 export type ReadingLessonFormValues = z.infer<typeof readingLessonSchema>;
 
 export const defaultValues: ReadingLessonFormValues = {
-  title: "",
-  description: null,
+  title: "Office Policy Update",
+  description:
+    "A reading comprehension exercise about office attendance policy updates",
   topic: "ielts",
   level: "beginner",
   timeLimit: 30,
   lessonType: "practice",
   content: {
-    text: "",
+    text: `To: All Staff
+From: Human Resources Department
+Subject: Updated Office Attendance Policy
+
+Dear Employees,
+
+We would like to inform you of an important update to our attendance policy. Starting next Monday, all employees are required to clock in using the new digital attendance system installed at the main entrance.
+
+This system will automatically record your arrival and departure times. Please ensure that you arrive no later than 9:00 A.M. and do not leave before 5:00 P.M. without prior approval from your supervisor.
+
+Any employee who fails to follow this procedure three times within a month may be subject to a warning.
+
+If you have any questions, please contact the HR department.`,
     questions: [
       {
         id: "1",
-        question: "",
-        answer_list: [{ answer: "" }, { answer: "" }],
-        right_answer: "",
+        question: "What is the main purpose of this email?",
+        answer_list: [
+          { answer: "To announce a new employee benefit" },
+          { answer: "To introduce a new attendance system" },
+          { answer: "To promote an employee training session" },
+          { answer: "To notify about a holiday schedule" },
+        ],
+        right_answer: "To introduce a new attendance system",
+        is_bookmark: false,
+      },
+      {
+        id: "2",
+        question: "When will the new system be implemented?",
+        answer_list: [
+          { answer: "Tomorrow" },
+          { answer: "Next Monday" },
+          { answer: "This Friday" },
+          { answer: "Next month" },
+        ],
+        right_answer: "Next Monday",
+        is_bookmark: false,
+      },
+      {
+        id: "3",
+        question:
+          "What will happen if an employee fails to follow the policy three times in a month?",
+        answer_list: [
+          { answer: "They will be fined" },
+          { answer: "They will lose a bonus" },
+          { answer: "They may receive a warning" },
+          { answer: "They must attend a training" },
+        ],
+        right_answer: "They may receive a warning",
+        is_bookmark: false,
+      },
+      {
+        id: "4",
+        question: "Where is the attendance system located?",
+        answer_list: [
+          { answer: "In each department" },
+          { answer: "At the front desk" },
+          { answer: "Online via mobile app" },
+          { answer: "At the main entrance" },
+        ],
+        right_answer: "At the main entrance",
         is_bookmark: false,
       },
     ],
   },
-  tags: [],
+  tags: ["ielts", "reading", "office", "policy"],
   thumbnailUrl: null,
   status: "draft",
   createdById: undefined,

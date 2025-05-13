@@ -19,6 +19,8 @@ import { IMenu } from "@/components/layout/sidebar/menu";
 import { RouteNames } from "@/constraints/route-name";
 import { globalConfig } from "@/config";
 import { NavUser } from "@/components/layout/sidebar/nav-user";
+import { useAuthStore } from "@/stores/auth-store";
+import { UserRole } from "@/services/swagger-types";
 
 export interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   menus: IMenu[];
@@ -26,6 +28,10 @@ export interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 }
 
 export function AppSidebar({ menus, navSecondary, ...props }: AppSidebarProps) {
+  const { user } = useAuthStore();
+
+  const title = user?.role === UserRole.Admin ? "Admin" : "Teacher";
+
   return (
     <Sidebar
       variant="inset"
@@ -43,7 +49,7 @@ export function AppSidebar({ menus, navSecondary, ...props }: AppSidebarProps) {
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {globalConfig.APP_NAME}
+                    {globalConfig.APP_NAME} {title}
                   </span>
                   <span className="truncate text-xs">Enterprise</span>
                 </div>

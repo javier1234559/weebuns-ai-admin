@@ -6,6 +6,14 @@
  * ----------------------------------------------------------------------
  */
 
+export interface CheckSessionResponseDto {
+  /**
+   * Status of the session
+   * @example true
+   */
+  status: boolean;
+}
+
 export interface TranslateDto {
   /** @example "Hello world" */
   text: string;
@@ -132,6 +140,55 @@ export interface ChatResponseDto {
   history: ChatMessageDto[];
 }
 
+export interface StartSpeakingDto {
+  /**
+   * Initial prompt for the AI
+   * @example "Let's practice speaking English"
+   */
+  promptText: string;
+  /**
+   * Topic to discuss
+   * @example "Travel and Tourism"
+   */
+  topicText: string;
+  /**
+   * Example follow-up questions
+   * @example ["What places have you visited?","How was your last trip?"]
+   */
+  followupExamples: string[];
+  /**
+   * Background knowledge for the topic
+   * @example "Focus on travel experiences and cultural differences"
+   */
+  backgroundKnowledge: string;
+}
+
+export interface StartSpeakingResponseDto {
+  /**
+   * Session ID for continuing the conversation
+   * @example "123e4567-e89b-12d3-a456-426614174000"
+   */
+  sessionId: string;
+  /**
+   * Topic of the conversation
+   * @example "Travel and Tourism"
+   */
+  topicText: string;
+}
+
+export interface SpeakingDto {
+  /**
+   * Session ID for continuing the conversation
+   * @example "123e4567-e89b-12d3-a456-426614174000"
+   */
+  sessionId: string;
+  /**
+   * User message
+   * @example "Hi, I'm ready."
+   */
+  message: string;
+}
+
 export interface EvaluateEssayDto {
   /** The essay topic or prompt */
   topic: string;
@@ -158,6 +215,13 @@ export interface EvaluateEssayResponseDto {
   grammar: number;
   corrections: CorrectionDTO[];
   overall_feedback: string;
+}
+
+export interface RecommendAnswerResponseDto {
+  /** The recommended answers */
+  suggestedResponses: string[];
+  /** Session ID for continuing the conversation */
+  sessionId: string;
 }
 
 export enum UserRole {
@@ -830,8 +894,26 @@ export interface UpdateWritingDTO {
 }
 
 export interface ContentSpeakingDTO {
-  topic_text: string;
-  prompt_text: string;
+  /**
+   * The main topic text for the speaking lesson
+   * @example "Travel and Tourism"
+   */
+  topicText: string;
+  /**
+   * The prompt text to guide the speaking practice
+   * @example "Let's practice speaking English"
+   */
+  promptText: string;
+  /**
+   * Example follow-up questions for the speaking practice
+   * @example ["What places have you visited?","How was your last trip?","Do you prefer traveling alone or with friends?","What country would you like to visit next and why?"]
+   */
+  followupExamples: string[];
+  /**
+   * Background knowledge and context for the speaking topic
+   * @example "Focus on travel experiences, cultural differences, and common travel vocabulary such as 'hotel', 'sightseeing', 'itinerary', 'passport'."
+   */
+  backgroundKnowledge: string;
 }
 
 export interface SpeakingLesson {
@@ -1525,6 +1607,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags ai
+     * @name AiControllerCheckSession
+     * @request POST:/api/ai/check-session/{sessionId}
+     */
+    aiControllerCheckSession: (sessionId: string, params: RequestParams = {}) =>
+      this.request<CheckSessionResponseDto, any>({
+        path: `/api/ai/check-session/${sessionId}`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ai
      * @name AiControllerTranslate
      * @request POST:/api/ai/translate
      */
@@ -1644,12 +1741,97 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags ai
+     * @name AiControllerChatStreaming
+     * @summary Stream chat response
+     * @request POST:/api/ai/chat-streaming
+     */
+    aiControllerChatStreaming: (data: ChatRequestDto, params: RequestParams = {}) =>
+      this.request<string, any>({
+        path: `/api/ai/chat-streaming`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ai
+     * @name AiControllerStartSpeaking
+     * @request POST:/api/ai/speaking/start
+     */
+    aiControllerStartSpeaking: (data: StartSpeakingDto, params: RequestParams = {}) =>
+      this.request<StartSpeakingResponseDto, any>({
+        path: `/api/ai/speaking/start`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ai
+     * @name AiControllerChatSpeaking
+     * @request POST:/api/ai/speaking/chat
+     */
+    aiControllerChatSpeaking: (data: SpeakingDto, params: RequestParams = {}) =>
+      this.request<ChatResponseDto, any>({
+        path: `/api/ai/speaking/chat`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ai
      * @name AiControllerEvaluateEssay
      * @request POST:/api/ai/evaluate-essay
      */
     aiControllerEvaluateEssay: (data: EvaluateEssayDto, params: RequestParams = {}) =>
       this.request<EvaluateEssayResponseDto, any>({
         path: `/api/ai/evaluate-essay`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ai
+     * @name AiControllerRecommendAnswer
+     * @request GET:/api/ai/speaking/recommend-answer/{sessionId}
+     */
+    aiControllerRecommendAnswer: (sessionId: string, params: RequestParams = {}) =>
+      this.request<RecommendAnswerResponseDto, any>({
+        path: `/api/ai/speaking/recommend-answer/${sessionId}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ai
+     * @name AiControllerChatSpeakingStreaming
+     * @summary Stream chat speaking response
+     * @request POST:/api/ai/speaking/chat-streaming
+     */
+    aiControllerChatSpeakingStreaming: (data: SpeakingDto, params: RequestParams = {}) =>
+      this.request<string, any>({
+        path: `/api/ai/speaking/chat-streaming`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -1673,6 +1855,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         perPage?: number;
         search?: string;
         role?: string;
+        username?: string;
+        email?: string;
+        createdAt?: string;
       },
       params: RequestParams = {},
     ) =>

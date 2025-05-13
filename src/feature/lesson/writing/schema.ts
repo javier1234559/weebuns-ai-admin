@@ -50,7 +50,7 @@ export const writingLessonSchema = z.object({
   timeLimit: z.number().nullable(),
   content: writingContentSchema.nullable(),
   tags: z.array(z.string()),
-  thumbnailUrl: z.string().nullable(),
+  thumbnailUrl: z.string(),
   status: z.enum(LESSON_STATUS_TUPLE),
   createdById: z.string().optional(),
 });
@@ -200,7 +200,7 @@ export const defaultValues: WritingLessonFormValues = {
     ],
   },
   tags: ["ielts", "writing", "task2"],
-  thumbnailUrl: null,
+  thumbnailUrl: "",
   status: "published",
   createdById: undefined,
 };

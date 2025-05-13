@@ -62,12 +62,12 @@ const SpeakingLessonView = ({
         setIsMutationLoading(true);
         await updateMutation.mutateAsync({ id: lessonId, data: formData });
         toast.success("Lesson updated successfully");
-        navigate(RouteNames.TeacherWritingShowAll);
+        navigate(RouteNames.TeacherSpeakingShowAll);
       } else {
         setIsMutationLoading(true);
         await createMutation.mutateAsync(formData);
         toast.success("Lesson created successfully");
-        navigate(RouteNames.TeacherWritingShowAll);
+        navigate(RouteNames.TeacherSpeakingShowAll);
       }
       onSuccess(formData);
     } catch (error: any) {
