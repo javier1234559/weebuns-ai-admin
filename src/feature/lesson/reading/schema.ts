@@ -104,6 +104,6 @@ If you have any questions, please contact the HR department.`,
   },
   tags: ["ielts", "reading", "office", "policy"],
   thumbnailUrl: null,
-  status: "draft",
+  status: "published",
   createdById: undefined,
 };

@@ -79,6 +79,6 @@ export const defaultValues: ListeningLessonFormValues = {
   },
   tags: ["ielts", "listening", "café", "food", "healthy-eating"],
   thumbnailUrl: "",
-  status: "draft",
+  status: "published",
   createdById: undefined,
 };

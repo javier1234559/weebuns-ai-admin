@@ -31,19 +31,19 @@ const ContentForm = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Speaking Exercise Content</CardTitle>
+        <CardTitle className="text-3xl">Speaking Content</CardTitle>
         <p className="text-sm text-muted-foreground">
           Create a speaking exercise by providing a topic, prompt, and follow-up
           questions
         </p>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-8">
         <FormField
           control={control}
           name="content.topicText"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Topic</FormLabel>
+              <FormLabel className="text-xl">Topic</FormLabel>
               <FormControl>
                 <Input
                   {...field}
@@ -59,7 +59,7 @@ const ContentForm = () => {
           name="content.promptText"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Main Prompt</FormLabel>
+              <FormLabel className="text-xl">Main Prompt</FormLabel>
               <FormControl>
                 <Textarea
                   {...field}
@@ -74,7 +74,7 @@ const ContentForm = () => {
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <FormLabel>Follow-up Questions</FormLabel>
+            <FormLabel className="text-xl">Follow-up Questions</FormLabel>
             <Button
               type="button"
               variant="outline"
@@ -121,7 +121,9 @@ const ContentForm = () => {
           name="content.backgroundKnowledge"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Background Knowledge & Vocabulary</FormLabel>
+              <FormLabel className="text-xl">
+                Background Knowledge & Vocabulary
+              </FormLabel>
               <FormControl>
                 <Textarea
                   {...field}
