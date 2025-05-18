@@ -6,7 +6,6 @@ const PreviewTab = () => {
   const { watch } = useFormContext();
   const formValues = watch();
 
-  // Transform the form values to match ReadingTest props
   const readingTestProps = {
     title: formValues.title || "",
     description: formValues.description || "",

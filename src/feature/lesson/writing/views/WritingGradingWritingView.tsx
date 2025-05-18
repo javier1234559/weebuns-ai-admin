@@ -52,7 +52,13 @@ const WritingGradingWritingView = ({
           lessonId: submission?.lessonId ?? "",
           submissionType: submission?.submissionType ?? "writing",
           tokensUsed: submission?.tokensUsed ?? 0,
-          feedback: feedback,
+          feedback: {
+            ...feedback,
+            corrections: feedback.corrections.map((c) => ({
+              ...c,
+              position: c.position.toString(),
+            })),
+          },
         },
       });
       toast.success("Submission updated successfully");

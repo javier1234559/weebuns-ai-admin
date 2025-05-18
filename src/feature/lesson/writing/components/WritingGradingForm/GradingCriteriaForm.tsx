@@ -4,7 +4,7 @@ import {
   FormLabel,
   FormControl,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
 import { useFormContext } from "react-hook-form";
 import { WritingGradingFormValues } from "./schema";
 
@@ -28,24 +28,21 @@ export function GradingCriteriaForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>{label}</FormLabel>
-              <div className="flex items-center gap-2">
-                <FormControl>
-                  <Input
-                    type="number"
-                    min="0"
-                    max="9"
-                    {...field}
-                    onChange={(e) => field.onChange(Number(e.target.value))}
-                    className="w-16 text-center"
+              <FormControl>
+                <div className="flex items-center gap-4">
+                  <Slider
+                    min={0}
+                    max={9}
+                    step={1}
+                    value={[field.value ?? 0]}
+                    onValueChange={([value]) => field.onChange(value)}
+                    className="w-full"
                   />
-                </FormControl>
-                <div className="w-full bg-gray-200 dark:bg-muted rounded-full h-2.5">
-                  <div
-                    className="bg-primary h-2.5 rounded-full"
-                    style={{ width: `${(field.value / 9) * 100}%` }}
-                  />
+                  <div className="w-10 text-right font-medium">
+                    {field.value ?? 0}
+                  </div>
                 </div>
-              </div>
+              </FormControl>
             </FormItem>
           )}
         />

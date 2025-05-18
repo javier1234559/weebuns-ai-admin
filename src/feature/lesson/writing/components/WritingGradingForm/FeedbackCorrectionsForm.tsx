@@ -4,6 +4,24 @@ import { WritingGradingFormValues, Correction } from "./schema";
 import { Edit, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
+
+const ERROR_TYPES = [
+  { value: "grammar", label: "Ngữ pháp" },
+  { value: "vocabulary", label: "Từ vựng / Dùng từ" },
+  { value: "punctuation", label: "Dấu câu" },
+  { value: "spelling", label: "Chính tả" },
+  { value: "cohesion", label: "Liên kết và mạch lạc" },
+  { value: "sentence_structure", label: "Cấu trúc câu" },
+  { value: "tone", label: "Giọng điệu / Mức độ trang trọng" },
+  { value: "other", label: "Khác" },
+] as const;
 
 interface FeedbackCorrectionsFormProps {
   selectedText: { text: string; position: number } | null;
@@ -25,9 +43,9 @@ export function FeedbackCorrectionsForm({
   const form = useFormContext<WritingGradingFormValues>();
   const corrections = form.watch("corrections");
   const [newCorrection, setNewCorrection] = useState({
-    error: "",
-    suggestion: "",
-    reason: "",
+    error: "grammar",
+    suggestion: "The correct version of the text",
+    reason: "The text is grammatically incorrect",
   });
 
   const handleAddCorrection = () => {
@@ -64,14 +82,23 @@ export function FeedbackCorrectionsForm({
           <div className="grid grid-cols-1 gap-3 mt-3">
             <div>
               <label className="text-xs font-medium">Error Type</label>
-              <Input
+              <Select
                 value={newCorrection.error}
-                onChange={(e) =>
-                  setNewCorrection({ ...newCorrection, error: e.target.value })
+                onValueChange={(value) =>
+                  setNewCorrection({ ...newCorrection, error: value })
                 }
-                placeholder="Grammar, Vocabulary, Punctuation, etc."
-                className="mt-1"
-              />
+              >
+                <SelectTrigger className="w-full mt-1">
+                  <SelectValue placeholder="Select error type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {ERROR_TYPES.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div>

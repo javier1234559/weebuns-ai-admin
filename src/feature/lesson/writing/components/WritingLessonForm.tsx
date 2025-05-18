@@ -47,6 +47,7 @@ const WritingLessonForm = ({
       ? {
           ...initialData,
           level: initialData.level as LessonLevel,
+          thumbnailUrl: initialData.thumbnailUrl as string,
           status: initialData.status as ContentStatus,
           topic: initialData.topic as LessonTopic,
           lessonType: initialData.lessonType as LessonType,
@@ -59,6 +60,7 @@ const WritingLessonForm = ({
       methods.reset({
         ...initialData,
         level: initialData.level as LessonLevel,
+        thumbnailUrl: initialData.thumbnailUrl as string,
         status: initialData.status as ContentStatus,
         topic: initialData.topic as LessonTopic,
         lessonType: initialData.lessonType as LessonType,

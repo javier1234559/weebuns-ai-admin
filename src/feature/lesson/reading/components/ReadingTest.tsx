@@ -18,12 +18,7 @@ interface ReadingTestProps {
   }[];
 }
 
-export function ReadingTest({
-  title,
-  description,
-  content,
-  questions,
-}: ReadingTestProps) {
+export function ReadingTest({ content, questions }: ReadingTestProps) {
   const isMobile = useIsMobile();
   const [selectedAnswers, setSelectedAnswers] = useState<
     Record<string, string>
@@ -97,8 +92,6 @@ export function ReadingTest({
         >
           <Pane className="p-2">
             <ReadingViewer
-              title={title}
-              description={description}
               content={content}
               className="thin-scrollbar h-full overflow-y-auto rounded-md bg-background p-4"
             />

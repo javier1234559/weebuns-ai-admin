@@ -197,7 +197,7 @@ export function ContentGradingForm({
     <div
       ref={essayDisplayRef}
       onMouseUp={handleTextSelection}
-      className="prose max-w-none p-4 rounded-lg border whitespace-pre-wrap"
+      className="content-editor"
       style={{ cursor: selectionMode ? "text" : "default" }}
       dangerouslySetInnerHTML={{ __html: mergedContent }}
     />

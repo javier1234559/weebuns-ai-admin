@@ -7,7 +7,11 @@ import { Highlighter, Save, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { writingGradingFormSchema, WritingGradingFormValues } from "./schema";
+import {
+  defaultValues,
+  writingGradingFormSchema,
+  WritingGradingFormValues,
+} from "./schema";
 import { GradingCriteriaForm } from "./GradingCriteriaForm";
 import { ContentGradingForm } from "./ContentGradingForm";
 import { FeedbackCorrectionsForm } from "./FeedbackCorrectionsForm";
@@ -38,23 +42,50 @@ export default function WritingGradingForm({
     defaultValues: {
       content: {
         user_data: {
-          instruction: initialData?.content?.user_data?.instruction || "",
-          body1: initialData?.content?.user_data?.body1 || "",
-          body2: initialData?.content?.user_data?.body2 || "",
-          conclusion: initialData?.content?.user_data?.conclusion || "",
+          instruction:
+            initialData?.content?.user_data?.instruction ||
+            defaultValues.content.user_data.instruction,
+          body1:
+            initialData?.content?.user_data?.body1 ||
+            defaultValues.content.user_data.body1,
+          body2:
+            initialData?.content?.user_data?.body2 ||
+            defaultValues.content.user_data.body2,
+          conclusion:
+            initialData?.content?.user_data?.conclusion ||
+            defaultValues.content.user_data.conclusion,
         },
-        lesson_id: initialData?.content?.lesson_id || "",
-        chat_history: initialData?.content?.chat_history || [],
+        lesson_id:
+          initialData?.content?.lesson_id || defaultValues.content.lesson_id,
+        chat_history:
+          initialData?.content?.chat_history ||
+          defaultValues.content.chat_history,
       },
       gradingCriteria: {
-        overall_score: initialData?.feedback?.overall_score || 0,
-        task_response: initialData?.feedback?.task_response || 0,
-        coherence_cohesion: initialData?.feedback?.coherence_cohesion || 0,
-        lexical_resource: initialData?.feedback?.lexical_resource || 0,
-        grammar: initialData?.feedback?.grammar || 0,
+        overall_score:
+          initialData?.feedback?.overall_score ||
+          defaultValues.gradingCriteria.overall_score,
+        task_response:
+          initialData?.feedback?.task_response ||
+          defaultValues.gradingCriteria.task_response,
+        coherence_cohesion:
+          initialData?.feedback?.coherence_cohesion ||
+          defaultValues.gradingCriteria.coherence_cohesion,
+        lexical_resource:
+          initialData?.feedback?.lexical_resource ||
+          defaultValues.gradingCriteria.lexical_resource,
+        grammar:
+          initialData?.feedback?.grammar ||
+          defaultValues.gradingCriteria.grammar,
       },
-      corrections: initialData?.feedback?.corrections || [],
-      overallFeedback: initialData?.feedback?.overall_feedback || "",
+      corrections:
+        initialData?.feedback?.corrections.map((c) => ({
+          ...c,
+          position: Number(c.position),
+        })) || defaultValues.corrections,
+      overallFeedback:
+        initialData?.feedback?.overall_feedback ||
+        defaultValues.overallFeedback,
     },
   });
 
