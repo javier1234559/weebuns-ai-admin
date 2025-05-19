@@ -239,10 +239,11 @@ export enum AuthProvider {
 export interface TeacherProfileEntity {
   id: string;
   userId: string;
-  specialization: ("listening" | "reading" | "writing" | "speaking")[];
-  qualification: string | null;
-  teachingExperience: number | null;
-  hourlyRate: number | null;
+  longBio: string | null;
+  introVideoUrlEmbed: string | null;
+  certifications: string | null;
+  teachingExperience: string | null;
+  other: string | null;
   /** @format date-time */
   createdAt: string;
   /** @format date-time */
@@ -281,6 +282,7 @@ export interface UserDto {
    * @example "user"
    */
   role: UserRole;
+  bio: string | null;
   /**
    * Authentication provider used
    * @example "local"
@@ -368,20 +370,22 @@ export interface TeacherDto {
   firstName: string;
   lastName: string;
   profilePicture?: string;
-  specialization: ("listening" | "reading" | "writing" | "speaking")[];
-  qualification: string;
-  teachingExperience: number;
-  hourlyRate: number;
+  longBio?: string;
+  introVideoUrlEmbed?: string;
+  certifications?: string;
+  teachingExperience?: string;
+  other?: string;
 }
 
 export interface ProfileDto {
   firstName?: string;
   lastName?: string;
   profilePicture?: string;
-  specialization?: ("listening" | "reading" | "writing" | "speaking")[];
-  qualification?: string;
-  teachingExperience?: number;
-  hourlyRate?: number;
+  longBio?: string;
+  introVideoUrlEmbed?: string;
+  certifications?: string;
+  teachingExperience?: string;
+  other?: string;
   targetStudyDuration?: number;
   targetReading?: number;
   targetListening?: number;
@@ -395,7 +399,13 @@ export interface DeleteUserResponse {
   message: string;
 }
 
-export type RegisterDto = object;
+export interface RegisterDto {
+  email: string;
+  username: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
 
 export interface UserRegisterResponse {
   access_token: string;
@@ -543,6 +553,7 @@ export interface User {
   lastName: string | null;
   /** @example "https://example.com/avatar.jpg" */
   profilePicture: string | null;
+  bio: string | null;
   /** @example false */
   isEmailVerified: boolean;
   /** @format date-time */
@@ -1445,6 +1456,38 @@ export interface TransactionResponse {
   transaction: Transaction;
 }
 
+export interface CreateNotificationDto {
+  userId: string;
+  type: "system" | "advertisement" | "submission" | "comment_reply" | "comment_mention";
+  title: string;
+  content: string;
+  thumbnailUrl?: string;
+  actionUrl?: string;
+  /** @default false */
+  isGlobal: boolean;
+}
+
+export interface Notification {
+  id: string;
+  type: string;
+  title: string;
+  content: string;
+  thumbnailUrl: string | null;
+  actionUrl: string | null;
+  isGlobal: boolean;
+  userId: object;
+  isRead: boolean;
+  createdById: string;
+  /** @format date-time */
+  createdAt: string;
+  expiresAt: object;
+}
+
+export interface NotificationResponse {
+  data: Notification[];
+  pagination: PaginationOutputDto;
+}
+
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
 import axios from "axios";
 
@@ -1908,6 +1951,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags users
+     * @name UserControllerFindByUsername
+     * @request GET:/api/users/username/{username}
+     * @secure
+     */
+    userControllerFindByUsername: (username: string, params: RequestParams = {}) =>
+      this.request<UserResponse, any>({
+        path: `/api/users/username/${username}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags users
      * @name UserControllerCreateTeacher
      * @request POST:/api/users/teachers
      * @secure
@@ -2158,7 +2218,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {},
     ) =>
-      this.request<RegisterDto, any>({
+      this.request<DeleteResponseDto, any>({
         path: `/api/uploads`,
         method: "POST",
         body: data,
@@ -2211,7 +2271,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {},
     ) =>
-      this.request<RegisterDto, any>({
+      this.request<DeleteResponseDto, any>({
         path: `/api/uploads/video`,
         method: "POST",
         body: data,
@@ -3085,6 +3145,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         page?: number;
         /** @default 10 */
         perPage?: number;
+        search?: string;
         paymentType?: string;
         status?: string;
         type?: string;
@@ -3116,6 +3177,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         page?: number;
         /** @default 10 */
         perPage?: number;
+        search?: string;
         paymentType?: string;
         status?: string;
         type?: string;
@@ -3149,6 +3211,109 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         secure: true,
         type: ContentType.Json,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags notifications
+     * @name NotificationControllerSendNotification
+     * @request POST:/api/notifications/send
+     * @secure
+     */
+    notificationControllerSendNotification: (data: CreateNotificationDto, params: RequestParams = {}) =>
+      this.request<string, any>({
+        path: `/api/notifications/send`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags notifications
+     * @name NotificationControllerGetUserNotifications
+     * @request GET:/api/notifications
+     * @secure
+     */
+    notificationControllerGetUserNotifications: (
+      query?: {
+        /** @default 1 */
+        page?: number;
+        /** @default 10 */
+        perPage?: number;
+        search?: string;
+        userId?: string;
+        isGlobal?: boolean;
+        type?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<NotificationResponse, any>({
+        path: `/api/notifications`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags notifications
+     * @name NotificationControllerMarkAsRead
+     * @request PATCH:/api/notifications/{id}/read
+     * @secure
+     */
+    notificationControllerMarkAsRead: (id: string, params: RequestParams = {}) =>
+      this.request<string, any>({
+        path: `/api/notifications/${id}/read`,
+        method: "PATCH",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags notifications
+     * @name NotificationControllerDeleteNotification
+     * @request DELETE:/api/notifications/{id}
+     * @secure
+     */
+    notificationControllerDeleteNotification: (id: string, params: RequestParams = {}) =>
+      this.request<string, any>({
+        path: `/api/notifications/${id}`,
+        method: "DELETE",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags notifications
+     * @name NotificationGatewayStream
+     * @request GET:/api/notifications-sse/stream
+     */
+    notificationGatewayStream: (
+      query: {
+        userId: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/api/notifications-sse/stream`,
+        method: "GET",
+        query: query,
         ...params,
       }),
   };

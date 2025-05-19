@@ -1,7 +1,5 @@
 import AppError from "@/components/common/app-error";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -9,19 +7,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Search, Filter, AlertCircle } from "lucide-react";
-import { format } from "date-fns";
+import { Search, Filter } from "lucide-react";
 import { useAdminTransactions } from "@/feature/token/hooks/useToken";
 import { useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import usePaginationUrl from "@/hooks/use-pagination-url";
+import RevenueTableList from "../components/RevenueTableList";
+import { PaymentStatus } from "@/feature/token/type";
 
 const paymentTypes = [
   { id: "all", label: "Tất cả" },
@@ -40,23 +31,21 @@ const statusTypes = [
 ];
 
 export default function RevenueTableView() {
-  const { data, isLoading, isError, error } = useAdminTransactions({});
-  const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const transactions = data?.data || [];
+  const { search, searchParam, setSearch, page, perPage, updateQueryParams } =
+    usePaginationUrl({
+      defaultPage: 1,
+      defaultPerPage: 10,
+    });
 
-  const filteredTransactions = transactions.filter((transaction) => {
-    const matchesSearch = transaction.transactionId
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesType =
-      typeFilter === "all" || transaction.paymentType === typeFilter;
-    const matchesStatus =
-      statusFilter === "all" || transaction.status === statusFilter;
-
-    return matchesSearch && matchesType && matchesStatus;
+  const { data, isLoading, isError, error } = useAdminTransactions({
+    ...(searchParam && { search: searchParam }),
+    ...(typeFilter !== "all" && { type: typeFilter }),
+    ...(statusFilter !== "all" && { status: statusFilter as PaymentStatus }),
+    page,
+    perPage,
   });
 
   if (isError) {
@@ -72,8 +61,8 @@ export default function RevenueTableView() {
             <Input
               placeholder="Tìm kiếm giao dịch..."
               className="pl-8 w-full sm:w-[300px]"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
           </div>
 
@@ -106,97 +95,13 @@ export default function RevenueTableView() {
         </div>
       </div>
 
-      <Card>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Mã giao dịch</TableHead>
-                <TableHead>Phương thức</TableHead>
-                <TableHead>Số tiền</TableHead>
-                <TableHead>Số token</TableHead>
-                <TableHead>Ngày thanh toán</TableHead>
-                <TableHead>Trạng thái</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                Array.from({ length: 5 }).map((_, index) => (
-                  <TableRow key={index}>
-                    <TableCell>
-                      <Skeleton className="h-4 w-[200px]" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-[100px]" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-[120px]" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-[80px]" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-[100px]" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-[100px]" />
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : filteredTransactions.length > 0 ? (
-                filteredTransactions.map((transaction) => {
-                  const status = statusTypes.find(
-                    (s) => s.id === transaction.status,
-                  );
-                  const paymentType = paymentTypes.find(
-                    (p) => p.id === transaction.paymentType,
-                  );
-
-                  return (
-                    <TableRow key={transaction.id}>
-                      <TableCell className="font-medium">
-                        {transaction.transactionId}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">
-                          {paymentType?.label || transaction.paymentType}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {new Intl.NumberFormat("vi-VN", {
-                          style: "currency",
-                          currency: transaction.currency,
-                        }).format(transaction.amount)}
-                      </TableCell>
-                      <TableCell>{transaction.tokenAmount}</TableCell>
-                      <TableCell>
-                        {format(
-                          new Date(transaction.paymentDate),
-                          "dd/MM/yyyy",
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={status?.variant as any}>
-                          {status?.label || transaction.status}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-6">
-                    <div className="flex flex-col items-center justify-center text-muted-foreground">
-                      <AlertCircle className="h-8 w-8 mb-2" />
-                      <p>Không tìm thấy giao dịch nào</p>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <RevenueTableList
+        transactions={data?.data || []}
+        isLoading={isLoading}
+        onUpdateQueryParams={updateQueryParams}
+        page={page}
+        totalPages={data?.pagination.totalPages || 0}
+      />
     </div>
   );
 }
