@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@/theme/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
-
+import NotificationEvent from "@/feature/comments/components/NotificationEvent";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -25,6 +25,7 @@ export default function MainProviders({
           <TooltipProvider>
             {children}
             <Toaster />
+            <NotificationEvent />
           </TooltipProvider>
         </div>
       </ThemeProvider>
