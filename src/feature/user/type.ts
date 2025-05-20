@@ -59,10 +59,11 @@ export type AuthProvider = "local" | "google" | "facebook";
 export interface TeacherProfile {
   id: string;
   userId: string;
-  specialization: string[];
-  qualification: string | null;
-  teachingExperience: number | null;
-  hourlyRate: number | null;
+  longBio: string | null;
+  introVideoUrlEmbed: string | null;
+  certifications: string | null;
+  teachingExperience: string | null;
+  other: string | null;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;

@@ -50,6 +50,7 @@ const ListeningLessonForm = ({
           status: initialData.status as ContentStatus,
           topic: initialData.topic as LessonTopic,
           lessonType: initialData.lessonType as LessonType,
+          thumbnailUrl: initialData.thumbnailUrl || undefined,
         }
       : defaultValues,
   });
@@ -62,6 +63,7 @@ const ListeningLessonForm = ({
         status: initialData.status as ContentStatus,
         topic: initialData.topic as LessonTopic,
         lessonType: initialData.lessonType as LessonType,
+        thumbnailUrl: initialData.thumbnailUrl || undefined,
       });
     }
   }, [isEdit, initialData, methods]);

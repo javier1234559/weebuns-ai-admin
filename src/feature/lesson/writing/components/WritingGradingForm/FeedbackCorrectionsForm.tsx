@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { WritingGradingFormValues, Correction } from "./schema";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import {
@@ -42,6 +42,8 @@ export function FeedbackCorrectionsForm({
 }: FeedbackCorrectionsFormProps) {
   const form = useFormContext<WritingGradingFormValues>();
   const corrections = form.watch("corrections");
+  const [editingCorrectionId, setEditingCorrectionId] = useState<string | null>(null);
+
   const [newCorrection, setNewCorrection] = useState({
     error: "grammar",
     suggestion: "The correct version of the text",
@@ -56,26 +58,72 @@ export function FeedbackCorrectionsForm({
         position: selectedText.position,
       });
       setNewCorrection({
-        error: "",
-        suggestion: "",
-        reason: "",
+        error: "grammar",
+        suggestion: "The correct version of the text",
+        reason: "The text is grammatically incorrect",
       });
     }
   };
 
+  const handleEditCorrection = (correction: Correction) => {
+    setEditingCorrectionId(correction.id);
+    setNewCorrection({
+      error: correction.error,
+      suggestion: correction.suggestion,
+      reason: correction.reason,
+    });
+  };
+
+  const handleSaveEdit = () => {
+    if (editingCorrectionId) {
+      onEditCorrection(editingCorrectionId, {
+        error: newCorrection.error,
+        suggestion: newCorrection.suggestion,
+        reason: newCorrection.reason,
+      });
+      setEditingCorrectionId(null);
+      setNewCorrection({
+        error: "grammar",
+        suggestion: "The correct version of the text",
+        reason: "The text is grammatically incorrect",
+      });
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCorrectionId(null);
+    setNewCorrection({
+      error: "grammar",
+      suggestion: "The correct version of the text",
+      reason: "The text is grammatically incorrect",
+    });
+  };
+
   return (
     <div className="space-y-4">
-      {selectedText && (
+      {(selectedText || editingCorrectionId) && (
         <div className="border border-primary/30 bg-primary/5 p-3 rounded-md">
-          <div className="mb-2">
-            <p className="font-medium text-sm text-primary">Selected Text:</p>
-            <div className="space-y-2 mt-1">
-              <div className="correction-original">
-                <p className="text-xs mb-1 font-medium">Original:</p>
-                <p className="text-sm line-through italic">
-                  "{selectedText.text}"
-                </p>
-              </div>
+          <div className="flex justify-between items-center mb-2">
+            <p className="font-medium text-sm text-primary">
+              {editingCorrectionId ? "Edit Correction" : "Selected Text:"}
+            </p>
+            {editingCorrectionId && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleCancelEdit}
+                className="h-6 w-6 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+          <div className="space-y-2 mt-1">
+            <div className="correction-original">
+              <p className="text-xs mb-1 font-medium">Original:</p>
+              <p className="text-sm line-through italic">
+                "{editingCorrectionId ? corrections.find(c => c.id === editingCorrectionId)?.sentence : selectedText?.text}"
+              </p>
             </div>
           </div>
 
@@ -130,14 +178,17 @@ export function FeedbackCorrectionsForm({
               />
             </div>
 
-            <Button onClick={handleAddCorrection} className="w-full">
-              Add Correction
+            <Button
+              onClick={editingCorrectionId ? handleSaveEdit : handleAddCorrection}
+              className="w-full"
+            >
+              {editingCorrectionId ? "Save Changes" : "Add Correction"}
             </Button>
           </div>
         </div>
       )}
 
-      <div className="space-y-3">
+      <div className="space-y-3 max-h-[300px] overflow-y-auto thin-scrollbar">
         {corrections.map((correction) => (
           <div
             key={correction.id}
@@ -150,10 +201,11 @@ export function FeedbackCorrectionsForm({
                 <Button
                   onClick={(e) => {
                     e.stopPropagation();
-                    onEditCorrection(correction.id, correction);
+                    handleEditCorrection(correction);
                   }}
                   variant="ghost"
                   size="sm"
+                  type="button"
                 >
                   <Edit className="h-4 w-4" />
                 </Button>
@@ -164,6 +216,7 @@ export function FeedbackCorrectionsForm({
                   }}
                   variant="ghost"
                   size="sm"
+                  type="button"
                   className="text-red-500 hover:text-red-700"
                 >
                   <Trash2 className="h-4 w-4" />

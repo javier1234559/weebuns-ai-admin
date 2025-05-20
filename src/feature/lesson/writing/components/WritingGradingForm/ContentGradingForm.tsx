@@ -1,7 +1,8 @@
-import { useRef, useState, useEffect, useMemo, useCallback } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { useFormContext } from "react-hook-form";
 import { WritingGradingFormValues } from "./schema";
 import Mark from "mark.js";
+import { mergedContentHtml } from "../../utils";
 
 interface ContentGradingFormProps {
   selectionMode: boolean;
@@ -23,11 +24,13 @@ export function ContentGradingForm({
     position: number;
   } | null>(null);
   const markInstance = useRef<Mark | null>(null);
+  const originalContentRef = useRef<string>("");
 
-  // Initialize mark.js instance
+  // Initialize mark.js instance and store original content
   useEffect(() => {
     if (essayDisplayRef.current) {
       markInstance.current = new Mark(essayDisplayRef.current);
+      originalContentRef.current = essayDisplayRef.current.innerHTML;
     }
   }, []);
 
@@ -60,21 +63,17 @@ export function ContentGradingForm({
   const updateFocusedCorrection = useCallback((id?: string) => {
     if (!essayDisplayRef.current) return;
 
-    // Remove focused class from all corrections
-    const allCorrections = essayDisplayRef.current.querySelectorAll(
-      ".correction-wrapper",
-    );
+    const allCorrections = essayDisplayRef.current.querySelectorAll('.correction-wrapper');
     allCorrections.forEach((element) => {
-      element.classList.remove("focused");
+      element.classList.remove('focused');
     });
 
-    // Add focused class to the selected correction
     if (id) {
       const focusedElement = essayDisplayRef.current.querySelector(
-        `[data-correction-id="${id}"]`,
+        `[data-correction-id="${id}"]`
       );
       if (focusedElement) {
-        focusedElement.classList.add("focused");
+        focusedElement.classList.add('focused');
       }
     }
   }, []);
@@ -82,7 +81,11 @@ export function ContentGradingForm({
   const applyCorrections = useCallback(() => {
     if (!essayDisplayRef.current || !markInstance.current) return;
 
+    // Clean up existing highlights and corrections
     cleanupHighlights();
+
+    // Restore the original content
+    essayDisplayRef.current.innerHTML = originalContentRef.current;
 
     const corrections = form.watch("corrections");
     corrections.forEach((correction: any) => {
@@ -125,11 +128,16 @@ export function ContentGradingForm({
         },
       });
     });
-  }, [form, cleanupHighlights]);
+  }, [form, cleanupHighlights, focusedCorrectionId]);
 
   const applyTempHighlight = useCallback(() => {
     if (!essayDisplayRef.current || !markInstance.current || !tempHighlight)
       return;
+
+    // Unmark any existing temp highlights first
+    markInstance.current.unmark({
+      className: "temp-highlight"
+    });
 
     markInstance.current.mark(tempHighlight.text, {
       className:
@@ -160,12 +168,6 @@ export function ContentGradingForm({
     }
   };
 
-  const mergedContent = useMemo(() => {
-    const { instruction, body1, body2, conclusion } =
-      form.getValues("content.user_data");
-    return [instruction, body1, body2, conclusion].filter(Boolean).join("\n\n");
-  }, [form]);
-
   // Apply corrections when content changes
   useEffect(() => {
     applyCorrections();
@@ -190,6 +192,12 @@ export function ContentGradingForm({
   useEffect(() => {
     if (!selectionMode) {
       setTempHighlight(null);
+      // Clean up temp highlights when selection mode is turned off
+      if (markInstance.current) {
+        markInstance.current.unmark({
+          className: "temp-highlight"
+        });
+      }
     }
   }, [selectionMode]);
 
@@ -199,7 +207,7 @@ export function ContentGradingForm({
       onMouseUp={handleTextSelection}
       className="content-editor"
       style={{ cursor: selectionMode ? "text" : "default" }}
-      dangerouslySetInnerHTML={{ __html: mergedContent }}
+      dangerouslySetInnerHTML={{ __html: mergedContentHtml(form.getValues("content.user_data")) }}
     />
   );
 }

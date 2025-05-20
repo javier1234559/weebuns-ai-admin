@@ -54,13 +54,13 @@ export const defaultValues: WritingGradingFormValues = {
   content: {
     user_data: {
       instruction:
-        "Relocating for work is common and offers more benefits than challenges.",
+        "<p>Relocating for work is common and offers more benefits than challenges.</p>",
       body1:
-        "There are some drawbacks when people move for better job opportunities.",
+        "<p>There are some drawbacks when people move for better job opportunities.</p>",
       body2:
-        "However, the benefits, especially in career prospects and personal growth, outweigh the negatives.",
+        "<p>However, the benefits, especially in career prospects and personal growth, outweigh the negatives.</p>",
       conclusion:
-        "Although relocating may cause issues, the personal and professional gains are far more significant.",
+        "<p>Although relocating may cause issues, the personal and professional gains are far more significant.</p>",
     },
     lesson_id: "1",
     chat_history: [],
@@ -74,5 +74,5 @@ export const defaultValues: WritingGradingFormValues = {
   },
   corrections: [],
   overallFeedback:
-    "Bài viết có cấu trúc rõ ràng, có điểm mạnh và điểm yếu. Tuy nhiên, cần cải thiện độ trong sáng và cấu trúc của bài viết.",
+    "<p>Bài viết có cấu trúc rõ ràng, có điểm mạnh và điểm yếu. Tuy nhiên, cần cải thiện độ trong sáng và cấu trúc của bài viết.</p>",
 };
