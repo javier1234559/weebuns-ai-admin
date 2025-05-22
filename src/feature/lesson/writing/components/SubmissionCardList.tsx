@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import { Clock, Edit2, FileText } from "lucide-react";
+import { Clock, FileText, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { LessonSubmission } from "@/services/swagger-types";
+import { LessonSubmission, SubmissionStatus } from "@/services/swagger-types";
+import ClaimGradingButton from "./ClaimGradingButton";
 
 interface SubmissionCardListProps {
   submissions: LessonSubmission[];
@@ -105,14 +106,26 @@ export function SubmissionCardList({
                 </Button>
               )}
               {onEdit && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => onEdit(submission)}
-                >
-                  <Edit2 className="size-3.5 mr-1" />
-                  Update
-                </Button>
+                <>
+                  {submission.status !== SubmissionStatus.Scored &&
+                    submission.status !== SubmissionStatus.Taken && (
+                      <ClaimGradingButton
+                        submissionId={submission.id}
+                        onClick={() => onEdit(submission)}
+                      />
+                    )}
+
+                  {submission.status === SubmissionStatus.Taken && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => onEdit(submission)}
+                    >
+                      <Pencil className="size-3.5 mr-1" />
+                      Edit
+                    </Button>
+                  )}
+                </>
               )}
             </div>
           </div>

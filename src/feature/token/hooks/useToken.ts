@@ -12,6 +12,8 @@ import {
   TransactionsResponse,
   CreateTransactionDto,
   UseTokensDto,
+  WithdrawTokensDto,
+  TransactionWithUserResponse,
 } from "@/services/swagger-types";
 import tokenApi from "@/feature/token/services/tokenApi";
 import { FindAllTransactionsQuery } from "@/feature/token/services/tokenApi";
@@ -28,6 +30,12 @@ export const TOKEN_KEY_FACTORY = {
     [...TOKEN_BASE, "transactions", params] as const,
   adminTransactionList: (params: FindAllTransactionsQuery) =>
     [...TOKEN_BASE, "admin-transactions", params] as const,
+  withdrawalRequests: (params: FindAllTransactionsQuery) =>
+    [...TOKEN_BASE, "withdrawal-requests", params] as const,
+  withdrawalRequestList: (params: { requestId: string }) =>
+    [...TOKEN_BASE, "withdrawal-requests", params.requestId] as const,
+  withdrawalRequestDetails: (params: { requestId: string }) =>
+    [...TOKEN_BASE, "withdrawal-requests", params.requestId] as const,
 } as const;
 
 // Wallet hooks
@@ -99,6 +107,49 @@ export const useUseTokens = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: TOKEN_KEY_FACTORY.wallet(),
+      });
+    },
+  });
+};
+
+export const useWithdraw = () => {
+  return useMutation({
+    mutationFn: (data: WithdrawTokensDto) => tokenApi.withdraw(data),
+  });
+};
+
+export const useWithdrawalRequestDetails = (
+  requestId: string,
+  options?: UseQueryOptions<TransactionWithUserResponse>,
+) => {
+  return useQuery({
+    queryKey: TOKEN_KEY_FACTORY.withdrawalRequestDetails({ requestId }),
+    queryFn: () => tokenApi.getWithdrawalRequestDetails(requestId),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    ...(typeof options === "object" ? options : {}),
+  });
+};
+
+export const useWithdrawalRequests = (
+  query: FindAllTransactionsQuery,
+  options?: UseQueryOptions<TransactionsResponse>,
+) => {
+  return useQuery({
+    queryKey: TOKEN_KEY_FACTORY.withdrawalRequests(query),
+    queryFn: () => tokenApi.getWithdrawalRequests(query),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    ...(typeof options === "object" ? options : {}),
+  });
+};
+
+export const useApproveWithdrawalRequest = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => tokenApi.approveWithdrawalRequest(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: TOKEN_KEY_FACTORY.withdrawalRequests({}),
       });
     },
   });

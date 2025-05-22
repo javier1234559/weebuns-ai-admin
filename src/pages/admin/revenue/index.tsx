@@ -3,7 +3,7 @@ import RevenueTableView from "@/feature/token/views/RevenueTableView";
 
 export default function RevenuePage() {
   return (
-    <div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div className="container mx-auto py-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">

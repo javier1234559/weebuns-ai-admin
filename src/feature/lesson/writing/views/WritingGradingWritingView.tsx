@@ -11,6 +11,7 @@ import { log } from "@/lib/utils";
 import { useState } from "react";
 import WritingGradingForm from "@/feature/lesson/writing/components/WritingGradingForm";
 import { WritingGradingFormValues } from "@/feature/lesson/writing/components/WritingGradingForm/schema";
+import { useCheckGrading } from "../hooks/useCheckGrading";
 
 interface WritingGradingWritingViewProps {
   submissionId?: string | null;
@@ -25,11 +26,19 @@ const WritingGradingWritingView = ({
   const updateMutation = useWritingUpdateSubmissionTeacher();
   const [isMutationLoading, setIsMutationLoading] = useState(false);
 
+
   const {
     data: submission,
     isLoading,
     error,
   } = useWritingSubmissionDetail(submissionId ?? null);
+
+
+  useCheckGrading({
+    gradedById: submission?.gradedById ?? "",
+    isLoading: isLoading,
+  });
+
 
   const handleSubmit = async (formData: WritingGradingFormValues) => {
     try {

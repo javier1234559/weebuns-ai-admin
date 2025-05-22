@@ -10,6 +10,8 @@ import {
   TransactionResponse,
   CreateTransactionDto,
   UseTokensDto,
+  WithdrawTokensDto,
+  TransactionWithUserResponse,
 } from "@/services/swagger-types";
 
 export interface FindAllTransactionsQuery {
@@ -80,6 +82,47 @@ const tokenApi = {
   useTokens(data: UseTokensDto) {
     return api
       .tokenControllerUseTokens(data)
+      .then((res: any) => res.data as TransactionResponse)
+      .catch((err: any) => {
+        handleApiError(err);
+        throw err.response.data;
+      });
+  },
+
+  // Withdraw
+  withdraw(data: WithdrawTokensDto) {
+    return api
+      .tokenControllerWithdrawTokens(data)
+      .then((res: any) => res.data as TransactionResponse)
+      .catch((err: any) => {
+        handleApiError(err);
+        throw err.response.data;
+      });
+  },
+
+  getWithdrawalRequests(query: FindAllTransactionsQuery) {
+    return api
+      .tokenControllerGetWithdrawalRequests(query)
+      .then((res: any) => res.data as TransactionsResponse)
+      .catch((err: any) => {
+        handleApiError(err);
+        throw err.response.data;
+      });
+  },
+
+  getWithdrawalRequestDetails(id: string) {
+    return api
+      .tokenControllerGetWithdrawalRequestDetails(id)
+      .then((res: any) => res.data as TransactionWithUserResponse)
+      .catch((err: any) => {
+        handleApiError(err);
+        throw err.response.data;
+      });
+  },
+
+  approveWithdrawalRequest(id: string) {
+    return api
+      .tokenControllerApproveWithdrawalRequest(id)
       .then((res: any) => res.data as TransactionResponse)
       .catch((err: any) => {
         handleApiError(err);

@@ -1,4 +1,4 @@
-import { WritingSubmission } from "@/services/swagger-types";
+import { SubmissionStatus, WritingSubmission } from "@/services/swagger-types";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,6 +18,9 @@ import { FeedbackCorrectionsForm } from "./FeedbackCorrectionsForm";
 import { OverallFeedbackForm } from "./OverallFeedbackForm";
 import { Form } from "@/components/ui/form";
 import { v4 as uuidv4 } from "uuid";
+import CancelGradingButton from "../CancelGradingButton";
+import { useNavigate } from "react-router-dom";
+import { RouteNames } from "@/constraints/route-name";
 
 interface WritingGradingFormProps {
   initialData?: WritingSubmission;
@@ -36,7 +39,7 @@ export default function WritingGradingForm({
     position: number;
   } | null>(null);
   const [focusedCorrectionId, setFocusedCorrectionId] = useState<string>();
-
+  const navigate = useNavigate();
   const form = useForm<WritingGradingFormValues>({
     resolver: zodResolver(writingGradingFormSchema),
     defaultValues: {
@@ -133,7 +136,16 @@ export default function WritingGradingForm({
           onSubmit={form.handleSubmit(handleSubmit)}
           className="flex flex-col w-full"
         >
-          <div className="flex justify-end p-4">
+          <div className="flex justify-end p-4 gap-2 items-center">
+            {initialData?.status === SubmissionStatus.Taken && !isLoading && (
+              <CancelGradingButton
+                submissionId={initialData.id}
+                onClick={() => {
+                  navigate(RouteNames.TeacherWritingGrading);
+                }}
+              />
+            )}
+
             <Button type="submit" disabled={isLoading}>
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

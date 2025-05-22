@@ -154,3 +154,29 @@ export const useWritingUpdateSubmissionTeacher = () => {
     },
   });
 };
+
+export const useClaimWritingSubmission = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => submissionApi.claimWritingSubmission(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: WRITING_SUBMISSION_KEY_FACTORY.all,
+      });
+    },
+  });
+};
+
+export const useCancelClaimWritingSubmission = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => submissionApi.cancelClaimWritingSubmission(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: WRITING_SUBMISSION_KEY_FACTORY.all,
+      });
+    },
+  });
+};
