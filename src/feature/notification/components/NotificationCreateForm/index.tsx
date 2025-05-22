@@ -8,9 +8,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { notificationTypes } from "@/feature/notification/data";
-import { useSendNotification } from "../hooks/useNotification";
+import { useSendNotification } from "../../hooks/useNotification";
 import { useForm } from "react-hook-form";
 import { CreateNotificationDto } from "@/services/swagger-types";
+import { defaultValues, notificationCreateSchema, NotificationCreateSchema } from "./schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface CreateNotificationFormProps {
   onSuccess?: () => void;
@@ -18,18 +20,18 @@ interface CreateNotificationFormProps {
 
 export default function CreateNotificationForm({ onSuccess }: CreateNotificationFormProps) {
   const { mutate: sendNotification } = useSendNotification();
-  const { register, handleSubmit, setValue, watch } = useForm<CreateNotificationDto>({
-    defaultValues: {
-      userId: "be6b4aab-d36d-4cd8-a23e-562c4448913f",
-      type: "comment_reply" as const,
-      isGlobal: false,
-    }
+  const { register, handleSubmit, setValue, watch } = useForm<NotificationCreateSchema>({
+    resolver: zodResolver(notificationCreateSchema),
+    defaultValues: defaultValues,
   });
 
   const isGlobal = watch("isGlobal");
 
-  const onSubmit = (data: CreateNotificationDto) => {
-    sendNotification(data, {
+  const onSubmit = (data: NotificationCreateSchema) => {
+    sendNotification({
+      ...data,
+      userId: data.userId || undefined
+    }, {
       onSuccess: () => {
         onSuccess?.();
       }

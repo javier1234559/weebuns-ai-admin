@@ -132,7 +132,7 @@ const columns: ColumnDef<IUsers>[] = [
 export default function UsersPage() {
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 2,
+    pageSize: 10,
   });
 
   const [searchParams, setSearchParams] = React.useState<SearchParams>({});

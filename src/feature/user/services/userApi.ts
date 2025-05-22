@@ -6,6 +6,9 @@ import {
   VerifyResetCodeDto,
   TeacherDto,
   ProfileDto,
+  UpdateProfileTeacherDto,
+  CreateUserDto,
+  UpdateUserDto,
 } from "@/services/swagger-types";
 
 export interface FindAllUserQuery {
@@ -121,7 +124,7 @@ const userApi = {
         );
       }),
 
-  updateTeacherProfile: (id: string, data: ProfileDto) =>
+  updateTeacherProfile: (id: string, data: UpdateProfileTeacherDto) =>
     api
       .userControllerUpdateTeacherProfile(id, data)
       .then((res) => res.data)
@@ -130,6 +133,29 @@ const userApi = {
         throw new Error(
           error?.response?.data?.error ||
             "Đã xảy ra lỗi khi cập nhật thông tin giáo viên",
+        );
+      }),
+
+  createUser: (data: CreateUserDto) =>
+    api
+      .userControllerCreateUser(data)
+      .then((res) => res.data)
+      .catch((error) => {
+        handleApiError(error?.response?.data);
+        throw new Error(
+          error?.response?.data?.error || "Đã xảy ra lỗi khi tạo người dùng",
+        );
+      }),
+
+  updateUser: (id: string, data: UpdateUserDto) =>
+    api
+      .userControllerUpdateUser(id, data)
+      .then((res) => res.data)
+      .catch((error) => {
+        handleApiError(error?.response?.data);
+        throw new Error(
+          error?.response?.data?.error ||
+            "Đã xảy ra lỗi khi cập nhật người dùng",
         );
       }),
 

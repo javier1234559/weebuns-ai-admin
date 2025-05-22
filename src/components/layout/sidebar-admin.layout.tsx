@@ -11,7 +11,7 @@ import { SIDEBAR_COOKIE_NAME } from "@/constraints";
 import { ThemeSwitcher } from "@/theme/theme-switcher";
 import SidebarSearch from "@/components/layout/sidebar/side-bar-search";
 import { Bell, CreditCard, FileText, Send, Users } from "lucide-react";
-import { BookOpen, Gauge, Settings } from "lucide-react";
+import { BookOpen, Gauge } from "lucide-react";
 import { SecondaryMenu } from "@/components/layout/sidebar/nav-secondary";
 import { IMenu } from "@/components/layout/sidebar/menu";
 import { RouteNames } from "@/constraints/route-name";
@@ -65,11 +65,6 @@ export const menu: IMenu[] = [
     title: "Doanh thu",
     icon: CreditCard,
     to: RouteNames.AdminRevenue,
-  },
-  {
-    title: "Cài đặt",
-    icon: Settings,
-    to: RouteNames.AdminSettings,
   },
 ] as const;
 

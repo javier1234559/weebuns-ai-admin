@@ -1,5 +1,4 @@
 import { Separator } from "@/components/ui/separator";
-import ProfileForm from "@/feature/user/components/ProfileForm";
 
 export default function Page() {
   return (
@@ -9,7 +8,6 @@ export default function Page() {
         <p className="text-sm text-muted-foreground">Tài khoản của bạn</p>
       </div>
       <Separator />
-      <ProfileForm />
     </div>
   );
 }

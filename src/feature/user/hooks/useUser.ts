@@ -4,6 +4,9 @@ import {
   ProfileDto,
   UsersResponse,
   UserResponse,
+  UpdateProfileTeacherDto,
+  CreateUserDto,
+  UpdateUserDto,
 } from "@/services/swagger-types";
 import {
   useMutation,
@@ -75,7 +78,7 @@ export const useUpdateTeacherProfile = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: ProfileDto }) =>
+    mutationFn: ({ id, data }: { id: string; data: UpdateProfileTeacherDto }) =>
       userApi.updateTeacherProfile(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: USER_KEY_FACTORY.all });
@@ -100,6 +103,29 @@ export const useRemoveUser = () => {
 
   return useMutation({
     mutationFn: (id: string) => userApi.remove(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: USER_KEY_FACTORY.all });
+    },
+  });
+};
+
+export const useCreateUser = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreateUserDto) => userApi.createUser(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: USER_KEY_FACTORY.all });
+    },
+  });
+};
+
+export const useUpdateUser = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: UpdateUserDto }) =>
+      userApi.updateUser(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: USER_KEY_FACTORY.all });
     },
