@@ -20,7 +20,7 @@ export type NotificationCreateSchema = z.infer<typeof notificationCreateSchema>;
 
 export const defaultValues: NotificationCreateSchema = {
   title: "Thông báo quảng cáo: Nhận IELTS Insights miễn phí",
-  userId: "be6b4aab-d36d-4cd8-a23e-562c4448913f",
+  userId: "",
   type: "advertisement" as const,
   actionUrl: "https://ielts1984.vn/ielts-insights",
   thumbnailUrl:

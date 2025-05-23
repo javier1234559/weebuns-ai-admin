@@ -12,6 +12,7 @@ export interface FindAllNotificationQuery {
   userId?: string;
   isGlobal?: boolean;
   type?: string;
+  createdBy?: string;
 }
 const notificationApi = {
   sendNotification(data: CreateNotificationDto): Promise<string> {
