@@ -92,18 +92,18 @@ const WritingLessonForm = ({
         size="sm"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Lessons
+        Quay lại
       </Button>
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
-            {isEdit ? "Edit Writing Lesson" : "Create Writing Lesson"}
+            {isEdit ? "Chỉnh sửa bài viết" : "Tạo bài viết"}
           </h1>
           <p className="text-muted-foreground">
             {isEdit
-              ? "Update the writing lesson details below"
-              : "Fill in the details to create a new writing lesson"}
+              ? "Cập nhật chi tiết bài viết"
+              : "Điền chi tiết để tạo bài viết mới"}
           </p>
         </div>
         <div className="flex gap-2">
@@ -125,11 +125,11 @@ const WritingLessonForm = ({
             disabled={isLoading}
           >
             {isLoading ? (
-              "Saving..."
+              "Đang lưu..."
             ) : (
               <>
                 <Save className="mr-2 h-4 w-4" />
-                {isEdit ? "Update" : "Create"}
+                {isEdit ? "Cập nhật" : "Tạo"}
               </>
             )}
           </Button>
@@ -144,10 +144,10 @@ const WritingLessonForm = ({
         >
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="details">Basic Info</TabsTrigger>
-              <TabsTrigger value="task">Task & Prompt</TabsTrigger>
-              <TabsTrigger value="resources">Resources</TabsTrigger>
-              <TabsTrigger value="vocabulary">Vocabulary</TabsTrigger>
+              <TabsTrigger value="details">Thông tin cơ bản</TabsTrigger>
+              <TabsTrigger value="task">Prompt AI</TabsTrigger>
+              <TabsTrigger value="resources">Tài liệu</TabsTrigger>
+              <TabsTrigger value="vocabulary">Từ vựng</TabsTrigger>
             </TabsList>
             <TabsContent value="details" className="space-y-6">
               <BasicInfoForm />
@@ -158,7 +158,7 @@ const WritingLessonForm = ({
                   onClick={() => setActiveTab("task")}
                 >
                   <ArrowRight className="h-4 w-4" />
-                  Next
+                  Tiếp theo
                 </Button>
               </div>
             </TabsContent>
@@ -171,7 +171,7 @@ const WritingLessonForm = ({
                   onClick={() => setActiveTab("resources")}
                 >
                   <ArrowRight className="h-4 w-4" />
-                  Next
+                  Tiếp theo
                 </Button>
               </div>
             </TabsContent>
@@ -184,7 +184,7 @@ const WritingLessonForm = ({
                   onClick={() => setActiveTab("vocabulary")}
                 >
                   <ArrowRight className="h-4 w-4" />
-                  Next
+                  Tiếp theo
                 </Button>
               </div>
             </TabsContent>

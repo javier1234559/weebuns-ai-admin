@@ -27,7 +27,7 @@ const BasicInfoForm = () => {
     <>
       <Card>
         <CardHeader>
-          <CardTitle>Basic Information</CardTitle>
+          <CardTitle>Thông tin cơ bản</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -36,13 +36,11 @@ const BasicInfoForm = () => {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Lesson Title</FormLabel>
+                  <FormLabel>Tiêu đề bài viết</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter lesson title" {...field} />
+                    <Input placeholder="Nhập tiêu đề bài viết" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    A concise and descriptive title for this reading lesson
-                  </FormDescription>
+                  <FormDescription>Tiêu đề bài viết</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -53,11 +51,11 @@ const BasicInfoForm = () => {
               name="topic"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Topic</FormLabel>
+                  <FormLabel>Chủ đề</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a topic" />
+                        <SelectValue placeholder="Chọn chủ đề" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -69,7 +67,7 @@ const BasicInfoForm = () => {
                     </SelectContent>
                   </Select>
                   <FormDescription>
-                    Select the most relevant topic for this lesson
+                    Chọn chủ đề phù hợp nhất cho bài viết này
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -82,17 +80,15 @@ const BasicInfoForm = () => {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>Mô tả</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Provide a brief description of this lesson"
+                    placeholder="Nhập mô tả bài viết"
                     className="min-h-[100px]"
                     {...field}
                   />
                 </FormControl>
-                <FormDescription>
-                  Summarize what students will learn from this lesson
-                </FormDescription>
+                <FormDescription>Tóm tắt nội dung bài viết</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -104,7 +100,7 @@ const BasicInfoForm = () => {
               name="level"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Level</FormLabel>
+                  <FormLabel>Độ khó</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
@@ -112,9 +108,9 @@ const BasicInfoForm = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="beginner">Beginner</SelectItem>
-                      <SelectItem value="intermediate">Intermediate</SelectItem>
-                      <SelectItem value="advanced">Advanced</SelectItem>
+                      <SelectItem value="beginner">Bắt đầu</SelectItem>
+                      <SelectItem value="intermediate">Trung bình</SelectItem>
+                      <SelectItem value="advanced">Nâng cao</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormDescription>
@@ -130,12 +126,12 @@ const BasicInfoForm = () => {
               name="timeLimit"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Time Limit (minutes)</FormLabel>
+                  <FormLabel>Thời gian (phút)</FormLabel>
                   <FormControl>
                     <Input type="number" min={1} {...field} />
                   </FormControl>
                   <FormDescription>
-                    The recommended time to complete this lesson
+                    Thời gian để hoàn thành bài viết
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -147,7 +143,7 @@ const BasicInfoForm = () => {
               name="lessonType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Lesson Type</FormLabel>
+                  <FormLabel>Loại bài viết</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
@@ -159,9 +155,7 @@ const BasicInfoForm = () => {
                       <SelectItem value="test">Test</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription>
-                    The format of this reading lesson
-                  </FormDescription>
+                  <FormDescription>Loại bài viết</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -173,7 +167,7 @@ const BasicInfoForm = () => {
             name="thumbnailUrl"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Thumbnail Image</FormLabel>
+                <FormLabel>Ảnh bìa</FormLabel>
                 <UploadImage value={field.value} onChange={field.onChange} />
               </FormItem>
             )}
@@ -183,7 +177,7 @@ const BasicInfoForm = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Publishing Settings</CardTitle>
+          <CardTitle>Cài đặt xuất bản</CardTitle>
         </CardHeader>
         <CardContent>
           <FormField
@@ -191,7 +185,7 @@ const BasicInfoForm = () => {
             name="status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Status</FormLabel>
+                <FormLabel>Trạng thái</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -205,8 +199,8 @@ const BasicInfoForm = () => {
                   </SelectContent>
                 </Select>
                 <FormDescription>
-                  Draft lessons are only visible to you. Published lessons are
-                  visible to all students.
+                  Bài viết nháp chỉ hiển thị cho bạn. Bài viết đã xuất bản sẽ
+                  hiển thị cho tất cả học viên.
                 </FormDescription>
                 <FormMessage />
               </FormItem>

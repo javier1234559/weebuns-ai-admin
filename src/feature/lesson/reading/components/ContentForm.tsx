@@ -14,10 +14,9 @@ const ContentForm = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Reading Passage</CardTitle>
+        <CardTitle>Nội dung</CardTitle>
         <p className="text-sm text-muted-foreground">
-          Enter the reading text that students will read and answer questions
-          about
+          Tạo bài viết bằng cách cung cấp văn bản đọc và câu hỏi
         </p>
       </CardHeader>
       <CardContent>
@@ -30,8 +29,8 @@ const ContentForm = () => {
                 <TipTapEditor {...field} />
               </FormControl>
               <FormDescription>
-                HTML formatting can be used for paragraphs, headings, and other
-                text elements
+                HTML có thể được sử dụng cho các đoạn văn, tiêu đề và các phần
+                văn bản khác
               </FormDescription>
               <FormMessage />
             </FormItem>

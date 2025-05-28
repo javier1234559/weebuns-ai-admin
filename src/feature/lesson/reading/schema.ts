@@ -37,19 +37,7 @@ export const defaultValues: ReadingLessonFormValues = {
   timeLimit: 30,
   lessonType: "practice",
   content: {
-    text: `To: All Staff
-From: Human Resources Department
-Subject: Updated Office Attendance Policy
-
-Dear Employees,
-
-We would like to inform you of an important update to our attendance policy. Starting next Monday, all employees are required to clock in using the new digital attendance system installed at the main entrance.
-
-This system will automatically record your arrival and departure times. Please ensure that you arrive no later than 9:00 A.M. and do not leave before 5:00 P.M. without prior approval from your supervisor.
-
-Any employee who fails to follow this procedure three times within a month may be subject to a warning.
-
-If you have any questions, please contact the HR department.`,
+    text: "<p>To: All Staff </p><p>From: Human Resources Department </p><p>Subject: Updated Office Attendance Policy Dear Employees, We would like to inform you of an important update to our attendance policy. Starting next Monday, all employees must clock in using the new digital attendance system installed at the main entrance. This system will automatically record your arrival and departure times. Please ensure that you arrive no later than 9:00 A.M. and do not leave before 5:00 P.M. without prior approval from your supervisor. Employees who fail to follow this procedure three times within a month may be subject to a warning. If you have any questions, please contact the HR department.</p>",
     questions: [
       {
         id: "1",

@@ -31,10 +31,9 @@ const ContentForm = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-3xl">Speaking Content</CardTitle>
+        <CardTitle className="text-3xl">Nội dung</CardTitle>
         <p className="text-sm text-muted-foreground">
-          Create a speaking exercise by providing a topic, prompt, and follow-up
-          questions
+          Tạo bài viết bằng cách cung cấp chủ đề, prompt và câu hỏi theo sau
         </p>
       </CardHeader>
       <CardContent className="space-y-8">
@@ -43,11 +42,11 @@ const ContentForm = () => {
           name="content.topicText"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-xl">Topic</FormLabel>
+              <FormLabel className="text-xl">Chủ đề</FormLabel>
               <FormControl>
                 <Input
                   {...field}
-                  placeholder="e.g. Travel and Tourism, Family Life, Technology"
+                  placeholder="Ví dụ: Du lịch và Du lịch, Cuộc sống gia đình, Công nghệ"
                 />
               </FormControl>
               <FormMessage />
@@ -59,11 +58,11 @@ const ContentForm = () => {
           name="content.promptText"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-xl">Main Prompt</FormLabel>
+              <FormLabel className="text-xl">Prompt chính</FormLabel>
               <FormControl>
                 <Textarea
                   {...field}
-                  placeholder="Enter the main discussion prompt"
+                  placeholder="Nhập prompt chính"
                   className="min-h-[100px]"
                 />
               </FormControl>
@@ -74,7 +73,9 @@ const ContentForm = () => {
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <FormLabel className="text-xl">Follow-up Questions</FormLabel>
+            <FormLabel className="text-xl">
+              Câu hỏi cho AI sử dụng (tùy chọn)
+            </FormLabel>
             <Button
               type="button"
               variant="outline"
@@ -83,7 +84,7 @@ const ContentForm = () => {
               className="flex items-center gap-2"
             >
               <PlusCircle className="h-4 w-4" />
-              Add Question
+              Thêm câu hỏi
             </Button>
           </div>
           {followupExamples.map((_: any, index: number) => (
@@ -95,10 +96,7 @@ const ContentForm = () => {
                 <FormItem>
                   <div className="flex gap-2">
                     <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="Enter a follow-up question"
-                      />
+                      <Input {...field} placeholder="Nhập câu hỏi theo sau" />
                     </FormControl>
                     <Button
                       type="button"
@@ -122,12 +120,12 @@ const ContentForm = () => {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-xl">
-                Background Knowledge & Vocabulary
+                Ngữ cảnh & Từ vựng (tùy chọn)
               </FormLabel>
               <FormControl>
                 <Textarea
                   {...field}
-                  placeholder="Add relevant vocabulary, cultural context, or key concepts that may help with the discussion"
+                  placeholder="Thêm từ vựng, ngữ cảnh văn hóa hoặc khái niệm quan trọng có thể giúp cho cuộc thảo luận"
                   className="min-h-[100px]"
                 />
               </FormControl>

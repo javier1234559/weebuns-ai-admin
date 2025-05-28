@@ -75,7 +75,7 @@ export default function ProfileForm({
     <Card className="w-full shadow-sm">
       <CardHeader className="flex gap-4">
         <div className="flex flex-col gap-2">
-          <CardTitle>Profile Information</CardTitle>
+          <CardTitle>Thông tin cá nhân</CardTitle>
           <p className="text-sm text-muted-foreground">Tài khoản của bạn</p>
         </div>
         <Separator />
@@ -92,11 +92,11 @@ export default function ProfileForm({
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>Tên đăng nhập</FormLabel>
                     <FormControl>
                       <Input type="text" placeholder="username" {...field} />
                     </FormControl>
-                    <FormDescription>Your unique username</FormDescription>
+                    <FormDescription>Tên đăng nhập của bạn</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -107,7 +107,7 @@ export default function ProfileForm({
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Email liên hệ</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
@@ -115,7 +115,7 @@ export default function ProfileForm({
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription>Your given name</FormDescription>
+                    <FormDescription>Email liên hệ của bạn</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -125,11 +125,11 @@ export default function ProfileForm({
                 name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>First Name</FormLabel>
+                    <FormLabel>Tên</FormLabel>
                     <FormControl>
                       <Input placeholder="First name" {...field} />
                     </FormControl>
-                    <FormDescription>Your given name</FormDescription>
+                    <FormDescription>Tên của bạn</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -139,42 +139,11 @@ export default function ProfileForm({
                 name="lastName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Last Name</FormLabel>
+                    <FormLabel>Họ</FormLabel>
                     <FormControl>
                       <Input placeholder="Last name" {...field} />
                     </FormControl>
-                    <FormDescription>Your family name</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input placeholder="username" {...field} />
-                    </FormControl>
-                    <FormDescription>Your unique username</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="email@example.com" {...field} />
-                    </FormControl>
-                    <FormDescription>Your contact email</FormDescription>
+                    <FormDescription>Họ của bạn</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -187,13 +156,15 @@ export default function ProfileForm({
                 name="authProvider"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Auth Provider</FormLabel>
+                    <FormLabel>Phương thức đăng nhập</FormLabel>
                     <FormControl>
                       <div className="flex h-10 items-center">
                         {getAuthProviderBadge(field.value)}
                       </div>
                     </FormControl>
-                    <FormDescription>Your login method</FormDescription>
+                    <FormDescription>
+                      Phương thức đăng nhập của bạn
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -203,7 +174,7 @@ export default function ProfileForm({
                 name="isEmailVerified"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email Status</FormLabel>
+                    <FormLabel>Trạng thái email</FormLabel>
                     <FormControl>
                       <div className="flex h-10 items-center gap-2">
                         {field.value ? (
@@ -219,7 +190,7 @@ export default function ProfileForm({
                         )}
                       </div>
                     </FormControl>
-                    <FormDescription>Verification status</FormDescription>
+                    <FormDescription>Trạng thái xác thực email</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -231,14 +202,14 @@ export default function ProfileForm({
               name="profilePicture"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Profile Picture URL</FormLabel>
+                  <FormLabel>Ảnh đại diện</FormLabel>
                   <FormControl className="h-24">
                     <UploadAvatarImage
                       value={field.value ?? null}
                       onChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>URL to your profile picture</FormDescription>
+                  <FormDescription>Ảnh đại diện của bạn</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -249,7 +220,7 @@ export default function ProfileForm({
               name="bio"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Short Bio</FormLabel>
+                  <FormLabel>Giới thiệu ngắn</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Tell us a little bit about yourself"
@@ -257,18 +228,16 @@ export default function ProfileForm({
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    A brief introduction about yourself
-                  </FormDescription>
+                  <FormDescription>Giới thiệu ngắn về bạn</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
             <Separator className="my-6" />
-            <h3 className="text-lg font-medium">Teacher Profile</h3>
+            <h3 className="text-lg font-medium">Thông tin giáo viên</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Additional information for your teacher profile
+              Thông tin giáo viên của bạn
             </p>
 
             <FormField
@@ -276,7 +245,7 @@ export default function ProfileForm({
               name="longBio"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Detailed Bio</FormLabel>
+                  <FormLabel>Giới thiệu chi tiết</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Tell us more about your teaching experience and background"
@@ -285,8 +254,8 @@ export default function ProfileForm({
                     />
                   </FormControl>
                   <FormDescription>
-                    A detailed description of your teaching experience and
-                    qualifications
+                    Giới thiệu chi tiết về kinh nghiệm giảng dạy và trình độ của
+                    bạn
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -298,7 +267,7 @@ export default function ProfileForm({
               name="introVideoUrlEmbed"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Introduction Video URL</FormLabel>
+                  <FormLabel>URL video giới thiệu</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="https://youtube.com/embed/..."
@@ -306,7 +275,7 @@ export default function ProfileForm({
                     />
                   </FormControl>
                   <FormDescription>
-                    URL to your introduction video (YouTube embed URL)
+                    URL video giới thiệu (YouTube embed URL)
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -318,7 +287,7 @@ export default function ProfileForm({
               name="certifications"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Certifications</FormLabel>
+                  <FormLabel>Chứng chỉ</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="List your teaching certifications and qualifications"
@@ -327,7 +296,7 @@ export default function ProfileForm({
                     />
                   </FormControl>
                   <FormDescription>
-                    Your teaching certifications and qualifications
+                    Chứng chỉ và trình độ của bạn
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -339,7 +308,7 @@ export default function ProfileForm({
               name="teachingExperience"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Teaching Experience</FormLabel>
+                  <FormLabel>Kinh nghiệm giảng dạy</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Describe your teaching experience"
@@ -348,7 +317,7 @@ export default function ProfileForm({
                     />
                   </FormControl>
                   <FormDescription>
-                    Your teaching experience and background
+                    Kinh nghiệm giảng dạy của bạn
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -360,7 +329,7 @@ export default function ProfileForm({
               name="other"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Additional Information</FormLabel>
+                  <FormLabel>Thông tin khác</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Any additional information you'd like to share"
@@ -368,9 +337,7 @@ export default function ProfileForm({
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Other relevant information about your teaching
-                  </FormDescription>
+                  <FormDescription>Thông tin khác về bạn</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -378,7 +345,7 @@ export default function ProfileForm({
 
             <div className="flex justify-end">
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Updating..." : "Update profile"}
+                {isLoading ? "Cập nhật..." : "Cập nhật"}
               </Button>
             </div>
           </form>

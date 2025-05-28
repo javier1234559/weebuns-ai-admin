@@ -17,7 +17,7 @@ function TaskForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Writing Task</CardTitle>
+        <CardTitle>Nhiệm vụ</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <FormField
@@ -25,7 +25,7 @@ function TaskForm() {
           name="content.task"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Task Description</FormLabel>
+              <FormLabel>Mô tả nhiệm vụ</FormLabel>
               <FormControl>
                 <TipTapEditor {...field} />
               </FormControl>
@@ -39,11 +39,11 @@ function TaskForm() {
           name="content.ai_prompt"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>AI Writing Prompt</FormLabel>
+              <FormLabel>Prompt AI</FormLabel>
               <FormControl>
                 <Textarea
                   {...field}
-                  placeholder="Enter the AI writing prompt"
+                  placeholder="Nhập prompt AI"
                   className="min-h-[100px]"
                 />
               </FormControl>

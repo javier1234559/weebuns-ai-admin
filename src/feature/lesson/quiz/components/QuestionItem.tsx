@@ -45,7 +45,7 @@ const QuestionItem = ({
       <CardHeader className="py-4">
         <div className="flex justify-between items-center">
           <CardTitle className="text-base">
-            Question {questionIndex + 1}
+            Câu hỏi {questionIndex + 1}
           </CardTitle>
           <Button
             type="button"
@@ -64,10 +64,10 @@ const QuestionItem = ({
           name={`content.questions.${questionIndex}.question`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Question Text</FormLabel>
+              <FormLabel>Câu hỏi</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Enter your question"
+                  placeholder="Nhập câu hỏi"
                   className="min-h-[80px]"
                   {...field}
                 />
@@ -79,7 +79,7 @@ const QuestionItem = ({
 
         <div className="space-y-2">
           <div className="flex justify-between items-center">
-            <FormLabel>Answer Options</FormLabel>
+            <FormLabel>Câu trả lời</FormLabel>
             <Button
               type="button"
               variant="outline"
@@ -87,7 +87,7 @@ const QuestionItem = ({
               onClick={() => onAddOption(questionIndex)}
             >
               <Plus className="mr-2 h-3 w-3" />
-              Add Option
+              Thêm câu trả lời
             </Button>
           </div>
 
@@ -133,11 +133,11 @@ const QuestionItem = ({
           name={`content.questions.${questionIndex}.right_answer`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Correct Answer</FormLabel>
+              <FormLabel>Câu trả lời đúng</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select correct answer" />
+                    <SelectValue placeholder="Chọn câu trả lời đúng" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -159,9 +159,7 @@ const QuestionItem = ({
                   )}
                 </SelectContent>
               </Select>
-              <FormDescription>
-                Select which option is the correct answer
-              </FormDescription>
+              <FormDescription>Chọn câu trả lời đúng</FormDescription>
               <FormMessage />
             </FormItem>
           )}

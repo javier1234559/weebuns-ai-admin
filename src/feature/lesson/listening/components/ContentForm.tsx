@@ -15,10 +15,9 @@ const ContentForm = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Listening Audio</CardTitle>
+        <CardTitle>Nội dung</CardTitle>
         <p className="text-sm text-muted-foreground">
-          Enter the listening audio that students will listen to and answer
-          questions about
+          Tạo bài viết bằng cách cung cấp âm thanh, câu hỏi và câu trả lời
         </p>
       </CardHeader>
       <CardContent>
@@ -27,7 +26,7 @@ const ContentForm = () => {
           name="content.audio_url"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Audio File</FormLabel>
+              <FormLabel>Tệp âm thanh</FormLabel>
               <FormControl>
                 <UploadAudio value={field.value} onChange={field.onChange} />
               </FormControl>

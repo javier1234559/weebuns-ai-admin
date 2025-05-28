@@ -7,15 +7,15 @@ export default function SettingLayout({
 }) {
   const sidebarNavItems = [
     {
-      title: "Profile",
+      title: "Thông tin cá nhân",
       href: RouteNames.TeacherSettingsProfile,
     },
     {
-      title: "Notifications",
+      title: "Thông báo",
       href: RouteNames.TeacherNotificationSettings,
     },
     {
-      title: "Payment",
+      title: "Thanh toán",
       href: RouteNames.TeacherPayment,
     },
   ];

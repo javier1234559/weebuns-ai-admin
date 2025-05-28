@@ -41,17 +41,17 @@ export default function LessonPage() {
         <div className="flex flex-col sm:flex-row justify-between gap-4 sm:items-center">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">
-              Lesson Show All
+              Quản lý bài viết
             </h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Create and manage lesson content
+              Tạo và quản lý bài viết
             </p>
           </div>
         </div>
 
         <div className="flex flex-col sm:flex-row justify-between gap-4 sm:items-center">
           <h2 className="text-xl font-semibold tracking-tight capitalize">
-            Lesson
+            Bài viết
           </h2>
         </div>
 
@@ -59,7 +59,7 @@ export default function LessonPage() {
           <div className="relative flex-1">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search lessons..."
+              placeholder="Tìm kiếm bài viết..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-8 h-10 text-sm"
@@ -69,7 +69,7 @@ export default function LessonPage() {
             <Select value={levelFilter} onValueChange={setLevelFilter}>
               <SelectTrigger className="h-10 text-sm w-[130px]">
                 <Filter className="mr-1 h-3.5 w-3.5" />
-                <SelectValue placeholder="Level" />
+                <SelectValue placeholder="Độ khó" />
               </SelectTrigger>
               <SelectContent>
                 {LEVELS.map((level) => (
@@ -82,7 +82,7 @@ export default function LessonPage() {
 
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="h-10 text-sm w-[130px]">
-                <SelectValue placeholder="Status" />
+                <SelectValue placeholder="Trạng thái" />
               </SelectTrigger>
               <SelectContent className="capitalize">
                 {LESSONS_STATUS.map((status) => (

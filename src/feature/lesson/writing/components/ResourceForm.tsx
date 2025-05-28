@@ -14,7 +14,7 @@ function ResourceForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Resources</CardTitle>
+        <CardTitle>Tài liệu</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Analysis Guide */}
@@ -23,13 +23,13 @@ function ResourceForm() {
           name="content.resources.analysis_guide"
           render={({ field }) => (
             <FormItem>
-              <Label>Analysis Guide</Label>
+              <Label>Hướng dẫn phân tích</Label>
               <FormControl className="h-full">
                 <TipTapEditor {...field} />
               </FormControl>
               <FormDescription>
-                HTML formatting can be used for paragraphs, headings, and other
-                text elements
+                HTML formatting có thể được sử dụng cho các đoạn văn, tiêu đề và
+                các phần văn bản khác
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -40,14 +40,14 @@ function ResourceForm() {
 
         {/* Sample Essay */}
         <div className="space-y-4">
-          <h3 className="text-lg font-medium">Sample Essay (Optional)</h3>
+          <h3 className="text-lg font-medium">Bài viết mẫu (Tùy chọn)</h3>
 
           <FormField
             control={control}
             name="content.resources.sample_essay.instruction"
             render={({ field }) => (
               <FormItem>
-                <Label>Instruction</Label>
+                <Label>Hướng dẫn</Label>
                 <FormControl>
                   <TipTapEditor {...field} />
                 </FormControl>
@@ -61,7 +61,7 @@ function ResourceForm() {
             name="content.resources.sample_essay.body1"
             render={({ field }) => (
               <FormItem>
-                <Label>Body Paragraph 1</Label>
+                <Label>Đoạn văn 1</Label>
                 <FormControl>
                   <TipTapEditor {...field} />
                 </FormControl>
@@ -75,7 +75,7 @@ function ResourceForm() {
             name="content.resources.sample_essay.body2"
             render={({ field }) => (
               <FormItem>
-                <Label>Body Paragraph 2</Label>
+                <Label>Đoạn văn 2</Label>
                 <FormControl>
                   <TipTapEditor {...field} />
                 </FormControl>
@@ -89,7 +89,7 @@ function ResourceForm() {
             name="content.resources.sample_essay.conclusion"
             render={({ field }) => (
               <FormItem>
-                <Label>Conclusion</Label>
+                <Label>Kết luận</Label>
                 <FormControl>
                   <TipTapEditor {...field} />
                 </FormControl>

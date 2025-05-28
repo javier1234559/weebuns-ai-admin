@@ -153,7 +153,7 @@ export default function UsersPage() {
 
   return (
     <div>
-      <div className="mb-4 text-2xl font-bold">Users Management</div>
+      <div className="mb-4 text-2xl font-bold">Quản lý người dùng</div>
       <ProTable
         columns={columns}
         data={data?.data || []}

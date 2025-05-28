@@ -37,7 +37,7 @@ function VocabularyForm() {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Vocabulary List</CardTitle>
+        <CardTitle>Danh sách từ vựng</CardTitle>
         <Button
           type="button"
           variant="outline"
@@ -45,22 +45,20 @@ function VocabularyForm() {
           onClick={addVocabularyItem}
         >
           <Plus className="h-4 w-4 mr-2" />
-          Add Vocabulary
+          Thêm từ vựng
         </Button>
       </CardHeader>
       <CardContent className="space-y-6">
         {fields.length === 0 ? (
           <div className="text-center py-6 text-muted-foreground">
-            No vocabulary items added yet. Click the button above to add one.
+            Chưa có từ vựng nào được thêm. Nhấn nút trên để thêm mới.
           </div>
         ) : (
           <div className="space-y-6">
             {fields.map((field, index) => (
               <div key={field.id} className="border rounded-lg p-4 space-y-4">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium">
-                    Vocabulary Item {index + 1}
-                  </h3>
+                  <h3 className="text-lg font-medium">Từ vựng {index + 1}</h3>
                   <Button
                     type="button"
                     variant="ghost"
@@ -76,9 +74,9 @@ function VocabularyForm() {
                   name={`content.vocabulary_list.${index}.term`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Term</FormLabel>
+                      <FormLabel>Từ</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Enter vocabulary term" />
+                        <Input {...field} placeholder="Nhập từ vựng" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -90,11 +88,11 @@ function VocabularyForm() {
                   name={`content.vocabulary_list.${index}.meaning`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Meanings</FormLabel>
+                      <FormLabel>Nghĩa</FormLabel>
                       <FormControl>
                         <Textarea
                           {...field}
-                          placeholder="Enter meanings (one per line)"
+                          placeholder="Nhập nghĩa (mỗi dòng một nghĩa)"
                           value={field.value?.join("\n") || ""}
                           onChange={(e) => {
                             const meanings = e.target.value
@@ -114,12 +112,9 @@ function VocabularyForm() {
                   name={`content.vocabulary_list.${index}.example_sentence`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Example Sentence</FormLabel>
+                      <FormLabel>Câu ví dụ</FormLabel>
                       <FormControl>
-                        <Textarea
-                          {...field}
-                          placeholder="Enter example sentence"
-                        />
+                        <Textarea {...field} placeholder="Nhập câu ví dụ" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -132,7 +127,7 @@ function VocabularyForm() {
                     name={`content.vocabulary_list.${index}.image_url`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Image URL</FormLabel>
+                        <FormLabel>URL ảnh</FormLabel>
                         <FormControl>
                           <UploadImage
                             value={field.value || null}
@@ -149,12 +144,9 @@ function VocabularyForm() {
                     name={`content.vocabulary_list.${index}.reference_link`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Reference Link</FormLabel>
+                        <FormLabel>URL tham khảo</FormLabel>
                         <FormControl>
-                          <Input
-                            {...field}
-                            placeholder="Enter reference link"
-                          />
+                          <Input {...field} placeholder="Nhập URL tham khảo" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -167,34 +159,9 @@ function VocabularyForm() {
                   name={`content.vocabulary_list.${index}.reference_name`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Reference Name</FormLabel>
+                      <FormLabel>Tên tham khảo</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Enter reference name" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={control}
-                  name={`content.vocabulary_list.${index}.tags`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Tags</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Enter tags (comma separated)"
-                          value={field.value?.join(", ") || ""}
-                          onChange={(e) => {
-                            const tags = e.target.value
-                              .split(",")
-                              .map((tag) => tag.trim())
-                              .filter((tag) => tag !== "");
-                            field.onChange(tags);
-                          }}
-                        />
+                        <Input {...field} placeholder="Nhập tên tham khảo" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

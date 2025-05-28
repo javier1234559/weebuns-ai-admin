@@ -76,10 +76,10 @@ const QuestionsForm = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-medium">Assessment Questions</h2>
+        <h2 className="text-lg font-medium">Câu hỏi</h2>
         <Button type="button" onClick={handleAddQuestion} size="sm">
           <Plus className="mr-2 h-4 w-4" />
-          Add Question
+          Thêm câu hỏi
         </Button>
       </div>
 

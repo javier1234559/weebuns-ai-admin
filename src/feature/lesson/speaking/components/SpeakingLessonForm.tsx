@@ -90,18 +90,16 @@ const SpeakingLessonForm = ({
         size="sm"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Lessons
+        Quay lại
       </Button>
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
-            {isEdit ? "Edit Speaking Lesson" : "Create Speaking Lesson"}
+            {isEdit ? "Chỉnh sửa bài viết" : "Tạo bài viết"}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {isEdit
-              ? "Update existing speaking lesson"
-              : "Create a new speaking lesson for IELTS preparation"}
+            {isEdit ? "Cập nhật bài viết" : "Tạo bài viết mới"}
           </p>
         </div>
         <div className="flex gap-2">
@@ -112,7 +110,7 @@ const SpeakingLessonForm = ({
               disabled={isLoading}
             >
               <Trash className="h-4 w-4" />
-              Remove Lesson
+              Xóa bài viết
             </Button>
           )}
           <Button
@@ -122,7 +120,7 @@ const SpeakingLessonForm = ({
             disabled={isLoading}
           >
             <Save className="h-4 w-4" />
-            {isLoading ? "Saving..." : isEdit ? "Update Lesson" : "Save Lesson"}
+            {isLoading ? "Đang lưu..." : isEdit ? "Cập nhật" : "Lưu"}
           </Button>
         </div>
       </div>
@@ -139,8 +137,8 @@ const SpeakingLessonForm = ({
             className="w-full"
           >
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="details">Basic Info</TabsTrigger>
-              <TabsTrigger value="content">Reading Content</TabsTrigger>
+              <TabsTrigger value="details">Thông tin cơ bản</TabsTrigger>
+              <TabsTrigger value="content">Nội dung</TabsTrigger>
             </TabsList>
 
             <TabsContent value="details" className="space-y-6 mt-6">
@@ -153,7 +151,7 @@ const SpeakingLessonForm = ({
                   onClick={() => setActiveTab("content")}
                 >
                   <ArrowRight className="h-4 w-4" />
-                  Next
+                  Tiếp theo
                 </Button>
               </div>
             </TabsContent>
@@ -168,7 +166,7 @@ const SpeakingLessonForm = ({
                   onClick={() => setActiveTab("details")}
                 >
                   <ArrowLeft className="h-4 w-4" />
-                  Back
+                  Quay lại
                 </Button>
               </div>
             </TabsContent>

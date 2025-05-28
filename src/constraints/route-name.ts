@@ -24,7 +24,7 @@ export enum RouteNames {
 
   // Settings
   AdminSettings = "/admin/settings",
-  AdminSettingsProfile = "/admin/settings/profile",
+  AdminSettingsProfile = "/admin/",
   AdminSettingsAppearance = "/admin/settings/appearance",
   AdminNotificationSettings = "/admin/settings/notifications",
   AdminHistory = "/admin/settings/history",

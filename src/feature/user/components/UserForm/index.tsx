@@ -50,9 +50,13 @@ export default function UserForm({
     <Card className="w-full shadow-sm">
       <CardHeader className="flex gap-4">
         <div className="flex flex-col gap-2">
-          <CardTitle>{isEdit ? "Edit User" : "Create User"}</CardTitle>
+          <CardTitle>
+            {isEdit ? "Chỉnh sửa người dùng" : "Tạo người dùng"}
+          </CardTitle>
           <p className="text-sm text-muted-foreground">
-            {isEdit ? "Update user information" : "Create a new user account"}
+            {isEdit
+              ? "Cập nhật thông tin người dùng"
+              : "Tạo tài khoản người dùng mới"}
           </p>
         </div>
         <Separator />
@@ -69,11 +73,11 @@ export default function UserForm({
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>Tên người dùng</FormLabel>
                     <FormControl>
                       <Input placeholder="username" {...field} />
                     </FormControl>
-                    <FormDescription>Unique username for the user</FormDescription>
+                    <FormDescription>Tên người dùng duy nhất</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -84,15 +88,15 @@ export default function UserForm({
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Email người dùng</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="email@example.com"
+                        placeholder="email@gmail.com"
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription>User's email address</FormDescription>
+                    <FormDescription>Email người dùng</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -105,11 +109,11 @@ export default function UserForm({
                 name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>First Name</FormLabel>
+                    <FormLabel>Tên</FormLabel>
                     <FormControl>
-                      <Input placeholder="First name" {...field} />
+                      <Input placeholder="Tên" {...field} />
                     </FormControl>
-                    <FormDescription>User's first name</FormDescription>
+                    <FormDescription>Tên người dùng</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -120,11 +124,11 @@ export default function UserForm({
                 name="lastName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Last Name</FormLabel>
+                    <FormLabel>Họ</FormLabel>
                     <FormControl>
-                      <Input placeholder="Last name" {...field} />
+                      <Input placeholder="Họ" {...field} />
                     </FormControl>
-                    <FormDescription>User's last name</FormDescription>
+                    <FormDescription>Họ người dùng</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -137,15 +141,15 @@ export default function UserForm({
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Mật khẩu</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="Enter password"
+                        placeholder="Nhập mật khẩu"
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription>User's password</FormDescription>
+                    <FormDescription>Mật khẩu người dùng</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -157,14 +161,14 @@ export default function UserForm({
               name="role"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Role</FormLabel>
+                  <FormLabel>Vai trò</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a role" />
+                        <SelectValue placeholder="Chọn vai trò" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -173,7 +177,9 @@ export default function UserForm({
                       <SelectItem value="teacher">Teacher</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription>User's role in the system</FormDescription>
+                  <FormDescription>
+                    Vai trò người dùng trong hệ thống
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -184,14 +190,14 @@ export default function UserForm({
               name="profilePicture"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Profile Picture</FormLabel>
+                  <FormLabel>Ảnh đại diện</FormLabel>
                   <FormControl className="h-24">
                     <UploadAvatarImage
                       value={field.value ?? null}
                       onChange={field.onChange}
                     />
                   </FormControl>
-                  <FormDescription>User's profile picture</FormDescription>
+                  <FormDescription>Ảnh đại diện người dùng</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -202,15 +208,15 @@ export default function UserForm({
               name="bio"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Bio</FormLabel>
+                  <FormLabel>Mô tả</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Tell us about the user"
+                      placeholder="Nhập mô tả người dùng"
                       className="resize-none"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>Brief description about the user</FormDescription>
+                  <FormDescription>Mô tả người dùng</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -220,11 +226,11 @@ export default function UserForm({
               <Button type="submit" disabled={isLoading}>
                 {isLoading
                   ? isEdit
-                    ? "Updating..."
-                    : "Creating..."
+                    ? "Đang cập nhật..."
+                    : "Đang tạo..."
                   : isEdit
-                  ? "Update user"
-                  : "Create user"}
+                    ? "Cập nhật"
+                    : "Create user"}
               </Button>
             </div>
           </form>

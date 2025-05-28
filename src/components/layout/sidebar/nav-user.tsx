@@ -25,6 +25,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { RouteNames } from "@/constraints/route-name";
 import { useAuthStore } from "@/stores/auth-store";
+import { ROLES } from "@/constraints";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
@@ -51,14 +52,19 @@ export function NavUser() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="size-8 rounded-lg">
-                <AvatarImage src={user.profilePicture ?? ""} alt={user.username} />
+                <AvatarImage
+                  src={user.profilePicture ?? ""}
+                  alt={user.username}
+                />
                 <AvatarFallback className="rounded-lg">
-                  {user.email.slice(0, 2)}
+                  {user.username.slice(0, 2)}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user?.email}</span>
-                <span className="truncate text-xs">{user?.email}</span>
+                <span className="truncate font-semibold">
+                  {user?.firstName} {user?.lastName}
+                </span>
+                <span className="truncate text-xs">{user?.username}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -72,15 +78,23 @@ export function NavUser() {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-2 py-1.5 text-left text-sm">
                 <Avatar className="size-8 rounded-lg">
-                  <AvatarImage src={user.email} alt={user.email} />
+                  <AvatarImage
+                    src={user.profilePicture ?? ""}
+                    alt={user.username}
+                  />
                   <AvatarFallback className="rounded-lg">
-                    {user.email.slice(0, 2)}
+                    {user.username.slice(0, 2)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.email}</span>
+                  <span className="truncate font-semibold">
+                    {user.firstName} {user.lastName}
+                  </span>
                   <span className="truncate text-xs text-muted-foreground">
-                    {user?.email}
+                    {user?.username}
+                  </span>
+                  <span className="truncate text-xs text-muted-foreground">
+                    Role: {user?.role}
                   </span>
                 </div>
               </div>
@@ -91,7 +105,13 @@ export function NavUser() {
                 className="flex items-center gap-2 px-2 py-1.5"
                 asChild
               >
-                <Link to={RouteNames.AdminSettingsProfile}>
+                <Link
+                  to={
+                    user.role === ROLES.ADMIN
+                      ? RouteNames.Admin
+                      : RouteNames.TeacherSettingsProfile
+                  }
+                >
                   <BadgeCheck className="size-4" />
                   <span>Tài khoản</span>
                 </Link>
@@ -100,7 +120,13 @@ export function NavUser() {
                 className="flex items-center gap-2 px-2 py-1.5"
                 asChild
               >
-                <Link to={RouteNames.AdminPayment}>
+                <Link
+                  to={
+                    user.role === ROLES.ADMIN
+                      ? RouteNames.Admin
+                      : RouteNames.TeacherPayment
+                  }
+                >
                   <CreditCard className="size-4" />
                   <span>Phương thức thanh toán</span>
                 </Link>
@@ -109,7 +135,13 @@ export function NavUser() {
                 className="flex items-center gap-2 px-2 py-1.5"
                 asChild
               >
-                <Link to={RouteNames.AdminHistory}>
+                <Link
+                  to={
+                    user.role === ROLES.ADMIN
+                      ? RouteNames.Admin
+                      : RouteNames.TeacherHistory
+                  }
+                >
                   <Clock className="size-4" />
                   <span>Lịch sử</span>
                 </Link>
