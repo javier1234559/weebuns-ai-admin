@@ -3,7 +3,6 @@ import api from "@/services/baseApi";
 import {
   CreateListeningSubmissionDTO,
   CreateReadingSubmissionDTO,
-  CreateSpeakingSubmissionDTO,
   CreateWritingSubmissionDTO,
   DeleteLessonSubmissionResponse,
   LessonSubmissionsResponse,
@@ -129,16 +128,6 @@ const submissionApi = {
   getSpeakingById(id: string) {
     return api
       .lessonSubmissionControllerFindOneSpeaking(id)
-      .then((res: AxiosResponse<SpeakingSubmissionResponse>) => res.data)
-      .catch((err: any) => {
-        handleApiError(err);
-        throw err.response.data;
-      });
-  },
-
-  createSpeaking(data: CreateSpeakingSubmissionDTO) {
-    return api
-      .lessonSubmissionControllerCreateSpeaking(data)
       .then((res: AxiosResponse<SpeakingSubmissionResponse>) => res.data)
       .catch((err: any) => {
         handleApiError(err);

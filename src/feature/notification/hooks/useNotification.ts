@@ -1,5 +1,3 @@
-"use client";
-
 import notificationApi, {
   FindAllNotificationQuery,
 } from "@/feature/notification/services/notificationApi";

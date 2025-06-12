@@ -2,11 +2,13 @@ import { handleApiError } from "@/lib/utils";
 import api from "@/services/baseApi";
 import {
   DeleteLessonResponse,
+  Lesson,
   LessonsResponse,
   ListeningResponse,
   ReadingResponse,
   SkillType,
   SpeakingResponse,
+  UpdateLessonDTO,
   WritingResponse,
 } from "@/services/swagger-types";
 import { LessonType } from "@/services/swagger-types";
@@ -30,6 +32,15 @@ const lessonApi = {
     return api
       .lessonControllerFindAll(params)
       .then((res: any) => res.data as LessonsResponse)
+      .catch((err: any) => {
+        handleApiError(err);
+        throw err.response.data;
+      });
+  },
+  updateLesson(id: string, data: UpdateLessonDTO) {
+    return api
+      .lessonControllerUpdateLesson(id, data)
+      .then((res: any) => res.data as Lesson)
       .catch((err: any) => {
         handleApiError(err);
         throw err.response.data;

@@ -13,6 +13,7 @@ import { useState } from "react";
 import usePaginationUrl from "@/hooks/use-pagination-url";
 import WithDrawTokenRequestTableList from "../components/WithDrawTokenRequestTableList";
 import { PaymentStatus } from "@/feature/token/type";
+import { useAuthStore } from "@/stores/auth-store";
 
 const statusTypes = [
   { id: "all", label: "Tất cả" },
@@ -22,7 +23,8 @@ const statusTypes = [
   { id: "refunded", label: "Hoàn tiền", variant: "outline" },
 ];
 
-export default function WithDrawRequestView() {
+export default function HistoryTableBalanceView() {
+  const { user } = useAuthStore();
   const [statusFilter, setStatusFilter] = useState("all");
 
   const { search, searchParam, setSearch, page, perPage, updateQueryParams } =
@@ -34,6 +36,7 @@ export default function WithDrawRequestView() {
   const { data, isLoading, isError, error } = useWithdrawalRequests({
     ...(searchParam && { search: searchParam }),
     ...(statusFilter !== "all" && { status: statusFilter as PaymentStatus }),
+    ...(user?.role === "teacher" && { userId: user.id }),
     page,
     perPage,
   });
@@ -47,10 +50,10 @@ export default function WithDrawRequestView() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
-            Quản lý yêu cầu rút tiền
+            Lịch sử giao dịch
           </h1>
           <p className="text-sm text-muted-foreground">
-            Quản lý yêu cầu rút tiền từ các giáo viên
+            Lịch sử giao dịch của các giáo viên
           </p>
         </div>
       </div>
@@ -87,7 +90,7 @@ export default function WithDrawRequestView() {
         onUpdateQueryParams={updateQueryParams}
         page={page}
         totalPages={data?.pagination.totalPages || 0}
-        isAdmin
+        isShowApproveButton={user?.role === "admin"}
       />
     </div>
   );

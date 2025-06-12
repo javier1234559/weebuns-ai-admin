@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect } from "react";
 import { globalConfig } from "@/config";
 import { toast } from "sonner";
@@ -13,7 +11,7 @@ export default function NotificationEvent() {
     if (!user) return;
 
     const eventSource = new EventSource(
-      `${globalConfig.API_URL}/api/notifications-sse/stream?userId=${user.id}`
+      `${globalConfig.API_URL}/api/notifications-sse/stream?userId=${user.id}`,
     );
 
     eventSource.onmessage = (event) => {
@@ -26,7 +24,7 @@ export default function NotificationEvent() {
           duration: 5000,
           position: "bottom-right",
           className: "bg-background border rounded-lg shadow-lg mb-6",
-        }
+        },
       );
     };
 

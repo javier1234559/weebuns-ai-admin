@@ -3,12 +3,33 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LessonCardGrid } from "@/feature/lesson/components/LessonCardGrid";
 import { LessonCardList } from "@/feature/lesson/components/LessonCardList";
-import { LessonsResponse } from "@/services/swagger-types";
+import {
+  ContentStatus,
+  Lesson,
+  LessonsResponse,
+} from "@/services/swagger-types";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import AppError from "@/components/common/app-error";
 import LoadingPage from "@/pages/loading";
 import { toast } from "sonner";
+import { useLessonUpdate } from "@/feature/lesson/useLesson";
+import { CONTENT_STATUS } from "@/constraints";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface LessonShowAllViewProps {
   data: LessonsResponse | undefined;
@@ -19,6 +40,7 @@ interface LessonShowAllViewProps {
 }
 
 export default function LessonShowAllView({
+  
   data,
   isLoading,
   isError,
@@ -26,13 +48,41 @@ export default function LessonShowAllView({
   onUpdateQueryParams,
 }: LessonShowAllViewProps) {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<ContentStatus>(
+    CONTENT_STATUS.PUBLISHED as ContentStatus,
+  );
+  const { mutate: updateLesson } = useLessonUpdate();
 
   const handleViewLesson = () => {
     toast.error("Login với tài khoản teacher để xem bài học");
   };
 
-  const handleEditLesson = () => {
-    toast.error("Login với tài khoản teacher để sửa bài học");
+  const handleApproveLesson = (lesson: Lesson) => {
+    setSelectedLesson(lesson);
+    setSelectedStatus(lesson.status);
+  };
+
+  const handleUpdateStatus = () => {
+    if (!selectedLesson) return;
+
+    updateLesson(
+      {
+        id: selectedLesson.id,
+        data: {
+          status: selectedStatus,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success("Cập nhật trạng thái bài học thành công");
+          setSelectedLesson(null);
+        },
+        onError: () => {
+          toast.error("Có lỗi xảy ra khi cập nhật trạng thái");
+        },
+      },
+    );
   };
 
   const handleNavigateToCreate = () => {
@@ -74,13 +124,13 @@ export default function LessonShowAllView({
           <LessonCardGrid
             lessons={data.data}
             onView={handleViewLesson}
-            onEdit={handleEditLesson}
+            onEdit={handleApproveLesson}
           />
         ) : (
           <LessonCardList
             lessons={data.data}
             onView={handleViewLesson}
-            onEdit={handleEditLesson}
+            onEdit={handleApproveLesson}
           />
         )}
 
@@ -109,6 +159,61 @@ export default function LessonShowAllView({
           </div>
         )}
       </div>
+
+      <Dialog
+        open={!!selectedLesson}
+        onOpenChange={(open) => !open && setSelectedLesson(null)}
+      >
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Duyệt bài học</DialogTitle>
+            <DialogDescription>
+              Vui lòng kiểm tra thông tin và chọn trạng thái phù hợp
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <h4 className="font-medium">Thông tin bài học</h4>
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <span className="text-muted-foreground">Tiêu đề:</span>
+                <span>{selectedLesson?.title}</span>
+                <span className="text-muted-foreground">Mô tả:</span>
+                <span>{selectedLesson?.description}</span>
+                <span className="text-muted-foreground">Trạng thái:</span>
+                <Select
+                  value={selectedStatus as string}
+                  onValueChange={(value) =>
+                    setSelectedStatus(value as unknown as ContentStatus)
+                  }
+                >
+                  <SelectTrigger className="h-8">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.values(CONTENT_STATUS).map((status) => (
+                      <SelectItem
+                        key={status}
+                        value={status}
+                        className="capitalize"
+                      >
+                        {status}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSelectedLesson(null)}>
+              Hủy
+            </Button>
+            <Button onClick={handleUpdateStatus}>Xác nhận</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

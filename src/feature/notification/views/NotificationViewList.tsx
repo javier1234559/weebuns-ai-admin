@@ -1,5 +1,3 @@
-"use client";
-
 import AppError from "@/components/common/app-error";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,19 +23,16 @@ const NotificationSkeleton = () => {
   );
 };
 
-
 export default function NotificationViewList() {
-  const {user} = useAuthStore();
+  const { user } = useAuthStore();
   const [page, setPage] = useState(1);
   const perPage = 10;
 
-  const { data, isLoading, isError, error } = useNotifications(
-    {
-      page,
-      perPage,
-      userId: user?.id || "",
-    }
-  );
+  const { data, isLoading, isError, error } = useNotifications({
+    page,
+    perPage,
+    userId: user?.id || "",
+  });
 
   const handleNotificationClick = (notification: INotification) => {
     if (notification.actionUrl) {
@@ -69,7 +64,11 @@ export default function NotificationViewList() {
     }
 
     if (!data?.data || data.data.length === 0) {
-      return <div className="my-10 text-center text-sm text-gray-500">Không có thông báo</div>;
+      return (
+        <div className="my-10 text-center text-sm text-gray-500">
+          Không có thông báo
+        </div>
+      );
     }
 
     return (
@@ -96,9 +95,7 @@ export default function NotificationViewList() {
   return (
     <>
       <div className="thin-scrollbar max-h-[60vh] overflow-y-auto">
-        <div className="divide-y">
-          {renderContent()}
-        </div>
+        <div className="divide-y">{renderContent()}</div>
       </div>
       <div className="flex items-center justify-between gap-6 border-t pt-4">
         <Button

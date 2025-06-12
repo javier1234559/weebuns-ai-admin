@@ -13,6 +13,7 @@ import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import AppPagination from "@/components/common/app-pagination";
 import LoadingPage from "@/pages/loading";
+import { formatCurrency } from "@/lib/format";
 
 const paymentTypes = [
   { id: "all", label: "Tất cả" },
@@ -67,22 +68,22 @@ export default function RevenueTableList({
             {isLoading ? (
               Array.from({ length: 5 }).map((_, index) => (
                 <TableRow key={index}>
-                  <TableCell>
+                  <TableCell className="py-4">
                     <Skeleton className="h-4 w-[200px]" />
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="py-4">
                     <Skeleton className="h-4 w-[100px]" />
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="py-4">
                     <Skeleton className="h-4 w-[120px]" />
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="py-4">
                     <Skeleton className="h-4 w-[80px]" />
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="py-4">
                     <Skeleton className="h-4 w-[100px]" />
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="py-4">
                     <Skeleton className="h-4 w-[100px]" />
                   </TableCell>
                 </TableRow>
@@ -98,28 +99,28 @@ export default function RevenueTableList({
 
                 return (
                   <TableRow key={transaction.id}>
-                    <TableCell className="font-medium">
+                    <TableCell className="font-medium py-4">
                       {transaction.transactionId}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="py-4">
                       <Badge variant="secondary">
                         {paymentType?.label || transaction.paymentType}
                       </Badge>
                     </TableCell>
-                    <TableCell>
-                      {new Intl.NumberFormat("vi-VN", {
-                        style: "currency",
-                        currency: transaction.currency,
-                      }).format(transaction.amount)}
-                    </TableCell>
-                    <TableCell>{transaction.tokenAmount}</TableCell>
-                    <TableCell>
-                      {format(
-                        new Date(transaction.paymentDate),
-                        "dd/MM/yyyy",
+                    <TableCell className="py-4">
+                      {formatCurrency(
+                        transaction.amount,
+                        transaction.currency,
+                        true,
                       )}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="py-4">
+                      {transaction.tokenAmount}
+                    </TableCell>
+                    <TableCell className="py-4">
+                      {format(new Date(transaction.paymentDate), "dd/MM/yyyy")}
+                    </TableCell>
+                    <TableCell className="py-4">
                       <Badge variant={status?.variant as any}>
                         {status?.label || transaction.status}
                       </Badge>

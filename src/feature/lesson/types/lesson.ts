@@ -9,7 +9,13 @@ export type LessonTopic = "ielts" | "toeic";
 export type Lesson = LessonSwagger;
 
 export const IELTS_SKILLS = ["writing", "reading", "listening", "speaking"];
-export const LESSONS_STATUS = ["all", "draft", "published", "deleted"];
+export const LESSONS_STATUS = [
+  "all",
+  "draft",
+  "published",
+  "pending",
+  "deleted",
+];
 export const LEVELS = ["all", "beginner", "intermediate", "advanced"];
 export const IELTS_TOPICS = ["IELTS", "TOEIC"] as const;
 
@@ -23,6 +29,7 @@ export const LESSON_STATUS_TUPLE = [
   "draft",
   "published",
   "private",
+  "pending",
   "deleted",
 ] as const;
 export const LESSON_TOPIC_TUPLE = ["ielts", "toeic"] as const;

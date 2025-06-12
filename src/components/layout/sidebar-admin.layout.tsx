@@ -10,7 +10,7 @@ import { NavBreadcrumb } from "@/components/layout/sidebar/nav-breadcrumb";
 import { SIDEBAR_COOKIE_NAME } from "@/constraints";
 import { ThemeSwitcher } from "@/theme/theme-switcher";
 import SidebarSearch from "@/components/layout/sidebar/side-bar-search";
-import { Bell, CreditCard, FileText, Send, Users } from "lucide-react";
+import { Bell, CreditCard, /* FileText */ Send, Users } from "lucide-react";
 import { BookOpen, Gauge } from "lucide-react";
 import { SecondaryMenu } from "@/components/layout/sidebar/nav-secondary";
 import { IMenu } from "@/components/layout/sidebar/menu";
@@ -51,11 +51,11 @@ export const menu: IMenu[] = [
       },
     ],
   },
-  {
-    title: "Bài viết",
-    icon: FileText,
-    to: RouteNames.AdminArticles,
-  },
+  // {
+  //   title: "Bài viết",
+  //   icon: FileText,
+  //   to: RouteNames.AdminArticles,
+  // },
   {
     title: "Thông báo hệ thống",
     icon: Bell,

@@ -1,5 +1,3 @@
-"use client";
-
 import {
   useMutation,
   useQuery,
@@ -113,8 +111,17 @@ export const useUseTokens = () => {
 };
 
 export const useWithdraw = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: WithdrawTokensDto) => tokenApi.withdraw(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: TOKEN_KEY_FACTORY.wallet(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["token", "withdrawal-requests"],
+      });
+    },
   });
 };
 
@@ -147,6 +154,19 @@ export const useApproveWithdrawalRequest = () => {
 
   return useMutation({
     mutationFn: (id: string) => tokenApi.approveWithdrawalRequest(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: TOKEN_KEY_FACTORY.withdrawalRequests({}),
+      });
+    },
+  });
+};
+
+export const useDeclineWithdrawalRequest = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => tokenApi.declineWithdrawalRequest(id),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: TOKEN_KEY_FACTORY.withdrawalRequests({}),

@@ -129,6 +129,16 @@ const tokenApi = {
         throw err.response.data;
       });
   },
+
+  declineWithdrawalRequest(id: string) {
+    return api
+      .tokenControllerDeclineWithdrawalRequest(id)
+      .then((res: any) => res.data as TransactionResponse)
+      .catch((err: any) => {
+        handleApiError(err);
+        throw err.response.data;
+      });
+  },
 };
 
 export default tokenApi;

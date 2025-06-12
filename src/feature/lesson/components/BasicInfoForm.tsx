@@ -19,6 +19,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IELTS_TOPICS } from "@/feature/lesson/types/lesson";
 import UploadImage from "@/components/feature/UploadImage";
+import { CONTENT_STATUS_TEACHER } from "@/constraints";
+import { capitalize } from "@/lib/text";
 
 const BasicInfoForm = () => {
   const { control } = useFormContext();
@@ -193,9 +195,11 @@ const BasicInfoForm = () => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="draft">Draft</SelectItem>
-                    <SelectItem value="published">Published</SelectItem>
-                    <SelectItem value="deleted">Deleted</SelectItem>
+                    {Object.values(CONTENT_STATUS_TEACHER).map((status) => (
+                      <SelectItem key={status} value={status.toLowerCase()}>
+                        {capitalize(status)}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormDescription>

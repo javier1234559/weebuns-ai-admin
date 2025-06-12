@@ -18,7 +18,7 @@ import LessonShowAllView from "@/feature/lesson/views/LessonShowAllView";
 
 export default function LessonPage() {
   const [levelFilter, setLevelFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("pending");
 
   const { search, searchParam, setSearch, page, perPage, updateQueryParams } =
     usePaginationUrl({

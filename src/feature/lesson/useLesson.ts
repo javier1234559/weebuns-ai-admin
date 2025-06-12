@@ -3,7 +3,7 @@ import {
   CreateSpeakingDTO,
   Lesson,
   LessonsResponse,
-  UpdateSpeakingDTO,
+  UpdateLessonDTO,
 } from "@/services/swagger-types";
 import {
   useMutation,
@@ -47,23 +47,23 @@ export const useLessonDetail = (
   });
 };
 
-export const useLessonCreate = () => {
+export const useLessonUpdate = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateSpeakingDTO) => lessonApi.createSpeaking(data),
+    mutationFn: ({ id, data }: { id: string; data: UpdateLessonDTO }) =>
+      lessonApi.updateLesson(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: LESSON_KEY_FACTORY.all });
     },
   });
 };
 
-export const useLessonUpdate = () => {
+export const useLessonCreate = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateSpeakingDTO }) =>
-      lessonApi.updateSpeaking(id, data),
+    mutationFn: (data: CreateSpeakingDTO) => lessonApi.createSpeaking(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: LESSON_KEY_FACTORY.all });
     },

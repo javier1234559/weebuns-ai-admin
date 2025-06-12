@@ -5,7 +5,9 @@ import {
   LESSON_LEVEL_TUPLE,
   LESSON_STATUS_TUPLE,
   LESSON_TOPIC_TUPLE,
+  ContentStatus,
 } from "../types/lesson";
+import { CONTENT_STATUS_TEACHER } from "@/constraints";
 
 export const readingLessonSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
@@ -92,6 +94,6 @@ export const defaultValues: ReadingLessonFormValues = {
   },
   tags: ["ielts", "reading", "office", "policy"],
   thumbnailUrl: null,
-  status: "published",
+  status: CONTENT_STATUS_TEACHER.PENDING as ContentStatus,
   createdById: undefined,
 };

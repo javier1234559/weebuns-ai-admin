@@ -7,6 +7,7 @@ import {
   YAxis,
 } from "recharts";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatCurrency } from "@/lib/format";
 
 interface RevenueData {
   name: string;
@@ -53,7 +54,7 @@ export default function RevenueAreaChart({ data }: RevenueAreaChartProps) {
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value) => `$${value}`}
+          tickFormatter={(value) => formatCurrency(value, "VND", true)}
         />
         <Tooltip
           contentStyle={{
@@ -62,7 +63,10 @@ export default function RevenueAreaChart({ data }: RevenueAreaChartProps) {
             borderRadius: "8px",
             color: "#fff",
           }}
-          formatter={(value: number) => [`$${value}`, "Doanh thu"]}
+          formatter={(value: number) => [
+            formatCurrency(value, "VND", true),
+            "Doanh thu",
+          ]}
         />
         <Area
           type="monotone"

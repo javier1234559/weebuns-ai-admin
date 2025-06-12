@@ -9,12 +9,17 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Check, X } from "lucide-react";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import AppPagination from "@/components/common/app-pagination";
 import LoadingPage from "@/pages/loading";
-import { TOKEN_KEY_FACTORY, useApproveWithdrawalRequest, useWithdrawalRequestDetails } from "../hooks/useToken";
+import {
+  TOKEN_KEY_FACTORY,
+  useApproveWithdrawalRequest,
+  useDeclineWithdrawalRequest,
+  useWithdrawalRequestDetails,
+} from "../hooks/useToken";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -40,6 +45,8 @@ interface WithDrawTokenRequestTableListProps {
   page: number;
   totalPages: number;
   onUpdateQueryParams: (params: { page?: number }) => void;
+  isShowApproveButton?: boolean;
+  isAdmin?: boolean;
 }
 
 export default function WithDrawTokenRequestTableList({
@@ -48,17 +55,22 @@ export default function WithDrawTokenRequestTableList({
   onUpdateQueryParams,
   page,
   totalPages,
+  isShowApproveButton = true,
+  isAdmin = false,
 }: WithDrawTokenRequestTableListProps) {
   const approveMutation = useApproveWithdrawalRequest();
-  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
-
-  const { data: requestDetails, isLoading: isLoadingDetails } = useWithdrawalRequestDetails(
-    selectedRequestId || "",
-    {
-      enabled: !!selectedRequestId,
-      queryKey: TOKEN_KEY_FACTORY.withdrawalRequestDetails({ requestId: selectedRequestId || "" }),
-    }
+  const declineMutation = useDeclineWithdrawalRequest();
+  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(
+    null,
   );
+
+  const { data: requestDetails, isLoading: isLoadingDetails } =
+    useWithdrawalRequestDetails(selectedRequestId || "", {
+      enabled: !!selectedRequestId,
+      queryKey: TOKEN_KEY_FACTORY.withdrawalRequestDetails({
+        requestId: selectedRequestId || "",
+      }),
+    });
 
   const handleApprove = (id: string) => {
     approveMutation.mutate(id, {
@@ -68,6 +80,21 @@ export default function WithDrawTokenRequestTableList({
       },
       onError: (error: any) => {
         toast.error("Có lỗi xảy ra khi duyệt yêu cầu");
+        console.log(error);
+      },
+    });
+  };
+
+  const handleDecline = (id: string) => {
+    declineMutation.mutate(id, {
+      onSuccess: () => {
+        toast.success(
+          isAdmin ? "Đã từ chối yêu cầu rút token" : "Đã hủy yêu cầu rút token",
+        );
+        setSelectedRequestId(null);
+      },
+      onError: (error: any) => {
+        toast.error("Có lỗi xảy ra khi từ chối yêu cầu");
         console.log(error);
       },
     });
@@ -96,22 +123,22 @@ export default function WithDrawTokenRequestTableList({
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, index) => (
                   <TableRow key={index}>
-                    <TableCell>
+                    <TableCell className="py-4">
                       <Skeleton className="h-4 w-[200px]" />
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="py-4">
                       <Skeleton className="h-4 w-[100px]" />
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="py-4">
                       <Skeleton className="h-4 w-[120px]" />
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="py-4">
                       <Skeleton className="h-4 w-[80px]" />
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="py-4">
                       <Skeleton className="h-4 w-[100px]" />
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="py-4">
                       <Skeleton className="h-4 w-[100px]" />
                     </TableCell>
                   </TableRow>
@@ -124,35 +151,53 @@ export default function WithDrawTokenRequestTableList({
 
                   return (
                     <TableRow key={transaction.id}>
-                      <TableCell className="font-medium">
+                      <TableCell className="font-medium py-4">
                         {transaction.transactionId}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="py-4">
                         {new Intl.NumberFormat("vi-VN", {
                           style: "currency",
                           currency: transaction.currency,
                         }).format(transaction.amount)}
                       </TableCell>
-                      <TableCell>{transaction.tokenAmount}</TableCell>
-                      <TableCell>
+                      <TableCell className="py-4">
+                        {transaction.tokenAmount}
+                      </TableCell>
+                      <TableCell className="py-4">
                         {format(
                           new Date(transaction.paymentDate),
                           "dd/MM/yyyy",
                         )}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="py-4">
                         <Badge variant={status?.variant as any}>
                           {status?.label || transaction.status}
                         </Badge>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="py-4 flex gap-2">
+                        {transaction.status === "pending" &&
+                          isShowApproveButton &&
+                          isAdmin && (
+                            <Button
+                              size="sm"
+                              onClick={() =>
+                                setSelectedRequestId(transaction.id)
+                              }
+                              disabled={approveMutation.isPending}
+                            >
+                              <Check className="h-4 w-4" />
+                              Duyệt
+                            </Button>
+                          )}
                         {transaction.status === "pending" && (
                           <Button
                             size="sm"
-                            onClick={() => setSelectedRequestId(transaction.id)}
-                            disabled={approveMutation.isPending}
+                            variant="outline"
+                            onClick={() => handleDecline(transaction.id)}
+                            disabled={declineMutation.isPending}
                           >
-                            Duyệt
+                            <X className="h-4 w-4" />
+                            {isAdmin ? "Từ chối" : "Hủy"}
                           </Button>
                         )}
                       </TableCell>
@@ -188,7 +233,10 @@ export default function WithDrawTokenRequestTableList({
         </CardContent>
       </Card>
 
-      <Dialog open={!!selectedRequestId} onOpenChange={() => setSelectedRequestId(null)}>
+      <Dialog
+        open={!!selectedRequestId}
+        onOpenChange={() => setSelectedRequestId(null)}
+      >
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Xác nhận duyệt yêu cầu rút token</DialogTitle>
@@ -210,7 +258,8 @@ export default function WithDrawTokenRequestTableList({
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <span className="text-muted-foreground">Họ tên:</span>
                   <span>
-                    {requestDetails.user.firstName} {requestDetails.user.lastName}
+                    {requestDetails.user.firstName}{" "}
+                    {requestDetails.user.lastName}
                   </span>
                   <span className="text-muted-foreground">Email:</span>
                   <span>{requestDetails.user.email}</span>
@@ -235,7 +284,10 @@ export default function WithDrawTokenRequestTableList({
                   </span>
                   <span className="text-muted-foreground">Ngày yêu cầu:</span>
                   <span>
-                    {format(new Date(requestDetails.transaction.paymentDate), "dd/MM/yyyy")}
+                    {format(
+                      new Date(requestDetails.transaction.paymentDate),
+                      "dd/MM/yyyy",
+                    )}
                   </span>
                 </div>
               </div>
@@ -250,7 +302,9 @@ export default function WithDrawTokenRequestTableList({
               Hủy
             </Button>
             <Button
-              onClick={() => selectedRequestId && handleApprove(selectedRequestId)}
+              onClick={() =>
+                selectedRequestId && handleApprove(selectedRequestId)
+              }
               disabled={approveMutation.isPending}
             >
               {approveMutation.isPending ? "Đang xử lý..." : "Xác nhận duyệt"}

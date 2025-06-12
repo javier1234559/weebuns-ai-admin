@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import NotificationManagerView from "@/feature/notification/views/NotificationManagerView";
-import BannerManagerView from "@/feature/notification/views/BannerManagerView";
+import BannerManagerView from "@/feature/banner/views/BannerManagerView";
 
 export default function NotificationsPage() {
   return (

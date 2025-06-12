@@ -5,6 +5,8 @@ import {
   LESSON_STATUS_TUPLE,
   LESSON_TOPIC_TUPLE,
 } from "../types/lesson";
+import { CONTENT_STATUS_TEACHER } from "@/constraints";
+import { ContentStatus } from "@/services/swagger-types";
 
 // Vocabulary schema
 export const vocabularySchema = z.object({
@@ -99,6 +101,6 @@ export const defaultValues: WritingLessonFormValues = {
   },
   tags: ["ielts", "writing", "task2"],
   thumbnailUrl: "",
-  status: "published",
+  status: CONTENT_STATUS_TEACHER.PENDING as ContentStatus,
   createdById: undefined,
 };

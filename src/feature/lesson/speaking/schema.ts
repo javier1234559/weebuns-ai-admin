@@ -5,6 +5,8 @@ import {
   LESSON_STATUS_TUPLE,
   LESSON_TOPIC_TUPLE,
 } from "../types/lesson";
+import { CONTENT_STATUS_TEACHER } from "@/constraints";
+import { ContentStatus } from "@/services/swagger-types";
 
 export const speakingLessonSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
@@ -54,6 +56,6 @@ export const defaultValues: SpeakingLessonFormValues = {
   },
   tags: ["ielts", "speaking", "travel", "tourism"],
   thumbnailUrl: "",
-  status: "published",
+  status: CONTENT_STATUS_TEACHER.PENDING as ContentStatus,
   createdById: undefined,
 };

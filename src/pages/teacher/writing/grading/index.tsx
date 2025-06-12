@@ -14,9 +14,14 @@ import { SkillType, SubmissionStatus } from "@/services/swagger-types";
 import { useWritingSubmissionTeacher } from "@/feature/lesson/writing/hooks/useWriting";
 import WritingGradingShowAllView from "@/feature/lesson/writing/views/WritingGradingShowAllView";
 
+export enum SubmissionStatusTeacher {
+  Submitted = "submitted",
+  Scored = "scored",
+}
+
 export default function GradeWritingLessonPage() {
-  const [statusFilter, setStatusFilter] = useState<SubmissionStatus>(
-    SubmissionStatus.Submitted,
+  const [statusFilter, setStatusFilter] = useState<SubmissionStatusTeacher>(
+    SubmissionStatusTeacher.Submitted,
   );
 
   const { search, searchParam, setSearch, page, perPage, updateQueryParams } =
@@ -30,7 +35,7 @@ export default function GradeWritingLessonPage() {
     page,
     perPage,
     search: searchParam || undefined,
-    status: statusFilter,
+    status: statusFilter as unknown as SubmissionStatus,
   });
 
   return (
@@ -61,7 +66,7 @@ export default function GradeWritingLessonPage() {
             <Select
               value={statusFilter}
               onValueChange={(value) =>
-                setStatusFilter(value as SubmissionStatus)
+                setStatusFilter(value as SubmissionStatusTeacher)
               }
             >
               <SelectTrigger className="h-10 text-sm w-[130px]">
@@ -69,7 +74,7 @@ export default function GradeWritingLessonPage() {
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                {Object.values(SubmissionStatus).map((status) => (
+                {Object.values(SubmissionStatusTeacher).map((status) => (
                   <SelectItem
                     key={status}
                     value={status}

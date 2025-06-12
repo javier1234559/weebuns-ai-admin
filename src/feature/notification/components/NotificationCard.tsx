@@ -1,5 +1,3 @@
-"use client";
-
 import { NotificationType, TYPE_COLORS } from "@/feature/notification/type";
 import { cn } from "@/lib/utils";
 
