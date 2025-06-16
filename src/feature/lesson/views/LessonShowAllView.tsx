@@ -30,6 +30,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { globalConfig } from "@/config";
+import { capitalize } from "@/lib/text";
 
 interface LessonShowAllViewProps {
   data: LessonsResponse | undefined;
@@ -40,7 +42,6 @@ interface LessonShowAllViewProps {
 }
 
 export default function LessonShowAllView({
-  
   data,
   isLoading,
   isError,
@@ -54,8 +55,11 @@ export default function LessonShowAllView({
   );
   const { mutate: updateLesson } = useLessonUpdate();
 
-  const handleViewLesson = () => {
-    toast.error("Login với tài khoản teacher để xem bài học");
+  const handleViewLesson = (lesson: Lesson) => {
+    window.open(
+      `${globalConfig.APP_USER_URL}/lesson/${lesson.skill.toLowerCase()}/${lesson.id}`,
+      "_blank",
+    );
   };
 
   const handleApproveLesson = (lesson: Lesson) => {
@@ -125,12 +129,14 @@ export default function LessonShowAllView({
             lessons={data.data}
             onView={handleViewLesson}
             onEdit={handleApproveLesson}
+            isAdmin={true}
           />
         ) : (
           <LessonCardList
             lessons={data.data}
             onView={handleViewLesson}
             onEdit={handleApproveLesson}
+            isAdmin={true}
           />
         )}
 
@@ -164,7 +170,7 @@ export default function LessonShowAllView({
         open={!!selectedLesson}
         onOpenChange={(open) => !open && setSelectedLesson(null)}
       >
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[700px]">
           <DialogHeader>
             <DialogTitle>Duyệt bài học</DialogTitle>
             <DialogDescription>
@@ -175,11 +181,33 @@ export default function LessonShowAllView({
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <h4 className="font-medium">Thông tin bài học</h4>
-              <div className="grid grid-cols-2 gap-2 text-sm">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <span className="text-muted-foreground">ID:</span>
+                <span className="font-mono">{selectedLesson?.id}</span>
+
                 <span className="text-muted-foreground">Tiêu đề:</span>
                 <span>{selectedLesson?.title}</span>
+
                 <span className="text-muted-foreground">Mô tả:</span>
-                <span>{selectedLesson?.description}</span>
+                <span className="break-words">
+                  {selectedLesson?.description}
+                </span>
+
+                <span className="text-muted-foreground">Kỹ năng:</span>
+                <span className="capitalize">{selectedLesson?.skill}</span>
+
+                <span className="text-muted-foreground">Loại bài học:</span>
+                <span className="capitalize">{selectedLesson?.lessonType}</span>
+
+                <span className="text-muted-foreground">Cấp độ:</span>
+                <span className="capitalize">{selectedLesson?.level}</span>
+
+                <span className="text-muted-foreground">Chủ đề:</span>
+                <span className="capitalize">{selectedLesson?.topic}</span>
+
+                <span className="text-muted-foreground">Thời gian (phút):</span>
+                <span>{selectedLesson?.timeLimit}</span>
+
                 <span className="text-muted-foreground">Trạng thái:</span>
                 <Select
                   value={selectedStatus as string}
@@ -197,7 +225,7 @@ export default function LessonShowAllView({
                         value={status}
                         className="capitalize"
                       >
-                        {status}
+                        {capitalize(status)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -209,6 +237,12 @@ export default function LessonShowAllView({
           <DialogFooter>
             <Button variant="outline" onClick={() => setSelectedLesson(null)}>
               Hủy
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => selectedLesson && handleViewLesson(selectedLesson)}
+            >
+              Xem bài học
             </Button>
             <Button onClick={handleUpdateStatus}>Xác nhận</Button>
           </DialogFooter>

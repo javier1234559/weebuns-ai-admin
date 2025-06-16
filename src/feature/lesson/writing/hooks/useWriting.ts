@@ -1,5 +1,6 @@
 import lessonApi, { LessonQueryParams } from "@/feature/lesson/lessonApi";
 import submissionApi from "@/feature/lesson/submissionApi";
+import { TOKEN_KEY_FACTORY } from "@/feature/token/hooks/useToken";
 import {
   CreateWritingDTO,
   Lesson,
@@ -150,6 +151,9 @@ export const useWritingUpdateSubmissionTeacher = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: WRITING_SUBMISSION_KEY_FACTORY.all,
+      });
+      queryClient.invalidateQueries({
+        queryKey: TOKEN_KEY_FACTORY.wallet(),
       });
     },
   });

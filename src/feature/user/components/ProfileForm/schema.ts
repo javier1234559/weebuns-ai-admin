@@ -29,6 +29,7 @@ export const profileFormSchema = z.object({
   other: z.string().optional(),
   authProvider: z.nativeEnum(AuthProvider),
   isEmailVerified: z.boolean(),
+  bankingqr_image_url: z.string().optional(),
 });
 
 export type ProfileFormValues = z.infer<typeof profileFormSchema>;
@@ -45,6 +46,7 @@ export const defaultValues: ProfileFormValues = {
   certifications: "",
   teachingExperience: "",
   other: "",
+  bankingqr_image_url: "",
   authProvider: AuthProvider.Local,
   isEmailVerified: false,
 };

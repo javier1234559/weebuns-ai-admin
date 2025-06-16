@@ -21,6 +21,7 @@ import { defaultValues } from "./schema";
 import { profileFormSchema } from "./schema";
 import { ProfileFormValues } from "./schema";
 import UploadAvatarImage from "@/components/feature/UploadAvatarImage";
+import UploadBankingImage from "@/components/feature/UploadBankingImage";
 
 interface ProfileFormProps {
   onSubmit: (values: ProfileFormValues) => Promise<void>;
@@ -50,6 +51,7 @@ export default function ProfileForm({
       certifications: user?.teacherProfile?.certifications ?? "",
       teachingExperience: user?.teacherProfile?.teachingExperience ?? "",
       other: user?.teacherProfile?.other ?? "",
+      bankingqr_image_url: user?.teacherProfile?.bankingqr_image_url ?? "",
     },
   });
 
@@ -230,6 +232,27 @@ export default function ProfileForm({
                   </FormControl>
                   <FormDescription>Giới thiệu ngắn về bạn</FormDescription>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Separator className="my-6" />
+            <h3 className="text-lg font-medium">Thông tin ngân hàng</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Thông tin ngân hàng để nhận tiền
+            </p>
+            <FormField
+              control={form.control}
+              name="bankingqr_image_url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ảnh QR ngân hàng</FormLabel>
+                  <FormControl>
+                    <UploadBankingImage
+                      value={field.value ?? null}
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
                 </FormItem>
               )}
             />

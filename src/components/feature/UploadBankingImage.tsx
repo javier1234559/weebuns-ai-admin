@@ -13,9 +13,9 @@ import { useDropzone } from "react-dropzone";
 import uploadApi from "@/services/upload/uploadApi";
 import { toast } from "sonner";
 
-const AVATAR_WIDTH = 100;
-const AVATAR_HEIGHT = 100;
-const ASPECT_RATIO = AVATAR_WIDTH / AVATAR_HEIGHT;
+const BANKING_QR_WIDTH = 500;
+const BANKING_QR_HEIGHT = 500;
+const ASPECT_RATIO = BANKING_QR_WIDTH / BANKING_QR_HEIGHT;
 
 interface UploadImageProps {
   value: string | null;
@@ -37,8 +37,8 @@ const getCroppedImg = async (
 ): Promise<Blob> => {
   const image = await createImage(imageSrc);
   const canvas = document.createElement("canvas");
-  canvas.width = AVATAR_WIDTH;
-  canvas.height = AVATAR_HEIGHT;
+  canvas.width = BANKING_QR_WIDTH;
+  canvas.height = BANKING_QR_HEIGHT;
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Canvas context not found");
   ctx.drawImage(
@@ -49,15 +49,15 @@ const getCroppedImg = async (
     pixelCrop.height,
     0,
     0,
-    AVATAR_WIDTH,
-    AVATAR_HEIGHT,
+    BANKING_QR_WIDTH,
+    BANKING_QR_HEIGHT,
   );
   return new Promise((resolve) => {
     canvas.toBlob((blob) => blob && resolve(blob), "image/jpeg");
   });
 };
 
-const UploadAvatarImage = ({ value, onChange }: UploadImageProps) => {
+const UploadBankingImage = ({ value, onChange }: UploadImageProps) => {
   const uploadId = useId();
   const [preview, setPreview] = useState<string | null>(value);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -122,7 +122,17 @@ const UploadAvatarImage = ({ value, onChange }: UploadImageProps) => {
       try {
         setIsUploading(true);
         const croppedImage = await getCroppedImg(preview, croppedAreaPixels);
-        const file = new File([croppedImage], "cropped-avatar.jpg", {
+
+        // Generate filename with formatted date and time
+        const now = new Date();
+        const formattedDate = now
+          .toISOString()
+          .slice(0, 19)
+          .replace(/[T]/g, "-")
+          .replace(/[:]/g, "-");
+        const uniqueFilename = `banking-qr-${formattedDate}.jpg`;
+
+        const file = new File([croppedImage], uniqueFilename, {
           type: "image/jpeg",
         });
         const result = await uploadApi.uploadFile(file);
@@ -130,10 +140,10 @@ const UploadAvatarImage = ({ value, onChange }: UploadImageProps) => {
         setPreview(imageUrl);
         onChange(imageUrl);
         setIsDialogOpen(false);
-        toast.success("Image uploaded successfully");
+        toast.success("QR code uploaded successfully");
       } catch (error) {
         console.error("Failed to crop/upload:", error);
-        toast.error("Failed to process image");
+        toast.error("Failed to process QR code");
       } finally {
         setIsUploading(false);
       }
@@ -143,12 +153,12 @@ const UploadAvatarImage = ({ value, onChange }: UploadImageProps) => {
   return (
     <div
       {...getRootProps()}
-      id={`upload-avatar-image-container-${uploadId}`}
-      className="border-dashed size-28 border-2 border-gray-300 rounded-full p-1 cursor-pointer hover:border-gray-400 transition-colors"
+      id={`upload-banking-image-container-${uploadId}`}
+      className="border-dashed w-[500px] h-[500px] border-2 border-gray-300 rounded-lg p-4 cursor-pointer hover:border-gray-400 transition-colors"
     >
       <input
         {...getInputProps()}
-        id={`upload-avatar-image-input-${uploadId}`}
+        id={`upload-banking-image-input-${uploadId}`}
       />
       {preview ? (
         <div
@@ -157,31 +167,31 @@ const UploadAvatarImage = ({ value, onChange }: UploadImageProps) => {
         >
           <img
             src={preview}
-            alt="Preview"
-            className="w-full h-full object-cover rounded-full"
+            alt="Banking QR Preview"
+            className="w-full h-full object-contain"
           />
           <Button
             variant="destructive"
             size="icon"
             type="button"
-            className="absolute top-1 right-1 p-1 !size-6 rounded-full"
+            className="absolute top-2 right-2 p-1"
             onClick={handleRemove}
           >
             <X />
           </Button>
         </div>
       ) : (
-        <div className="flex flex-col items-center">
-          <UploadCloud size={40} className="text-gray-500 mb-2" />
-          <p className="text-sm text-gray-500">
-            Drag & drop or click to upload
+        <div className="flex flex-col items-center justify-center h-full">
+          <UploadCloud size={64} className="text-gray-500 mb-4" />
+          <p className="text-lg text-gray-500">
+            Drag & drop or click to upload QR code
           </p>
         </div>
       )}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogTitle className="sr-only">Crop Image</DialogTitle>
+        <DialogTitle className="sr-only">Crop QR Code</DialogTitle>
         <DialogContent onClick={(e) => e.stopPropagation()}>
-          <div className="relative h-64">
+          <div className="relative h-[500px]">
             {preview && (
               <Cropper
                 image={preview}
@@ -213,4 +223,4 @@ const UploadAvatarImage = ({ value, onChange }: UploadImageProps) => {
   );
 };
 
-export default UploadAvatarImage;
+export default UploadBankingImage;

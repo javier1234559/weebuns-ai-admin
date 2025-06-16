@@ -6,6 +6,14 @@ import { useAuthStore } from "@/stores/auth-store";
 import { INotification, NotificationType } from "@/feature/notification/type";
 import NotificationCard from "@/feature/notification/components/NotificationCard";
 import { useNotifications } from "../hooks/useNotification";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const NotificationSkeleton = () => {
   return (
@@ -26,7 +34,7 @@ const NotificationSkeleton = () => {
 export default function NotificationViewList() {
   const { user } = useAuthStore();
   const [page, setPage] = useState(1);
-  const perPage = 10;
+  const perPage = 5;
 
   const { data, isLoading, isError, error } = useNotifications({
     page,
@@ -93,33 +101,41 @@ export default function NotificationViewList() {
   };
 
   return (
-    <>
-      <div className="thin-scrollbar max-h-[60vh] overflow-y-auto">
-        <div className="divide-y">{renderContent()}</div>
-      </div>
-      <div className="flex items-center justify-between gap-6 border-t pt-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handlePrevPage}
-          disabled={page === 1}
-        >
-          <ChevronLeft className="mr-1 size-4" />
-          Trang trước
-        </Button>
-        <span className="text-sm text-gray-500">
-          Trang {page} / {totalPages}
-        </span>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleNextPage}
-          disabled={page === totalPages}
-        >
-          Trang sau
-          <ChevronRight className="ml-1 size-4" />
-        </Button>
-      </div>
-    </>
+    <Card>
+      <CardHeader>
+        <CardTitle>Thông báo</CardTitle>
+        <CardDescription>Thông báo của giáo viên</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="thin-scrollbar max-h-[50vh] overflow-y-auto">
+          <div className="divide-y">{renderContent()}</div>
+        </div>
+      </CardContent>
+      <CardFooter className="mr-auto w-full">
+        <div className="flex items-center justify-between gap-6 w-full">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handlePrevPage}
+            disabled={page === 1}
+          >
+            <ChevronLeft className="mr-1 size-4" />
+            Trang trước
+          </Button>
+          <span className="text-sm text-gray-500">
+            Trang {page} / {totalPages}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleNextPage}
+            disabled={page === totalPages}
+          >
+            Trang sau
+            <ChevronRight className="ml-1 size-4" />
+          </Button>
+        </div>
+      </CardFooter>
+    </Card>
   );
 }

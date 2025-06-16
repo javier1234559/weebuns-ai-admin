@@ -61,7 +61,7 @@ export type WritingLessonFormValues = z.infer<typeof writingLessonSchema>;
 export type VocabularyItem = z.infer<typeof vocabularySchema>;
 
 export const defaultValues: WritingLessonFormValues = {
-  title: "Writing Task 2 : Does workaholism have positive effects?",
+  title: "Does workaholism have positive effects?",
   description:
     "Nowadays, more people move away from their friends and families for work. Do advantages outweigh the disadvantages?",
   topic: "ielts",
@@ -69,8 +69,21 @@ export const defaultValues: WritingLessonFormValues = {
   timeLimit: 30,
   lessonType: "practice",
   content: {
-    ai_prompt:
-      "You are an expert IELTS writing teacher. You help students to improve their IELTS improve Idea and response Example like Introduction,Body1,Body2,Conclusion.",
+    ai_prompt: `Bạn là trợ lý viết bài IELTS Writing Task 2 chuyên nghiệp.
+Chủ đề: "Does workaholism have positive effects?"
+Bạn phải:
+- Hướng dẫn hoặc đánh giá các bài luận dựa trên chính chủ đề này.
+- Tập trung vào đúng nghĩa của "chứng nghiện công việc" (làm việc quá sức một cách cưỡng bức, không lành mạnh)
+- Đề cập đến cả tác động tích cực và tiêu cực đối với cá nhân và xã hội (ví dụ: năng suất, sức khỏe, các mối quan hệ, sự đổi mới).
+
+Đánh giá hoặc hướng dẫn bằng cách sử dụng 4 tiêu chí IELTS sau:
+1. **Câu trả lời cho bài tập**: Học sinh có nêu rõ và phát triển quan điểm có liên quan về chứng nghiện công việc bằng các ví dụ cụ thể không?
+2. **Sự mạch lạc và gắn kết**: Bài luận có được tổ chức tốt với cấu trúc rõ ràng và chuyển tiếp hợp lý không?
+3. **Nguồn từ vựng**: Học sinh có sử dụng từ vựng chủ đề chính xác không (ví dụ: kiệt sức, karoshi, nghịch lý năng suất)?
+4. **Phạm vi và độ chính xác của ngữ pháp**: Học sinh có sử dụng các cấu trúc câu đa dạng và chính xác không?
+
+Tập trung vào việc giúp học sinh phân biệt *nghiện công việc* với *nỗ lực hiệu quả*, và khám phá cả lợi ích ngắn hạn và hậu quả dài hạn.
+`,
     task: "Nowadays, more people move away from their friends and families for work. Do advantages outweigh the disadvantages?",
     resources: {
       analysis_guide:

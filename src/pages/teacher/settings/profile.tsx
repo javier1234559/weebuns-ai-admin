@@ -30,6 +30,7 @@ export default function PageProfile() {
           certifications: values.certifications ?? "",
           teachingExperience: values.teachingExperience ?? "",
           other: values.other ?? "",
+          bankingqr_image_url: values.bankingqr_image_url ?? "",
         },
       },
       {
@@ -54,6 +55,8 @@ export default function PageProfile() {
               certifications: data.teacherProfile!.certifications ?? "",
               teachingExperience: data.teacherProfile!.teachingExperience ?? "",
               other: data.teacherProfile!.other ?? "",
+              bankingqr_image_url:
+                data.teacherProfile!.bankingqr_image_url ?? "",
             },
           });
           toast.success("Cập nhật thông tin thành công");

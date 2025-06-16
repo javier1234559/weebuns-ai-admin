@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Lesson } from "@/feature/lesson/types/lesson";
 import { format } from "date-fns";
-import { BookOpen, Clock, Edit2, Eye, Share } from "lucide-react";
+import { BookOpen, Check, Clock, Edit2, Eye, Share } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -15,12 +15,14 @@ interface LessonCardListProps {
   lessons: Lesson[];
   onView?: (lesson: Lesson) => void;
   onEdit?: (lesson: Lesson) => void;
+  isAdmin?: boolean;
 }
 
 export function LessonCardList({
   lessons,
   onView,
   onEdit,
+  isAdmin = false,
 }: LessonCardListProps) {
   // Map skill to a theme-compatible color class
   const getSkillColor = (skill: string) => {
@@ -144,40 +146,53 @@ export function LessonCardList({
               {onEdit && (
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-8 w-8"
-                      onClick={() => onEdit(lesson)}
-                    >
-                      <Edit2 className="size-3.5" />
-                    </Button>
+                    {isAdmin ? (
+                      <Button
+                        className="h-7 w-full"
+                        onClick={() => onEdit(lesson)}
+                      >
+                        <Check className="size-3" />
+                        <span className="text-left">Duyệt</span>
+                      </Button>
+                    ) : (
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-7 w-7"
+                        onClick={() => onEdit(lesson)}
+                      >
+                        <span className="sr-only">Edit</span>
+                        <Edit2 className="size-3" />
+                      </Button>
+                    )}
                   </TooltipTrigger>
                   <TooltipContent side="top">Edit</TooltipContent>
                 </Tooltip>
               )}
 
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button size="icon" variant="ghost" className="h-7 w-7">
-                    <span className="sr-only">Share</span>
-                    <Share className="size-3" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent className="p-0" side="bottom">
-                  <div className="p-2">
-                    <QRCodeSVG
-                      value={`${window.location.origin}/lessons/${lesson.id}`}
-                      title={lesson.title}
-                      size={120}
-                      bgColor="#ffffff"
-                      fgColor="#000000"
-                      level="L"
-                      marginSize={0}
-                    />
-                  </div>
-                </TooltipContent>
-              </Tooltip>
+              {!isAdmin && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button size="icon" variant="ghost" className="h-7 w-7">
+                      <span className="sr-only">Share</span>
+                      <Share className="size-3" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent className="p-0" side="bottom">
+                    <div className="p-2">
+                      <QRCodeSVG
+                        value={`${window.location.origin}/lessons/${lesson.id}`}
+                        title={lesson.title}
+                        size={120}
+                        bgColor="#ffffff"
+                        fgColor="#000000"
+                        level="L"
+                        marginSize={0}
+                      />
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              )}
             </div>
           </div>
         ))}

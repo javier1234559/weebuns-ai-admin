@@ -5,12 +5,14 @@ interface LessonCardGridProps {
   lessons: Lesson[];
   onView?: (lesson: Lesson) => void;
   onEdit?: (lesson: Lesson) => void;
+  isAdmin?: boolean;
 }
 
 export function LessonCardGrid({
   lessons,
   onView,
   onEdit,
+  isAdmin = false,
 }: LessonCardGridProps) {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -20,6 +22,7 @@ export function LessonCardGrid({
           lesson={lesson}
           onView={onView}
           onEdit={onEdit}
+          isAdmin={isAdmin}
         />
       ))}
     </div>

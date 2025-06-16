@@ -17,7 +17,7 @@ function TaskForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Nhiệm vụ</CardTitle>
+        <CardTitle>Đề bài</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <FormField
@@ -25,7 +25,7 @@ function TaskForm() {
           name="content.task"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Mô tả nhiệm vụ</FormLabel>
+              <FormLabel>Mô tả đề bài</FormLabel>
               <FormControl>
                 <TipTapEditor {...field} />
               </FormControl>
@@ -44,7 +44,7 @@ function TaskForm() {
                 <Textarea
                   {...field}
                   placeholder="Nhập prompt AI"
-                  className="min-h-[100px]"
+                  className="min-h-[300px]"
                 />
               </FormControl>
               <FormMessage />

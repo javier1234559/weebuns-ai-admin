@@ -19,6 +19,7 @@ export const listeningLessonSchema = z.object({
   content: z
     .object({
       audio_url: z.string().min(1, "Audio URL is required"),
+      youtube_embed_url: z.string().nullable(),
       questions: z.array(questionSchema),
     })
     .nullable(),
@@ -34,12 +35,13 @@ export const defaultValues: ListeningLessonFormValues = {
   title: "A Visit to the Café",
   description:
     "A listening comprehension exercise about a customer's experience at a café",
-  topic: "ielts",
+  topic: "toeic",
   level: "beginner",
   timeLimit: 30,
   lessonType: "practice",
   content: {
     audio_url: "",
+    youtube_embed_url: "https://www.youtube.com/embed/58i-0Kul26I",
     questions: [
       {
         id: "1",

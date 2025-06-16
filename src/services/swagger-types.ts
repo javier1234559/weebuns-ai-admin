@@ -220,6 +220,7 @@ export interface TeacherProfileEntity {
   introVideoUrlEmbed: string | null;
   certifications: string | null;
   teachingExperience: string | null;
+  bankingqr_image_url: string | null;
   other: string | null;
   /** @format date-time */
   createdAt: string;
@@ -363,6 +364,7 @@ export interface TeacherDto {
   introVideoUrlEmbed?: string;
   certifications?: string;
   teachingExperience?: string;
+  bankingqr_image_url?: string;
   other?: string;
 }
 
@@ -377,6 +379,7 @@ export interface UpdateProfileTeacherDto {
   introVideoUrlEmbed: string;
   certifications: string;
   teachingExperience: string;
+  bankingqr_image_url: string;
   other: string;
 }
 
@@ -388,6 +391,7 @@ export interface ProfileDto {
   introVideoUrlEmbed?: string;
   certifications?: string;
   teachingExperience?: string;
+  bankingqr_image_url?: string;
   other?: string;
   targetStudyDuration?: number;
   targetReading?: number;
@@ -820,6 +824,8 @@ export interface QuestionDTO {
 
 export interface ContentReadingDTO {
   text: string;
+  /** YouTube embed URL for solution/explanation video */
+  youtube_embed_url?: object | null;
   questions: QuestionDTO[];
 }
 
@@ -883,6 +889,8 @@ export interface UpdateReadingDTO {
 
 export interface ContentListeningDTO {
   audio_url: string;
+  /** YouTube embed URL for solution/explanation video */
+  youtube_embed_url?: object | null;
   questions: QuestionDTO[];
 }
 
@@ -1211,6 +1219,8 @@ export interface DeleteLessonSubmissionResponse {
 
 export interface ContentReadingSubmissionDTO {
   text: string;
+  /** YouTube embed URL for solution/explanation video */
+  youtube_embed_url?: object | null;
   questions: QuestionDTO[];
 }
 
@@ -1260,6 +1270,8 @@ export interface CreateReadingSubmissionDTO {
 
 export interface ContentListeningSubmissionDTO {
   audio_url: string;
+  /** YouTube embed URL for solution/explanation video */
+  youtube_embed_url?: object | null;
   question_list: QuestionDTO[];
 }
 

@@ -63,7 +63,7 @@ const ContentForm = () => {
                 <Textarea
                   {...field}
                   placeholder="Nhập prompt chính"
-                  className="min-h-[100px]"
+                  className="min-h-[300px]"
                 />
               </FormControl>
               <FormMessage />

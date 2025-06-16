@@ -19,6 +19,7 @@ export const readingLessonSchema = z.object({
   content: z
     .object({
       text: z.string().min(50, "Content must be at least 50 characters"),
+      youtube_embed_url: z.string().nullable(),
       questions: z.array(questionSchema),
     })
     .nullable(),
@@ -34,12 +35,13 @@ export const defaultValues: ReadingLessonFormValues = {
   title: "Office Policy Update",
   description:
     "A reading comprehension exercise about office attendance policy updates",
-  topic: "ielts",
+  topic: "toeic",
   level: "beginner",
   timeLimit: 30,
   lessonType: "practice",
   content: {
     text: "<p>To: All Staff </p><p>From: Human Resources Department </p><p>Subject: Updated Office Attendance Policy Dear Employees, We would like to inform you of an important update to our attendance policy. Starting next Monday, all employees must clock in using the new digital attendance system installed at the main entrance. This system will automatically record your arrival and departure times. Please ensure that you arrive no later than 9:00 A.M. and do not leave before 5:00 P.M. without prior approval from your supervisor. Employees who fail to follow this procedure three times within a month may be subject to a warning. If you have any questions, please contact the HR department.</p>",
+    youtube_embed_url: "https://www.youtube.com/embed/1zGs-CgmYCo",
     questions: [
       {
         id: "1",

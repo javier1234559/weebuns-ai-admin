@@ -145,7 +145,7 @@ const WritingLessonForm = ({
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="details">Thông tin cơ bản</TabsTrigger>
-              <TabsTrigger value="task">Prompt AI</TabsTrigger>
+              <TabsTrigger value="task">Đề bài & Prompt AI</TabsTrigger>
               <TabsTrigger value="resources">Tài liệu</TabsTrigger>
               <TabsTrigger value="vocabulary">Từ vựng</TabsTrigger>
             </TabsList>

@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import {
   BookOpen,
+  Check,
   CheckIcon,
   ClipboardIcon,
   Clock,
@@ -34,10 +35,11 @@ export interface LessonCardProps extends React.HTMLAttributes<HTMLDivElement> {
   lesson: Lesson;
   onEdit?: (lesson: Lesson) => void;
   onView?: (lesson: Lesson) => void;
+  isAdmin?: boolean;
 }
 
 export function LessonCard(props: LessonCardProps) {
-  const { className, lesson, onEdit, onView, ...prop } = props;
+  const { className, lesson, onEdit, onView, isAdmin = false, ...prop } = props;
   const [hasCopied, setHasCopied] = React.useState(false);
 
   React.useEffect(() => {
@@ -170,28 +172,30 @@ export function LessonCard(props: LessonCardProps) {
                 {format(new Date(lesson.updatedAt), "MMM dd, yyyy")}
               </div>
               <div className="flex items-center gap-1">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-7 w-7"
-                      onClick={() => {
-                        navigator.clipboard.writeText(lesson.title);
-                        setHasCopied(true);
-                        toast.success("Copied lesson title!");
-                      }}
-                    >
-                      <span className="sr-only">Copy</span>
-                      {hasCopied ? (
-                        <CheckIcon className="size-3" />
-                      ) : (
-                        <ClipboardIcon className="size-3" />
-                      )}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom">Copy Title</TooltipContent>
-                </Tooltip>
+                {!isAdmin && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-7 w-7"
+                        onClick={() => {
+                          navigator.clipboard.writeText(lesson.title);
+                          setHasCopied(true);
+                          toast.success("Copied lesson title!");
+                        }}
+                      >
+                        <span className="sr-only">Copy</span>
+                        {hasCopied ? (
+                          <CheckIcon className="size-3" />
+                        ) : (
+                          <ClipboardIcon className="size-3" />
+                        )}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">Copy Title</TooltipContent>
+                  </Tooltip>
+                )}
 
                 {onView && (
                   <Tooltip>
@@ -213,41 +217,53 @@ export function LessonCard(props: LessonCardProps) {
                 {onEdit && (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-7 w-7"
-                        onClick={() => onEdit(lesson)}
-                      >
-                        <span className="sr-only">Edit</span>
-                        <Edit2 className="size-3" />
-                      </Button>
+                      {isAdmin ? (
+                        <Button
+                          className="h-7 w-7"
+                          onClick={() => onEdit(lesson)}
+                        >
+                          <Check className="size-3" />
+                          <span className="sr-only">Duyệt</span>
+                        </Button>
+                      ) : (
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-7 w-7"
+                          onClick={() => onEdit(lesson)}
+                        >
+                          <span className="sr-only">Edit</span>
+                          <Edit2 className="size-3" />
+                        </Button>
+                      )}
                     </TooltipTrigger>
                     <TooltipContent side="bottom">Edit</TooltipContent>
                   </Tooltip>
                 )}
 
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button size="icon" variant="ghost" className="h-7 w-7">
-                      <span className="sr-only">Share</span>
-                      <Share className="size-3" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent className="p-0" side="bottom">
-                    <div className="p-2">
-                      <QRCodeSVG
-                        value={`${window.location.origin}/lessons/${lesson.id}`}
-                        title={lesson.title}
-                        size={120}
-                        bgColor="#ffffff"
-                        fgColor="#000000"
-                        level="L"
-                        marginSize={0}
-                      />
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
+                {!isAdmin && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button size="icon" variant="ghost" className="h-7 w-7">
+                        <span className="sr-only">Share</span>
+                        <Share className="size-3" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent className="p-0" side="bottom">
+                      <div className="p-2">
+                        <QRCodeSVG
+                          value={`${window.location.origin}/lessons/${lesson.id}`}
+                          title={lesson.title}
+                          size={120}
+                          bgColor="#ffffff"
+                          fgColor="#000000"
+                          level="L"
+                          marginSize={0}
+                        />
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
               </div>
             </div>
           </CardFooter>

@@ -237,7 +237,7 @@ export default function WithDrawTokenRequestTableList({
         open={!!selectedRequestId}
         onOpenChange={() => setSelectedRequestId(null)}
       >
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="w-[95vw] max-w-[800px] h-[90vh] overflow-y-auto mx-4">
           <DialogHeader>
             <DialogTitle>Xác nhận duyệt yêu cầu rút token</DialogTitle>
             <DialogDescription>
@@ -252,49 +252,72 @@ export default function WithDrawTokenRequestTableList({
               <Skeleton className="h-4 w-1/2" />
             </div>
           ) : requestDetails ? (
-            <div className="space-y-4 py-4">
+            <div className="space-y-6 py-4">
               <div className="space-y-2">
-                <h4 className="font-medium">Thông tin giáo viên</h4>
-                <div className="grid grid-cols-2 gap-2 text-sm">
+                <h4 className="text-lg font-medium">Thông tin giáo viên</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm bg-gray-50 p-4 rounded-lg">
                   <span className="text-muted-foreground">Họ tên:</span>
-                  <span>
+                  <span className="font-medium">
                     {requestDetails.user.firstName}{" "}
                     {requestDetails.user.lastName}
                   </span>
                   <span className="text-muted-foreground">Email:</span>
-                  <span>{requestDetails.user.email}</span>
+                  <span className="font-medium">
+                    {requestDetails.user.email}
+                  </span>
                   <span className="text-muted-foreground">Username:</span>
-                  <span>{requestDetails.user.username}</span>
+                  <span className="font-medium">
+                    {requestDetails.user.username}
+                  </span>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <h4 className="font-medium">Thông tin giao dịch</h4>
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  <span className="text-muted-foreground">Mã giao dịch:</span>
-                  <span>{requestDetails.transaction.transactionId}</span>
-                  <span className="text-muted-foreground">Số token:</span>
-                  <span>{requestDetails.transaction.tokenAmount}</span>
-                  <span className="text-muted-foreground">Số tiền:</span>
-                  <span>
-                    {new Intl.NumberFormat("vi-VN", {
-                      style: "currency",
-                      currency: requestDetails.transaction.currency,
-                    }).format(requestDetails.transaction.amount)}
-                  </span>
-                  <span className="text-muted-foreground">Ngày yêu cầu:</span>
-                  <span>
-                    {format(
-                      new Date(requestDetails.transaction.paymentDate),
-                      "dd/MM/yyyy",
-                    )}
-                  </span>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <h4 className="text-lg font-medium">QR Ngân hàng</h4>
+                  <div className="bg-white p-4 rounded-lg shadow-sm border">
+                    <img
+                      src={
+                        requestDetails.user.teacherProfile
+                          ?.bankingqr_image_url ?? ""
+                      }
+                      alt="QR ngân hàng"
+                      className="w-full max-w-[300px] h-auto aspect-square object-contain mx-auto"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <h4 className="text-lg font-medium">Thông tin giao dịch</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm bg-gray-50 p-4 rounded-lg">
+                    <span className="text-muted-foreground">Mã giao dịch:</span>
+                    <span className="font-medium break-all">
+                      {requestDetails.transaction.transactionId}
+                    </span>
+                    <span className="text-muted-foreground">Số token:</span>
+                    <span className="font-medium">
+                      {requestDetails.transaction.tokenAmount}
+                    </span>
+                    <span className="text-muted-foreground">Số tiền:</span>
+                    <span className="font-medium">
+                      {new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: requestDetails.transaction.currency,
+                      }).format(requestDetails.transaction.amount)}
+                    </span>
+                    <span className="text-muted-foreground">Ngày yêu cầu:</span>
+                    <span className="font-medium">
+                      {format(
+                        new Date(requestDetails.transaction.paymentDate),
+                        "dd/MM/yyyy",
+                      )}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           ) : null}
 
-          <DialogFooter>
+          <DialogFooter className="gap-2">
             <Button
               variant="outline"
               onClick={() => setSelectedRequestId(null)}
