@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { WritingGradingFormValues, Correction } from "./schema";
 import { Edit, Trash2, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import {
   Select,
@@ -42,13 +42,26 @@ export function FeedbackCorrectionsForm({
 }: FeedbackCorrectionsFormProps) {
   const form = useFormContext<WritingGradingFormValues>();
   const corrections = form.watch("corrections");
-  const [editingCorrectionId, setEditingCorrectionId] = useState<string | null>(null);
+  const [editingCorrectionId, setEditingCorrectionId] = useState<string | null>(
+    null,
+  );
 
   const [newCorrection, setNewCorrection] = useState({
     error: "grammar",
-    suggestion: "The correct version of the text",
-    reason: "The text is grammatically incorrect",
+    suggestion: "",
+    reason: "",
   });
+
+  // Effect to update newCorrection when selectedText changes
+  useEffect(() => {
+    if (selectedText) {
+      setNewCorrection((prev) => ({
+        ...prev,
+        suggestion: selectedText.text,
+        reason: `Instead of ${selectedText.text} I suggest ${selectedText.text}`,
+      }));
+    }
+  }, [selectedText]);
 
   const handleAddCorrection = () => {
     if (selectedText) {
@@ -59,8 +72,8 @@ export function FeedbackCorrectionsForm({
       });
       setNewCorrection({
         error: "grammar",
-        suggestion: "The correct version of the text",
-        reason: "The text is grammatically incorrect",
+        suggestion: "",
+        reason: "",
       });
     }
   };
@@ -105,7 +118,7 @@ export function FeedbackCorrectionsForm({
         <div className="border border-primary/30 bg-primary/5 p-3 rounded-md">
           <div className="flex justify-between items-center mb-2">
             <p className="font-medium text-sm text-primary">
-              {editingCorrectionId ? "Edit Correction" : "Selected Text:"}
+              {editingCorrectionId ? "Chỉnh sửa lỗi" : "Từ được chọn:"}
             </p>
             {editingCorrectionId && (
               <Button
@@ -120,16 +133,21 @@ export function FeedbackCorrectionsForm({
           </div>
           <div className="space-y-2 mt-1">
             <div className="correction-original">
-              <p className="text-xs mb-1 font-medium">Original:</p>
+              <p className="text-xs mb-1 font-medium">Văn bản gốc:</p>
               <p className="text-sm line-through italic">
-                "{editingCorrectionId ? corrections.find(c => c.id === editingCorrectionId)?.sentence : selectedText?.text}"
+                "
+                {editingCorrectionId
+                  ? corrections.find((c) => c.id === editingCorrectionId)
+                      ?.sentence
+                  : selectedText?.text}
+                "
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 gap-3 mt-3">
             <div>
-              <label className="text-xs font-medium">Error Type</label>
+              <label className="text-xs font-medium">Loại lỗi</label>
               <Select
                 value={newCorrection.error}
                 onValueChange={(value) =>
@@ -137,7 +155,7 @@ export function FeedbackCorrectionsForm({
                 }
               >
                 <SelectTrigger className="w-full mt-1">
-                  <SelectValue placeholder="Select error type" />
+                  <SelectValue placeholder="Chọn loại lỗi" />
                 </SelectTrigger>
                 <SelectContent>
                   {ERROR_TYPES.map((opt) => (
@@ -150,9 +168,7 @@ export function FeedbackCorrectionsForm({
             </div>
 
             <div>
-              <label className="text-xs font-medium">
-                Suggested Correction
-              </label>
+              <label className="text-xs font-medium">Sửa lỗi</label>
               <Input
                 value={newCorrection.suggestion}
                 onChange={(e) =>
@@ -161,34 +177,36 @@ export function FeedbackCorrectionsForm({
                     suggestion: e.target.value,
                   })
                 }
-                placeholder="Corrected version of the text"
+                placeholder="Sửa lỗi"
                 className="mt-1"
               />
             </div>
 
             <div>
-              <label className="text-xs font-medium">Reason</label>
+              <label className="text-xs font-medium">Lý do</label>
               <Input
                 value={newCorrection.reason}
                 onChange={(e) =>
                   setNewCorrection({ ...newCorrection, reason: e.target.value })
                 }
-                placeholder="Explanation for the correction"
+                placeholder="Lý do sửa lỗi"
                 className="mt-1"
               />
             </div>
 
             <Button
-              onClick={editingCorrectionId ? handleSaveEdit : handleAddCorrection}
+              onClick={
+                editingCorrectionId ? handleSaveEdit : handleAddCorrection
+              }
               className="w-full"
             >
-              {editingCorrectionId ? "Save Changes" : "Add Correction"}
+              {editingCorrectionId ? "Lưu thay đổi" : "Thêm lỗi"}
             </Button>
           </div>
         </div>
       )}
 
-      <div className="space-y-3 max-h-[300px] overflow-y-auto thin-scrollbar">
+      <div className="space-y-3 max-h-[800px] overflow-y-auto thin-scrollbar">
         {corrections.map((correction) => (
           <div
             key={correction.id}
@@ -225,19 +243,19 @@ export function FeedbackCorrectionsForm({
             </div>
             <div className="space-y-2 mt-2">
               <div className="correction-original">
-                <p className="text-xs mb-1 font-medium">Original:</p>
+                <p className="text-xs mb-1 font-medium">Văn bản gốc:</p>
                 <p className="text-sm italic line-through">
                   "{correction.sentence}"
                 </p>
               </div>
               <div className="correction-suggestion">
-                <p className="text-xs mb-1 font-medium">Correction:</p>
+                <p className="text-xs mb-1 font-medium">Sửa lỗi:</p>
                 <p className="text-sm font-medium">"{correction.suggestion}"</p>
               </div>
             </div>
             <div className="mt-2">
               <p className="text-sm">
-                <span className="font-medium">Reason:</span> {correction.reason}
+                <span className="font-medium">Lý do:</span> {correction.reason}
               </p>
             </div>
           </div>

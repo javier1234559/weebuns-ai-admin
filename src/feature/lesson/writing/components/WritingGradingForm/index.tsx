@@ -161,7 +161,7 @@ export default function WritingGradingForm({
               <Card className="shadow-sm">
                 <CardHeader className="pb-2">
                   <div className="flex justify-between items-center">
-                    <CardTitle>Student Essay</CardTitle>
+                    <CardTitle>Bài viết của học viên</CardTitle>
                     <Button
                       type="button"
                       disabled={isLoading}
@@ -191,7 +191,7 @@ export default function WritingGradingForm({
 
               <Card className="shadow-sm">
                 <CardHeader className="pb-2">
-                  <CardTitle>Grading Criteria</CardTitle>
+                  <CardTitle>Tiêu chí đánh giá</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <GradingCriteriaForm />
@@ -203,17 +203,15 @@ export default function WritingGradingForm({
             <div className="w-full md:w-2/5">
               <Card className="shadow-sm h-full">
                 <CardHeader className="pb-2">
-                  <CardTitle>Feedback</CardTitle>
+                  <CardTitle>Ghi chú</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <Tabs defaultValue="corrections" className="w-full">
                     <TabsList className="grid w-full grid-cols-2">
                       <TabsTrigger value="corrections">
-                        Text Corrections
+                        Các lỗi câu cần sửa
                       </TabsTrigger>
-                      <TabsTrigger value="feedback">
-                        Overall Feedback
-                      </TabsTrigger>
+                      <TabsTrigger value="feedback">Ghi chú chung</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="corrections" className="space-y-4">

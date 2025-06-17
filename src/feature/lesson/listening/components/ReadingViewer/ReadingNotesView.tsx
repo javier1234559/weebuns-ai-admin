@@ -77,8 +77,6 @@ export const ReadingNotesView = ({
     const selectedText = selection.toString().trim();
     if (!selectedText) return;
 
-    console.log("Selected text:", selectedText);
-
     try {
       // Generate highlight ID and color
       const highlightId = uuidv4();
@@ -110,9 +108,6 @@ export const ReadingNotesView = ({
         color,
         createdAt: new Date(),
       };
-
-      console.log("Created highlight:", newHighlight);
-
       // Update highlights state
       updateHighlights([...highlights, newHighlight]);
 

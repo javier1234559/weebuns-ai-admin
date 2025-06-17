@@ -15,6 +15,7 @@ import {
 } from "@/services/swagger-types";
 import tokenApi from "@/feature/token/services/tokenApi";
 import { FindAllTransactionsQuery } from "@/feature/token/services/tokenApi";
+import { STATS_KEY_FACTORY } from "@/feature/analysis/hooks/useStats";
 
 const TOKEN_BASE = ["token"] as const;
 
@@ -158,6 +159,10 @@ export const useApproveWithdrawalRequest = () => {
       queryClient.invalidateQueries({
         queryKey: TOKEN_KEY_FACTORY.withdrawalRequests({}),
       });
+
+      queryClient.invalidateQueries({
+        queryKey: STATS_KEY_FACTORY.analysis(),
+      });
     },
   });
 };
@@ -170,6 +175,10 @@ export const useDeclineWithdrawalRequest = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: TOKEN_KEY_FACTORY.withdrawalRequests({}),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: STATS_KEY_FACTORY.analysis(),
       });
     },
   });

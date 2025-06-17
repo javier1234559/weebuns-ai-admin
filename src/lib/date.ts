@@ -5,6 +5,10 @@ export const formatDate = (date: Date, pattern = "dd/MM/yyyy") => {
   return format(date, pattern);
 };
 
+export const formatDateTime = (date: Date, pattern = "dd/MM/yyyy HH:mm:ss") => {
+  return format(date, pattern);
+};
+
 export const getRelativeTime = (date: string | Date) => {
   const parsedDate = typeof date === "string" ? parseISO(date) : date;
   return formatDistanceToNow(parsedDate, {

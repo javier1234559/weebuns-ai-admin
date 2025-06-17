@@ -9,11 +9,11 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle } from "lucide-react";
-import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import AppPagination from "@/components/common/app-pagination";
 import LoadingPage from "@/pages/loading";
 import { formatCurrency } from "@/lib/format";
+import { formatDateTime } from "@/lib/date";
 
 const paymentTypes = [
   { id: "all", label: "Tất cả" },
@@ -28,7 +28,6 @@ const statusTypes = [
   { id: "completed", label: "Hoàn thành", variant: "default" },
   { id: "pending", label: "Đang xử lý", variant: "secondary" },
   { id: "failed", label: "Thất bại", variant: "destructive" },
-  { id: "refunded", label: "Hoàn tiền", variant: "outline" },
 ];
 
 interface RevenueTableListProps {
@@ -60,7 +59,7 @@ export default function RevenueTableList({
               <TableHead>Phương thức</TableHead>
               <TableHead>Số tiền</TableHead>
               <TableHead>Số token</TableHead>
-              <TableHead>Ngày thanh toán</TableHead>
+              <TableHead>Thời gian thanh toán</TableHead>
               <TableHead>Trạng thái</TableHead>
             </TableRow>
           </TableHeader>
@@ -69,7 +68,7 @@ export default function RevenueTableList({
               Array.from({ length: 5 }).map((_, index) => (
                 <TableRow key={index}>
                   <TableCell className="py-4">
-                    <Skeleton className="h-4 w-[200px]" />
+                    <Skeleton className="h-4 w-[150px]" />
                   </TableCell>
                   <TableCell className="py-4">
                     <Skeleton className="h-4 w-[100px]" />
@@ -118,7 +117,7 @@ export default function RevenueTableList({
                       {transaction.tokenAmount}
                     </TableCell>
                     <TableCell className="py-4">
-                      {format(new Date(transaction.paymentDate), "dd/MM/yyyy")}
+                      {formatDateTime(new Date(transaction.paymentDate))}
                     </TableCell>
                     <TableCell className="py-4">
                       <Badge variant={status?.variant as any}>

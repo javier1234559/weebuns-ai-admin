@@ -825,7 +825,7 @@ export interface QuestionDTO {
 export interface ContentReadingDTO {
   text: string;
   /** YouTube embed URL for solution/explanation video */
-  youtube_embed_url?: object | null;
+  youtube_embed_url?: string | null;
   questions: QuestionDTO[];
 }
 
@@ -890,7 +890,7 @@ export interface UpdateReadingDTO {
 export interface ContentListeningDTO {
   audio_url: string;
   /** YouTube embed URL for solution/explanation video */
-  youtube_embed_url?: object | null;
+  youtube_embed_url?: string | null;
   questions: QuestionDTO[];
 }
 
@@ -1144,6 +1144,8 @@ export interface CreateCommentDto {
   identifierId: string;
   /** Content of the comment */
   content: string;
+  /** Action link of the comment */
+  actionLink: string;
   /** Parent comment ID if this is a reply */
   parentId?: string;
 }
@@ -1177,6 +1179,7 @@ export interface CommentResponse {
   updatedAt: string;
   deletedAt: object;
   lessonSubmissionId: object;
+  actionLink: object;
   user: CommentUserResponse;
   reactions: CommentReactionResponse[];
   _count: object;
@@ -1220,7 +1223,7 @@ export interface DeleteLessonSubmissionResponse {
 export interface ContentReadingSubmissionDTO {
   text: string;
   /** YouTube embed URL for solution/explanation video */
-  youtube_embed_url?: object | null;
+  youtube_embed_url?: string | null;
   questions: QuestionDTO[];
 }
 
@@ -1229,6 +1232,8 @@ export interface ReadingFeedbackDto {
   correctAnswers: number;
   incorrectAnswers: number;
   accuracy: number;
+  /** YouTube embed URL for solution/explanation video */
+  youtube_embed_url?: string | null;
 }
 
 export interface ReadingSubmission {
@@ -1271,7 +1276,7 @@ export interface CreateReadingSubmissionDTO {
 export interface ContentListeningSubmissionDTO {
   audio_url: string;
   /** YouTube embed URL for solution/explanation video */
-  youtube_embed_url?: object | null;
+  youtube_embed_url?: string | null;
   question_list: QuestionDTO[];
 }
 
@@ -1280,6 +1285,8 @@ export interface ListeningFeedbackDto {
   correctAnswers: number;
   incorrectAnswers: number;
   accuracy: number;
+  /** YouTube embed URL for solution/explanation video */
+  youtube_embed_url?: string | null;
 }
 
 export interface ListeningSubmission {
@@ -1612,6 +1619,53 @@ export interface UpdateBannerDto {
 
 export interface DeleteBannerResponse {
   message: string;
+}
+
+export interface StatsResponse {
+  /**
+   * The total number of lessons
+   * @example 100
+   */
+  totalLessons: number;
+  /**
+   * The total number of submissions
+   * @example 100
+   */
+  totalSubmissions: number;
+}
+
+export interface AnalyticsStatsDto {
+  /**
+   * Type of stats (token, commission, user)
+   * @example "token"
+   */
+  type: string;
+  /**
+   * Current value
+   * @example 125000
+   */
+  value: number;
+  /**
+   * Description of the value
+   * @example "125.000.000 VND"
+   */
+  description: string;
+  /**
+   * Changed value today
+   * @example "+200 token"
+   */
+  changedValue: string;
+  /**
+   * Last update time
+   * @example "2024-04-23T15:30:45Z"
+   */
+  updateTime: string;
+}
+
+export interface AnalyticsResponse {
+  tokenStats: AnalyticsStatsDto;
+  commissionStats: AnalyticsStatsDto;
+  userStats: AnalyticsStatsDto;
 }
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
@@ -3888,6 +3942,42 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<DeleteBannerResponse, any>({
         path: `/api/banner/${id}`,
         method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags stats
+     * @name StatsControllerGetStats
+     * @summary Get general stats
+     * @request GET:/api/stats
+     * @secure
+     */
+    statsControllerGetStats: (params: RequestParams = {}) =>
+      this.request<StatsResponse, any>({
+        path: `/api/stats`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags stats
+     * @name StatsControllerGetAnalytics
+     * @summary Get analytics data
+     * @request GET:/api/stats/analytics
+     * @secure
+     */
+    statsControllerGetAnalytics: (params: RequestParams = {}) =>
+      this.request<AnalyticsResponse, any>({
+        path: `/api/stats/analytics`,
+        method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),

@@ -17,6 +17,7 @@ import WritingGradingShowAllView from "@/feature/lesson/writing/views/WritingGra
 export enum SubmissionStatusTeacher {
   Submitted = "submitted",
   Scored = "scored",
+  Taken = "taken",
 }
 
 export default function GradeWritingLessonPage() {

@@ -20,7 +20,6 @@ const statusTypes = [
   { id: "completed", label: "Hoàn thành", variant: "default" },
   { id: "pending", label: "Đang xử lý", variant: "secondary" },
   { id: "failed", label: "Thất bại", variant: "destructive" },
-  { id: "refunded", label: "Hoàn tiền", variant: "outline" },
 ];
 
 export default function HistoryTableBalanceView() {

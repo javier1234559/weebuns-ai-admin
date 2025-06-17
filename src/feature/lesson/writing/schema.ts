@@ -63,7 +63,7 @@ export type VocabularyItem = z.infer<typeof vocabularySchema>;
 export const defaultValues: WritingLessonFormValues = {
   title: "Does workaholism have positive effects?",
   description:
-    "Nowadays, more people move away from their friends and families for work. Do advantages outweigh the disadvantages?",
+    "Explore whether being a workaholic leads to success or burnout. In this writing task, you'll give your opinion and discuss the possible benefits and downsides of workaholism in modern life.",
   topic: "ielts",
   level: "intermediate",
   timeLimit: 30,

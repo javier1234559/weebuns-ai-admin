@@ -13,7 +13,6 @@ export default function TeacherPage() {
       <div className="flex flex-col my-6 gap-4">
         <NotificationViewList />
       </div>
-
       <div className="flex flex-col my-6 gap-4">
         <TeacherBalanceView />
       </div>
